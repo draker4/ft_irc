@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 14:00:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 16:23:54 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,30 +22,22 @@ static void	handleSignal(int signal)
 
 int main(int argc, char **argv)
 {
-	
-	// handle error ports between 1024 and 65535
-
 	if (argc != 3) {
 		std::cerr << RED << "ERROR: Wrong number of arguments!"
 			<< RESET << std::endl;
 		return ARG_NB;
 	}
 	
-	//create socket
-	int 		serverSocket;
-	addrinfo	hints, *res;
-	
-	// load up address structs with getaddrinfo()
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = AI_PASSIVE;
-	getaddrinfo(NULL, argv[1], &hints, &res);
-	
-	signal(SIGINT, handleSignal);
+	//set up the server adress struct
+	addrinfo	serverAdress, *res;
+	memset(&serverAdress, 0, sizeof(serverAdress));
+	serverAdress.ai_family = AF_INET;
+	serverAdress.ai_socktype = SOCK_STREAM;
+	serverAdress.ai_flags = AI_PASSIVE;
+	getaddrinfo(NULL, argv[1], &serverAdress, &res);
 
     // Create the socket
-	serverSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	int serverSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (serverSocket == -1) {
 		std::cerr << RED << "ERROR: Can't create socket!"
 			<< RESET << std::endl;
@@ -65,29 +57,15 @@ int main(int argc, char **argv)
 			<< RESET << std::endl;
 		return -3;
 	}
-	
-	// Accept incoming connections and handle them
-	sockaddr_in	client;
-	socklen_t clientSize = sizeof(client);
-	char host[NI_MAXHOST];
-	char svc[NI_MAXSERV];
-	
-	int clientSocket = accept(serverSocket, (sockaddr *)&client, &clientSize);
-	if (clientSocket == -1)
-	{
-		std::cerr << "Problem with client connecting!" << std::endl;
-		return -4;
-	}
-	std::cout << "Server started, listening on port " << argv[1] << std::endl;
 
     // Set up the pollfd structures
     pollfd fds[MAX_CLIENTS + 1]; // plus 1 for the listening socket
     memset(fds, 0, sizeof(fds));
-
     fds[0].fd = serverSocket;
     fds[0].events = POLLIN;
 
     int nbClients = 0;
+	signal(SIGINT, handleSignal);
 	
 	while (serverOpen) {
         // Call poll()
