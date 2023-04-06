@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/06 15:35:02 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 09:51:46 by bboisson         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <cstring>
 #include "colors.hpp"
 #include <poll.h>
+#include <signal.h>
 
 enum ErrorNum {
 	ARG_NB,
