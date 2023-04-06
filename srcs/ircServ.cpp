@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 15:25:14 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 15:48:19 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,70 +63,67 @@ int main(int argc, char **argv)
 		return -3;
 	}
 	
-	// Accept incoming connections and handle them
-	sockaddr_in	client;
-	socklen_t clientSize = sizeof(client);
-	char host[NI_MAXHOST];
-	char svc[NI_MAXSERV];
-	
-	int clientSocket = accept(serverSocket, (sockaddr *)&client, &clientSize);
-	
-	if (clientSocket == -1)
-	{
-		std::cerr << "Problem with client connecting!" << std::endl;
-		return -4;
-	}
+	std::cout << "Server started, listening on port " << portNumber << std::endl;
 
-	// close the listening socket
-	
-	memset(host, 0, NI_MAXHOST);
-	memset(svc, 0, NI_MAXSERV);
-	
-	int result = getnameinfo((sockaddr *)&client, sizeof(client), host, NI_MAXHOST, svc, NI_MAXSERV, 0);
-	
-	if (result)
-	{
-		std::cout << host << " connected on " << svc << std::endl;
-	}
-	else
-	{
-		inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-		std::cout << host << " connected on " << ntohs(client.sin_port) << std::endl;
-	}
-	
-	// while receiving, display messge, echo message
-	
-	char buf[4096];
+    // Set up the pollfd structures
+    pollfd fds[MAX_CLIENTS + 1]; // plus 1 for the listening socket
+    memset(fds, 0, sizeof(fds));
 
-	while (serverOpen)
-	{
-		// clear buffer
-		memset(buf, 0, 4096);
-		
-		// wait for a message
-		int bytesRecv = recv(clientSocket, buf, 4096, 0);
-		if (bytesRecv == -1) {
-			std::cerr << "There was a connection issue!" << std::endl;
-			break ;
+    fds[0].fd = serverSocket;
+    fds[0].events = POLLIN;
+
+    int nbClients = 0;
+	
+	while (serverOpen) {
+        // Call poll()
+        int ret = poll(fds, nbClients + 1, -1);
+        if (ret == -1) {
+            std::cerr << "ERROR: Poll failed!" << std::endl;
+            break;
+        }
+        // Check for incoming connections
+        if (fds[0].revents & POLLIN) {
+            // Accept the connection
+            int clientSocket = accept(serverSocket, NULL, NULL);
+            if (clientSocket == -1) {
+                std::cerr << "ERROR: Can't accept connection!" << std::endl;
+                continue;
+            }
+            // Add the client to the fds array
+            if (nbClients == MAX_CLIENTS) {
+                std::cerr << "ERROR: Too many clients!" << std::endl;
+                close(clientSocket);
+            } else {
+                nbClients++;
+                fds[nbClients].fd = clientSocket;
+                fds[nbClients].events = POLLIN;
+                std::cout << "New client connected, fd = " << clientSocket << std::endl;
+            }
+        }
+        // Check for incoming data on the client sockets
+        for (int i = 1; i <= nbClients; i++) {
+            if (fds[i].revents & POLLIN) {
+                char buf[4096];
+                memset(buf, 0, sizeof(buf));
+                int bytesReceived = recv(fds[i].fd, buf, sizeof(buf), 0);
+                if (bytesReceived == -1) {
+                    std::cerr << "ERROR: Can't receive data from client!" << std::endl;
+                } else if (bytesReceived == 0) {
+                    std::cout << "Client disconnected, fd = " << fds[i].fd << std::endl;
+					close(fds[i].fd);
+                    nbClients--;
+                    fds[i] = fds[nbClients + 1];
+				} else {
+					std::cout << "Received: " << std::string(buf, 0, bytesReceived) 
+						<< "from : " << fds[i].fd << std::endl;
+				}
+			}
 		}
-
-		if (bytesRecv == 0) {
-			std::cout << "The client disconnected!" << std::endl;
-			break ;
-		}
-		
-		// display message
-		std::cout << "Received: " << std::string(buf, 0, bytesRecv) << std::endl;
-		
-		//resend message
-		send(clientSocket, buf, bytesRecv + 1, 0);
-		if ( !serverOpen)
-			break ;
 	}
-	
-	//close socket
-	
-	close(clientSocket);
+	// Close all client sockets
+	for (int i = 0; i <= nbClients; i++) {
+		close(fds[i].fd);
+	}
 	close(serverSocket);
 	return 0;
 }
