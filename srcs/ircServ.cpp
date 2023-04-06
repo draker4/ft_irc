@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 08:48:48 by bboisson         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 13:56:17 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,32 +14,35 @@
 
 int main(int argc, char **argv)
 {
+	
+	// handle error ports between 1024 and 65535
+
 	if (argc != 3) {
 		std::cerr << RED << "ERROR: Wrong number of arguments!" << RESET << std::endl;
 		return ARG_NB;
 	}
+	
 	//create socket
-	int serverSocket, portNumber;
-    sockaddr_in serverAddress;
-
-    // Get the port number from the command line arguments
-    portNumber = atoi(argv[1]);
+	int 		serverSocket;
+	addrinfo	hints, *res;
+	
+	// load up address structs with getaddrinfo()
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+	getaddrinfo(NULL, argv[1], &hints, &res);
 
     // Create the socket
-    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	serverSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (serverSocket == -1) {
 		std::cerr << RED << "ERROR: Can't create socket!"
 			<< RESET << std::endl;
 		return SOCKET_CREATION;
 	}
-	
-	 // Set up the server address
-	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_addr.s_addr = INADDR_ANY;
-	serverAddress.sin_port = htons(portNumber);
-	
+
 	// Bind the socket to the port
-	if (bind(serverSocket, (sockaddr *)&serverAddress, sizeof(serverAddress)) == -1) {
+	if (bind(serverSocket, res->ai_addr, res->ai_addrlen) == -1) {
 		std::cerr << RED << "Can't bind to IP/Port!"
 			<< RESET << std::endl;
 		return -2;
@@ -59,7 +62,6 @@ int main(int argc, char **argv)
 	char svc[NI_MAXSERV];
 	
 	int clientSocket = accept(serverSocket, (sockaddr *)&client, &clientSize);
-	
 	if (clientSocket == -1)
 	{
 		std::cerr << "Problem with client connecting!" << std::endl;
