@@ -3,24 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 08:48:48 by bboisson         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 15:25:14 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ircServ.hpp"
 
+bool serverOpen = true;
+
+static void	handleSignal(int signal)
+{
+	std::cout << YELLOW << "Server is shutting down... " << signal << RESET << std::endl;
+	serverOpen = false;
+}
+
 int main(int argc, char **argv)
 {
 	if (argc != 3) {
-		std::cerr << RED << "ERROR: Wrong number of arguments!" << RESET << std::endl;
+		std::cerr << RED << "ERROR: Wrong number of arguments!"
+			<< RESET << std::endl;
 		return ARG_NB;
 	}
 	//create socket
 	int serverSocket, portNumber;
     sockaddr_in serverAddress;
+	
+	signal(SIGINT, handleSignal);
 
     // Get the port number from the command line arguments
     portNumber = atoi(argv[1]);
@@ -68,7 +79,6 @@ int main(int argc, char **argv)
 
 	// close the listening socket
 	
-	//close(serverSocket);
 	memset(host, 0, NI_MAXHOST);
 	memset(svc, 0, NI_MAXSERV);
 	
@@ -88,39 +98,35 @@ int main(int argc, char **argv)
 	
 	char buf[4096];
 
-	while (true)
+	while (serverOpen)
 	{
 		// clear buffer
-		
 		memset(buf, 0, 4096);
 		
 		// wait for a message
-		
 		int bytesRecv = recv(clientSocket, buf, 4096, 0);
-		if (bytesRecv == -1)
-		{
+		if (bytesRecv == -1) {
 			std::cerr << "There was a connection issue!" << std::endl;
 			break ;
 		}
 
-		if (bytesRecv == 0)
-		{
+		if (bytesRecv == 0) {
 			std::cout << "The client disconnected!" << std::endl;
 			break ;
 		}
 		
 		// display message
-		
 		std::cout << "Received: " << std::string(buf, 0, bytesRecv) << std::endl;
 		
 		//resend message
-		
 		send(clientSocket, buf, bytesRecv + 1, 0);
+		if ( !serverOpen)
+			break ;
 	}
 	
 	//close socket
 	
 	close(clientSocket);
-	
+	close(serverSocket);
 	return 0;
 }

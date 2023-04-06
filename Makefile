@@ -100,16 +100,16 @@ debug				:
 # -----------  Run Commands  --------- #
 
 run					:	all
-						./${NAME} input.txt input.txt input3.text input2.txt
+						./${NAME}
 
 runl				:	all
-						${LEAKS} ./${NAME} input.txt input.txt input3.text input2.txt
+						${LEAKS} ./${NAME} 
 
 runs				:	debug
-						./${DEBUG} input.txt input.txt input3.text input2.txt
+						./${DEBUG}
 
 rund				:	debug
-						${LLDB} ./${DEBUG} input.txt input.txt input3.text input2.txt
+						${LLDB} ./${DEBUG}
 
 runv				:	all
-						${VALGRIND} ./${NAME} input.txt input.txt input3.text input2.txt
+						${VALGRIND} ./${NAME}
