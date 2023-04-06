@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 14:22:47 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 08:48:48 by bboisson         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
 	// close the listening socket
 	
-	close(serverSocket);
+	//close(serverSocket);
 	memset(host, 0, NI_MAXHOST);
 	memset(svc, 0, NI_MAXSERV);
 	
