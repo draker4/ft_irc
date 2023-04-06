@@ -6,63 +6,69 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 13:33:09 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 14:22:47 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ircServ.hpp"
-using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
+	if (argc != 3) {
+		std::cerr << RED << "ERROR: Wrong number of arguments!" << RESET << std::endl;
+		return ARG_NB;
+	}
 	//create socket
+	int serverSocket, portNumber;
+    sockaddr_in serverAddress;
 
-	int listening = socket(AF_INET, SOCK_STREAM, 0);
-	if (listening == -1)
-	{
-		cerr << "Can't create socket!" << endl;
-		return -1;
+    // Get the port number from the command line arguments
+    portNumber = atoi(argv[1]);
+
+    // Create the socket
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+	if (serverSocket == -1) {
+		std::cerr << RED << "ERROR: Can't create socket!"
+			<< RESET << std::endl;
+		return SOCKET_CREATION;
 	}
 	
-	//bind socket to a IP / Port
-
-	sockaddr_in hint;
-	hint.sin_family = AF_INET;
-	hint.sin_port = htons(55000);
-	inet_pton(AF_INET, "0.0.0.0", &hint.sin_addr);
+	 // Set up the server address
+	serverAddress.sin_family = AF_INET;
+	serverAddress.sin_addr.s_addr = INADDR_ANY;
+	serverAddress.sin_port = htons(portNumber);
 	
-	if (bind(listening, (sockaddr *)&hint, sizeof(hint)) == -1)
-	{
-		cerr << "Can't bind to IP/Port!" << endl;
+	// Bind the socket to the port
+	if (bind(serverSocket, (sockaddr *)&serverAddress, sizeof(serverAddress)) == -1) {
+		std::cerr << RED << "Can't bind to IP/Port!"
+			<< RESET << std::endl;
 		return -2;
 	}
 
-	// Mark the socket for listening in
-
-	if (listen(listening, SOMAXCONN) == -1)
-	{
-		cerr << "Can't listen!" << endl;
+	// Listen for incoming connections
+	if (listen(serverSocket, SOMAXCONN) == -1) {
+		std::cerr << RED << "Can't listen!"
+			<< RESET << std::endl;
 		return -3;
 	}
-
-	//accept a call
 	
+	// Accept incoming connections and handle them
 	sockaddr_in	client;
 	socklen_t clientSize = sizeof(client);
 	char host[NI_MAXHOST];
 	char svc[NI_MAXSERV];
 	
-	int clientSocket = accept(listening, (sockaddr *)&client, &clientSize);
+	int clientSocket = accept(serverSocket, (sockaddr *)&client, &clientSize);
 	
 	if (clientSocket == -1)
 	{
-		cerr << "Problem with client connecting!" << endl;
+		std::cerr << "Problem with client connecting!" << std::endl;
 		return -4;
 	}
 
 	// close the listening socket
 	
-	close(listening);
+	close(serverSocket);
 	memset(host, 0, NI_MAXHOST);
 	memset(svc, 0, NI_MAXSERV);
 	
@@ -70,12 +76,12 @@ int main()
 	
 	if (result)
 	{
-		cout << host << " connected on " << svc << endl;
+		std::cout << host << " connected on " << svc << std::endl;
 	}
 	else
 	{
 		inet_ntop(AF_INET, &client.sin_addr, host, NI_MAXHOST);
-		cout << host << " connected on " << ntohs(client.sin_port) << endl;
+		std::cout << host << " connected on " << ntohs(client.sin_port) << std::endl;
 	}
 	
 	// while receiving, display messge, echo message
@@ -93,19 +99,19 @@ int main()
 		int bytesRecv = recv(clientSocket, buf, 4096, 0);
 		if (bytesRecv == -1)
 		{
-			cerr << "There was a connection issue!" << endl;
+			std::cerr << "There was a connection issue!" << std::endl;
 			break ;
 		}
 
 		if (bytesRecv == 0)
 		{
-			cout << "The client disconnected!" << endl;
+			std::cout << "The client disconnected!" << std::endl;
 			break ;
 		}
 		
 		// display message
 		
-		cout << "Received: " << string(buf, 0, bytesRecv) << endl;
+		std::cout << "Received: " << std::string(buf, 0, bytesRecv) << std::endl;
 		
 		//resend message
 		
