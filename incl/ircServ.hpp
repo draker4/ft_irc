@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/06 09:51:46 by bboisson         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 15:42:18 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,15 @@
 #include <cstring>
 #include "colors.hpp"
 #include <poll.h>
-#include <signal.h>
+#include <csignal>
 
 enum ErrorNum {
+	SUCCESS,
 	ARG_NB,
-	SOCKET_CREATION,
+	GETADDRINFO,
+	SOCKET_OPTION,
+	SOCKET_BIND,
+	LISTEN,
 };
 
 #define MAX_CLIENTS 10

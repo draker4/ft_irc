@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ircServ.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 16:26:31 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 15:51:38 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,46 +16,87 @@ bool serverOpen = true;
 
 static void	handleSignal(int signal)
 {
-	std::cout << YELLOW << "Server is shutting down... " << signal << RESET << std::endl;
+	std::cout << YELLOW << "\nServer is shutting down... " << signal << RESET << std::endl;
 	serverOpen = false;
+}
+
+static void	*get_addr(sockaddr *saddr)
+{
+	if (saddr->sa_family == AF_INET)
+		return &(((sockaddr_in *)saddr)->sin_addr);
+	return &(((sockaddr_in6 *)saddr)->sin6_addr);
 }
 
 int main(int argc, char **argv)
 {
 	if (argc != 3) {
-		std::cerr << RED << "ERROR: Wrong number of arguments!"
+		std::cerr << RED << "Usage: ./ircServ <Port> <Password>"
 			<< RESET << std::endl;
 		return ARG_NB;
 	}
 	
 	//set up the server adress struct
-	addrinfo	serverAdress, *res;
-	memset(&serverAdress, 0, sizeof(serverAdress));
-	serverAdress.ai_family = AF_INET;
-	serverAdress.ai_socktype = SOCK_STREAM;
-	serverAdress.ai_flags = AI_PASSIVE;
-	getaddrinfo(NULL, argv[1], &serverAdress, &res);
-
-    // Create the socket
-	int serverSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	if (serverSocket == -1) {
-		std::cerr << RED << "ERROR: Can't create socket!"
+	addrinfo	hints, *serverInfo, *indexInfo;
+	int			info, serverSocket;
+	int			reuse = 1;
+	
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+	if ((info = getaddrinfo(NULL, argv[1], &hints, &serverInfo)) != 0) {
+		std::cerr << RED << gai_strerror(info)
 			<< RESET << std::endl;
-		return SOCKET_CREATION;
+		return GETADDRINFO;
 	}
 
-	// Bind the socket to the port
-	if (bind(serverSocket, res->ai_addr, res->ai_addrlen) == -1) {
-		std::cerr << RED << "Can't bind to IP/Port!"
+	// loop through all the results of getaddrinfo and bin the first possible
+	for (indexInfo = serverInfo; indexInfo != NULL; indexInfo = indexInfo->ai_next)
+	{
+		// Create the socket
+		if ((serverSocket = socket(indexInfo->ai_family, indexInfo->ai_socktype, indexInfo->ai_protocol)) == -1) {
+			std::cerr << RED << "ERROR: Cannot create socket!"
+				<< RESET << std::endl;
+			continue ;
+		}
+
+		// set options for the socket
+		if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) == -1)
+		{
+			close(serverSocket);
+			freeaddrinfo(serverInfo);
+			std::cerr << RED << "ERROR: Cannot set any option for the server socket!"
+				<< RESET << std::endl;
+			return SOCKET_OPTION;
+		}
+
+		// Bind the socket to the port
+		if (bind(serverSocket, indexInfo->ai_addr, indexInfo->ai_addrlen) == -1) {
+			close(serverSocket);
+			std::cerr << RED << "ERROR: Cannot bind to IP/Port!"
+				<< RESET << std::endl;
+			continue ;
+		}
+
+		break;
+	}
+	
+	freeaddrinfo(serverInfo);
+
+	if (!indexInfo)
+	{
+		close(serverSocket);
+		std::cerr << RED << "ERROR: Server failed to bind to IP/Port!"
 			<< RESET << std::endl;
-		return -2;
+		return SOCKET_BIND;
 	}
 
 	// Listen for incoming connections
 	if (listen(serverSocket, SOMAXCONN) == -1) {
+		close(serverSocket);
 		std::cerr << RED << "Can't listen!"
 			<< RESET << std::endl;
-		return -3;
+		return LISTEN;
 	}
 
     // Set up the pollfd structures
@@ -67,21 +108,36 @@ int main(int argc, char **argv)
     int nbClients = 0;
 	signal(SIGINT, handleSignal);
 	
+	std::cout << YELLOW << "Server waiting for connections..." << RESET << std::endl;
+
+	sockaddr_storage	client_addr;
+	socklen_t			client_addr_size = sizeof(client_addr);
+	int					clientSocket;
+	char				s[INET6_ADDRSTRLEN];
+	
 	while (serverOpen) {
+		
         // Call poll()
         int ret = poll(fds, nbClients + 1, -1);
-        if (ret == -1) {
+        if (ret == -1 && serverOpen) {
             std::cerr << "ERROR: Poll failed!" << std::endl;
             break;
         }
+		
         // Check for incoming connections
         if (fds[0].revents & POLLIN) {
+			
             // Accept the connection
-            int clientSocket = accept(serverSocket, NULL, NULL);
-            if (clientSocket == -1) {
+            //int clientSocket = accept(serverSocket, NULL, NULL);
+            //if (clientSocket == -1) {
+			if ((clientSocket = accept(serverSocket, (sockaddr *)&client_addr, &client_addr_size)) == -1) {
                 std::cerr << "ERROR: Can't accept connection!" << std::endl;
                 continue;
             }
+			
+			// get ipv4 or ipv6 address from client
+			inet_ntop(client_addr.ss_family, get_addr((sockaddr *)&client_addr), s, sizeof(s));
+
             // Add the client to the fds array
             if (nbClients == MAX_CLIENTS) {
                 std::cerr << "ERROR: Too many clients!" << std::endl;
@@ -92,6 +148,7 @@ int main(int argc, char **argv)
                 fds[nbClients].events = POLLIN;
                 std::cout << "New client connected, fd = " << clientSocket << std::endl;
             }
+			std::cout << YELLOW << "Server got connection from " << s << std::endl;
         }
         // Check for incoming data on the client sockets
         for (int i = 1; i <= nbClients; i++) {
@@ -118,5 +175,5 @@ int main(int argc, char **argv)
 		close(fds[i].fd);
 	}
 	close(serverSocket);
-	return 0;
+	return SUCCESS;
 }
