@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/06 14:00:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/06 14:05:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ int main(int argc, char **argv)
 	// Accept incoming connections and handle them
 	sockaddr_in	client;
 	socklen_t clientSize = sizeof(client);
-	char host[NI_MAXHOST];
-	char svc[NI_MAXSERV];
 	
 	int clientSocket = accept(serverSocket, (sockaddr *)&client, &clientSize);
 	if (clientSocket == -1)
