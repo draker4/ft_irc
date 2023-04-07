@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 16:42:43 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:17:55 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,18 @@
 
 extern bool	serverOpen;
 
-// destructor
-
-Server::~Server(void)
-{
-	close(_serverSocket);
-	std::cout << YELLOW << "\nServer is shutting down... " << RESET << std::endl;
-}
-
-// constructors
+/* -----------------------------  Constructors  ----------------------------- */
 
 Server::Server(void)
-{}
+{
+	// std::cout << GREEN << "Server Default Constructor called "
+	// 	<< RESET << std::endl;
+}
 
 Server::Server(std::string port, std::string password) : _port(strtod(port.c_str(), NULL)), _reuse(1), _password(password)
 {
+	// std::cout << GREEN << "Server Constructor called "
+	// 	<< RESET << std::endl;
 	if (port.empty() || port.find_first_not_of("0123456789") != std::string::npos || password.empty())
 		throw WrongArgs();
 	double	port_test = strtod(port.c_str(), NULL);
@@ -89,14 +86,27 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 
 Server::Server(const Server &src)
 {
+	// std::cout << GREEN << "Server Copy Constructor called "
+	// 	<< RESET << std::endl;
 	*this = src;
 }
 
-// operator overloads
+/* -----------------------------  Destructors  ------------------------------ */
+
+Server::~Server(void)
+{
+	// std::cout << RED << "Server Destructor called "
+	// 	<< RESET << std::endl;
+	close(_serverSocket);
+	std::cout << YELLOW << "\nServer is shutting down... " << RESET << std::endl;
+}
+
+/* -------------------------  Assignment Operator  -------------------------- */
 
 Server	&Server::operator=(const Server &rhs)
 {
-	// copy here
+	// std::cout << GREEN << "Server Assignment Operator called "
+	// 	<< RESET << std::endl;
 	_serverSocket = rhs._serverSocket;
 	_port = rhs._port;
 	_reuse = rhs._reuse;
@@ -106,14 +116,18 @@ Server	&Server::operator=(const Server &rhs)
 	return *this;
 }
 
-// getter
+/* --------------------------------  Getter  -------------------------------- */
 
 int	Server::getServerSocket(void) const
 {
 	return _serverSocket;
 }
 
-// member functions
+/* --------------------------------  Setter  -------------------------------- */
+
+/* --------------------------  Private functions  --------------------------- */
+
+/* -----------------------  Public member functions  ------------------------ */
 
 void	Server::init(void)
 {

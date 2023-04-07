@@ -3,37 +3,50 @@
 /*                                                        :::      ::::::::   */
 /*   AUser.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 14:44:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 15:56:31 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:06:18 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "AUser.hpp"
 
-// destructor
-
-AUser::~AUser(void)
-{}
-
-// constructors
+/* -----------------------------  Constructors  ----------------------------- */
 
 AUser::AUser(void)
-{}
+{
+	// std::cout << GREEN << "AUser Default Constructor called "
+	// 	<< RESET << std::endl;
+}
 
 AUser::AUser(int serverSocket) : _serverSocket(serverSocket), _client_addr_size(sizeof(_client_addr))
-{}
+{
+	// std::cout << GREEN << "AUser Constructor called "
+	// 	<< RESET << std::endl;
+}
 
 AUser::AUser(const AUser &src)
 {
+	// std::cout << GREEN << "AUser Copy Constructor called "
+	// 	<< RESET << std::endl;
 	*this = src;
 }
 
-// operator overloads
+/* -----------------------------  Destructors  ------------------------------ */
+
+AUser::~AUser(void)
+{
+	// std::cout << RED << "AUser Destructor called "
+	// 	<< RESET << std::endl;
+}
+
+/* -------------------------  Assignment Operator  -------------------------- */
 
 AUser	&AUser::operator=(const AUser &rhs)
 {
+	// std::cout << GREEN << "AUser Assignment Operator called "
+	// 	<< RESET << std::endl;
 	_nickname = rhs._nickname;
 	_real_name = rhs._nickname;
 	_username = rhs._username;
@@ -45,16 +58,7 @@ AUser	&AUser::operator=(const AUser &rhs)
 	return *this;
 }
 
-// member functions
-
-void	*AUser::get_addr(sockaddr *saddr)
-{
-	if (saddr->sa_family == AF_INET)
-		return &(((sockaddr_in *)saddr)->sin_addr);
-	return &(((sockaddr_in6 *)saddr)->sin6_addr);
-}
-
-// getter
+/* --------------------------------  Getter  -------------------------------- */
 
 int	AUser::getClientSocket(void) const
 {
@@ -66,7 +70,7 @@ char	*AUser::getInet(void)
 	return _inet;
 }
 
-// setter
+/* --------------------------------  Setter  -------------------------------- */
 
 void	AUser::setClientSocket(void)
 {
@@ -76,4 +80,15 @@ void	AUser::setClientSocket(void)
 	
 	// get ipv4 or ipv6 address from client
 	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
+}
+
+/* --------------------------  Private functions  --------------------------- */
+
+/* -----------------------  Public member functions  ------------------------ */
+
+void	*AUser::get_addr(sockaddr *saddr)
+{
+	if (saddr->sa_family == AF_INET)
+		return &(((sockaddr_in *)saddr)->sin_addr);
+	return &(((sockaddr_in6 *)saddr)->sin6_addr);
 }
