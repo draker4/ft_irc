@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/07 15:58:49 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 16:32:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <poll.h>
 #include <csignal>
 #include <cstdlib>
+#include <vector>
 #include "Server.hpp"
 
 enum ErrorNum {
