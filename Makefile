@@ -1,6 +1,7 @@
 # ***********************  FT_IRC MAKEFILE  ************************ #
 
 .PHONY			:	all clean fclean re bonus debug run runl runs rund
+SHOWRULES		=	FALSE
 
 # **************************  VARIABLES  *************************** #
 
@@ -13,8 +14,11 @@ DEBUG			=	${NAME}_debug
 
 DIR_HEAD		=	./incl/
 DIR_SRCS		=	./srcs/
+DIR_SRCS_C		=	./srcs/command/
 DIR_OBJS		=	.objs/
+DIR_OBJS_C		=	.objs/command/
 DIR_OBJS_D		=	.objs_debug/
+DIR_OBJS_D_C	=	.objs_debug/command/
 
 # -------------  Files  -------------- #
 
@@ -50,9 +54,9 @@ SRCS_C			=	invite.cpp	\
 					user.cpp
 
 OBJS			=	${SRCS:%.cpp=${DIR_OBJS}%.o}
-OBJS_C			=	${SRCS_C:%.cpp=${DIR_OBJS}%.o}
+OBJS_C			=	${SRCS_C:%.cpp=${DIR_OBJS_C}%.o}
 OBJS_D			=	${SRCS:%.cpp=${DIR_OBJS_D}%.o}
-OBJS_D_C		=	${SRCS_C:%.cpp=${DIR_OBJS_D}%.o}
+OBJS_D_C		=	${SRCS_C:%.cpp=${DIR_OBJS_D_C}%.o}
 DEPS			=	${OBJS:.o=.d}
 DEPS_C			=	${OBJS_C:.o=.d}
 DEPS_D			=	${OBJS_D:.o=.d}
@@ -67,6 +71,7 @@ g3				=	-g3
 FSANITIZE		=	-fsanitize=address
 OPTI			=	-O3
 MMD				=	-MMD
+CLEAR			=	clear
 
 # ------------  Commands  ------------ #
 
@@ -77,51 +82,82 @@ LLDB			=	lldb
 CP				=	cp
 VALGRIND		=	valgrind
 
+# -------------  Colors  ------------- #
+
+CCRESET			=	echo -e "\033[0;30m"
+CCRED			=	$(shell echo "\033[0;31m")
+CCGREEN			=	$(shell echo "\033[0;32m")
+CCYELLOW		=	$(shell echo "\033[0;33m")
+CCBLUE			=	$(shell echo "\033[0;34m")
+
+ifeq ($(SHOWRULES),TRUE)
+	HIDE = 
+else
+	HIDE = @
+endif
+
 # ****************************  RULES  ***************************** #
 
 all					:	
-						$(MAKE) -j ${NAME}
+						${HIDE} ${CLEAR}
+						${HIDE}$(MAKE) -j ${NAME}
 
 # ---------  Compiled Rules  --------- #
 
-${NAME}				:	${OBJS}
-						${CC} ${CFLAGS} ${c98} ${OBJS} -o ${NAME}
+${NAME}				:	${OBJS} ${OBJS_C}
+						@echo "\033[0;33m"Building... "\033[0;0m"
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS} ${OBJS_C} -o ${NAME}
+						@echo "\033[0;32m"Build Done!"\033[0;0m"
 
 ${DIR_OBJS}%.o		:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS}
-						${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
 
 ${DIR_OBJS}			:
-						${MKDIR} ${DIR_OBJS}
+						${HIDE} ${MKDIR} ${DIR_OBJS}
+						${HIDE} ${MKDIR} ${DIR_OBJS_C}
 
 -include ${DEPS}
+-include ${DEPS_C}
 
 # ------  Compiled Rules Debug  ------ #
 
-${DEBUG}			:	${OBJS_D}
-						${CC} ${CFLAGS} ${c98} ${OBJS_D} ${g3} ${FSANITIZE} -o ${DEBUG}
+${DEBUG}			:	${OBJS_D} ${OBJS_D_C}
+						@echo "\033[0;33m"Building Debug... "\033[0;0m"
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS_D} ${OBJS_D_C} ${g3} ${FSANITIZE} -o ${DEBUG}
+						@echo "\033[0;32m"Debug build Done!"\033[0;0m"
 
 ${DIR_OBJS_D}%.o	:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS_D}
-						${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_D_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS_D}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
 
 ${DIR_OBJS_D}		:
-						${MKDIR} ${DIR_OBJS_D}
+						${HIDE} ${MKDIR} ${DIR_OBJS_D}
+						${HIDE} ${MKDIR} ${DIR_OBJS_D_C}
 
 -include ${DEPS_D}
+-include ${DEPS_D_C}
 
 # ---------  Usual Commands  --------  #
 
 clean				:	
-						${RM} ${DIR_OBJS}
-						${RM} ${DIR_OBJS_D}
-						${RM} ${DIR_DEBUG}
+						${HIDE} ${RM} ${DIR_OBJS}
+						${HIDE} ${RM} ${DIR_OBJS_D}
+						${HIDE} ${RM} ${DIR_DEBUG}
+						@echo "\033[0;34m"Cleaning done!"\033[0;0m"
 
 fclean				:	clean
-						${RM} ${NAME}
-						${RM} ${DEBUG}
+						${HIDE} ${RM} ${NAME}
+						${HIDE} ${RM} ${DEBUG}
+						@echo "\033[0;32m"Full cleaning done!"\033[0;0m"
 
 re					:
-						$(MAKE) fclean
-						$(MAKE) all
+						${HIDE} $(MAKE) fclean
+						${HIDE} $(MAKE) all
 
 # ---------  Other Commands  --------- #
 
