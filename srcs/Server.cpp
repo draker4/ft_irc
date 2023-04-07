@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 16:42:43 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:18:51 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ extern bool	serverOpen;
 Server::~Server(void)
 {
 	close(_serverSocket);
+	
+	// Close all client sockets
+	for (std::vector<pollfd>::iterator it = _fds.begin(); it != _fds.end(); it++) {
+		close(it->fd);
+	}
+	
 	std::cout << YELLOW << "\nServer is shutting down... " << RESET << std::endl;
 }
 
@@ -184,17 +190,13 @@ void	Server::launch(void)
 				} else if (bytesReceived == 0) {
 					std::cout << "Client disconnected, fd = " << it->fd << std::endl;
 					close(it->fd);
-					_fds.erase(it);
+					it--;
+					_fds.erase(it + 1);
 				} else {
 					std::cout << "Received: " << std::string(buf, 0, bytesReceived) 
 						<< "from : " << it->fd << std::endl;
 				}
 			}
 		}
-	}
-	
-	// Close all client sockets
-	for (std::vector<pollfd>::iterator it = _fds.begin(); it != _fds.end(); it++) {
-		close(it->fd);
 	}
 }
