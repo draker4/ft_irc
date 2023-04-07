@@ -20,7 +20,7 @@ DIR_OBJS_D		=	.objs_debug/
 
 HEAD			=	colors.hpp
 
-SRCS			=	ircserv.cpp Server.cpp
+SRCS			=	ircserv.cpp Server.cpp	Client.cpp	AUser.cpp
 
 OBJS			=	${SRCS:%.cpp=${DIR_OBJS}%.o}
 OBJS_D			=	${SRCS:%.cpp=${DIR_OBJS_D}%.o}

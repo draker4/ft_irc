@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ircServ.hpp                                        :+:      :+:    :+:   */
+/*   ircserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/07 12:57:41 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 15:58:49 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ class BindError : public std::exception
 	public:
 		virtual const char	*what() const throw() { return "ERROR: Server failed to bind to IP/Port!"; }
 };
-
 
 class Listen : public std::exception
 {

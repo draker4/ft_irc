@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 14:28:56 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 15:46:08 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,6 @@ int	Server::getServerSocket(void) const
 
 // member functions
 
-
-void	*Server::get_addr(sockaddr *saddr)
-{
-	if (saddr->sa_family == AF_INET)
-		return &(((sockaddr_in *)saddr)->sin_addr);
-	return &(((sockaddr_in6 *)saddr)->sin6_addr);
-}
-
 void	Server::init(void)
 {
 	// Listen for incoming connections
@@ -138,8 +130,6 @@ void	Server::init(void)
 
 void	Server::launch(void)
 {
-	socklen_t	client_addr_size = sizeof(_client_addr);
-	
 	while (serverOpen) {
 		
 		// Call poll()
@@ -152,16 +142,17 @@ void	Server::launch(void)
 		// Check for incoming connections
 		if (_fds[0].revents & POLLIN) {
 			
-			//Client	client();
+			Client	client(_serverSocket);
 			
 			// Accept the connection
-			if ((_clientSocket = accept(_serverSocket, (sockaddr *)&_client_addr, &client_addr_size)) == -1) {
-				std::cerr << "ERROR: Can't accept connection!" << std::endl;
-				continue;
-			}
 			
-			// get ipv4 or ipv6 address from client
-			inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), inet, sizeof(inet));
+			try {
+				client.setClientSocket();
+			}
+			catch (const std::exception &e) {
+				std::cerr << RED << e.what() << RESET << std::endl;
+				continue ;
+			}
 
 			// Add the client to the fds array
 			if (_nbClients == MAX_CLIENTS) {
@@ -169,11 +160,11 @@ void	Server::launch(void)
 				close(_clientSocket);
 			} else {
 				_nbClients++;
-				_fds[_nbClients].fd = _clientSocket;
+				_fds[_nbClients].fd = client.getClientSocket();
 				_fds[_nbClients].events = POLLIN;
 				std::cout << "New client connected, fd = " << _clientSocket << std::endl;
 			}
-			std::cout << YELLOW << "Server got connection from " << inet << std::endl;
+			std::cout << YELLOW << "Server got connection from " << client.getInet() << std::endl;
 		}
 		
 		// Check for incoming data on the client sockets
