@@ -3,38 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 12:24:33 by bperriol         ###   ########lyon.fr   */
+/*   Created: 2023/02/18 10:02:29 by baptiste          #+#    #+#             */
+/*   Updated: 2023/04/06 16:11:15 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "ircServ.hpp"
+#include <iostream>
+#include "colors.hpp"
 
-class Server
+#define BOARD_WIDTH 10
+#define	ORIGIN_X 5
+#define	ORIGIN_Y 0
+#define PIVOT_X 2
+#define PIVOT_Y 1
+
+class Piece
 {
 	private:
-
-		Server(void);
-
-		int			_serverSocket;
-		int			_port;
-		int			_reuse;
-		std::string	_password;
+		
+		// Constructors
+		
+		// Private functions
 		
 	public:
-
-		~Server(void);
-		Server(std::string port, std::string password);
-		Server(const Server &src);
+		// Constructors
+		Piece( void );
+		Piece( Piece const &src );
 		
-		Server	&operator=(const Server &rhs);
+		// Destructors
+		~Piece( void );
+	
+		// Assignment Operator
+		Piece	&operator=( Piece const &src );
+		
+		// Getter
+		
+		// Setter
 
-		int	getServerSocket(void) const;
+		// Public member functions
 };
 
 #endif
