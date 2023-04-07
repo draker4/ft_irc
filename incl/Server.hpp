@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 17:15:06 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 18:56:06 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@ class Server
 		
 		// Assignment Operator
 		Server	&operator=(const Server &rhs);
+
+		// Private member functions
+		void	addUser(std::vector<pollfd> &new_fds);
+		void	receive_data(std::vector<pollfd>::iterator &it);
 
 	public:
 		// Constructors
