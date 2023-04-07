@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 15:52:05 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 16:33:23 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,22 +23,22 @@ class Server
 	private:
 
 		Server(void);
+		Server(const Server &src);
 
+		Server				&operator=(const Server &rhs);
+		
 		int					_serverSocket;
-		int					_clientSocket;
 		int					_port;
 		int					_reuse;
-		int					_nbClients;
 		std::string			_password;
-		pollfd				_fds[MAX_CLIENTS + 1]; // plus 1 for the listening socket
+		std::vector<pollfd>	_fds;
+		std::vector<Client>	_clients;
 
 	public:
 
 		~Server(void);
 		Server(std::string port, std::string password);
-		Server(const Server &src);
 		
-		Server				&operator=(const Server &rhs);
 
 		int					getServerSocket(void) const;
 		

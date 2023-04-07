@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 15:46:08 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 16:42:43 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ Server::~Server(void)
 Server::Server(void)
 {}
 
-Server::Server(std::string port, std::string password) : _port(strtod(port.c_str(), NULL)), _reuse(1), _nbClients(0), _password(password)
+Server::Server(std::string port, std::string password) : _port(strtod(port.c_str(), NULL)), _reuse(1), _password(password)
 {
 	if (port.empty() || port.find_first_not_of("0123456789") != std::string::npos || password.empty())
 		throw WrongArgs();
@@ -101,7 +101,8 @@ Server	&Server::operator=(const Server &rhs)
 	_port = rhs._port;
 	_reuse = rhs._reuse;
 	_password = rhs._password;
-	_nbClients = rhs._nbClients;
+	_fds = rhs._fds;
+	_clients = rhs._clients;
 	return *this;
 }
 
@@ -122,10 +123,10 @@ void	Server::init(void)
 		throw Listen();
 	}
 
-	// Set up the pollfd structures
-	memset(_fds, 0, sizeof(_fds));
-	_fds[0].fd = _serverSocket;
-	_fds[0].events = POLLIN;
+	pollfd	server_fd;
+	server_fd.fd = _serverSocket;
+	server_fd.events = POLLIN;
+	_fds.push_back(server_fd);
 }
 
 void	Server::launch(void)
@@ -133,14 +134,16 @@ void	Server::launch(void)
 	while (serverOpen) {
 		
 		// Call poll()
-		int ret = poll(_fds, _nbClients + 1, -1);
+		int ret = poll((pollfd *)&_fds[0], _fds.size(), -1);
 		if (ret == -1 && serverOpen) {
 			std::cerr << "ERROR: Poll failed!" << std::endl;
 			break;
 		}
 		
 		// Check for incoming connections
-		if (_fds[0].revents & POLLIN) {
+		std::vector<pollfd>::iterator	it = _fds.begin();
+		
+		if (it->revents & POLLIN) {
 			
 			Client	client(_serverSocket);
 			
@@ -155,40 +158,43 @@ void	Server::launch(void)
 			}
 
 			// Add the client to the fds array
-			if (_nbClients == MAX_CLIENTS) {
+			if (_fds.size() == MAX_CLIENTS) {
 				std::cerr << "ERROR: Too many clients!" << std::endl;
-				close(_clientSocket);
+				close(client.getClientSocket());
 			} else {
-				_nbClients++;
-				_fds[_nbClients].fd = client.getClientSocket();
-				_fds[_nbClients].events = POLLIN;
-				std::cout << "New client connected, fd = " << _clientSocket << std::endl;
+				pollfd	client_fd;
+				client_fd.fd = client.getClientSocket();
+				client_fd.events = POLLIN;
+				_fds.push_back(client_fd);
+				std::cout << "New client connected, fd = " << client.getClientSocket() << std::endl;
 			}
-			std::cout << YELLOW << "Server got connection from " << client.getInet() << std::endl;
+			std::cout << YELLOW << "Server got connection from " << client.getInet() << RESET << std::endl;
 		}
 		
 		// Check for incoming data on the client sockets
-		for (int i = 1; i <= _nbClients; i++) {
-			if (_fds[i].revents & POLLIN) {
+		for (it = _fds.begin() + 1; it != _fds.end(); it++)
+		{
+			if (it->revents & POLLIN)
+			{
 				char buf[4096];
 				memset(buf, 0, sizeof(buf));
-				int bytesReceived = recv(_fds[i].fd, buf, sizeof(buf), 0);
+				int bytesReceived = recv(it->fd, buf, sizeof(buf), 0);
 				if (bytesReceived == -1) {
 					std::cerr << "ERROR: Can't receive data from client!" << std::endl;
 				} else if (bytesReceived == 0) {
-					std::cout << "Client disconnected, fd = " << _fds[i].fd << std::endl;
-					close(_fds[i].fd);
-					_nbClients--;
-					_fds[i] = _fds[_nbClients + 1];
+					std::cout << "Client disconnected, fd = " << it->fd << std::endl;
+					close(it->fd);
+					_fds.erase(it);
 				} else {
 					std::cout << "Received: " << std::string(buf, 0, bytesReceived) 
-						<< "from : " << _fds[i].fd << std::endl;
+						<< "from : " << it->fd << std::endl;
 				}
 			}
 		}
 	}
+	
 	// Close all client sockets
-	for (int i = 0; i <= _nbClients; i++) {
-		close(_fds[i].fd);
+	for (std::vector<pollfd>::iterator it = _fds.begin(); it != _fds.end(); it++) {
+		close(it->fd);
 	}
 }
