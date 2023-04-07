@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:55:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 17:12:31 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:44:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,6 @@ Client::~Client()
 }
 
 /* -------------------------  Assignment Operator  -------------------------- */
-
-Client	&Client::operator=(const Client &rhs)
-{
-	// std::cout << GREEN << "Client Assignment Operator called "
-	// 	<< RESET << std::endl;
-	return *this;
-}
 
 /* --------------------------------  Getter  -------------------------------- */
 

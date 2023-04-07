@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AUser.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 14:44:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 17:06:18 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:28:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ AUser::~AUser(void)
 
 AUser	&AUser::operator=(const AUser &rhs)
 {
-	// std::cout << GREEN << "AUser Assignment Operator called "
-	// 	<< RESET << std::endl;
+	std::cout << GREEN << "AUser Assignment Operator called "
+		<< RESET << std::endl;
 	_nickname = rhs._nickname;
 	_real_name = rhs._nickname;
 	_username = rhs._username;

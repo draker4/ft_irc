@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AUser.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:35:01 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 17:05:09 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:37:36 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <iostream>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include "colors.hpp"
 
 
 class Accept : public std::exception
@@ -52,7 +53,7 @@ class	AUser
 		virtual ~AUser(void);
 		
 		// Assignment Operator
-		AUser	&operator=(const AUser &rhs);
+		virtual AUser	&operator=(const AUser &rhs);
 		
 		// Getter
 		char	*getInet(void);

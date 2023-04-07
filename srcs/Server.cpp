@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 17:20:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 18:19:32 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,8 @@ void	Server::launch(void)
 {
 	while (serverOpen) {
 		
+		std::vector<pollfd>	new_fds;
+		
 		// Call poll()
 		int ret = poll((pollfd *)&_fds[0], _fds.size(), -1);
 		if (ret == -1 && serverOpen) {
@@ -163,54 +165,57 @@ void	Server::launch(void)
 		// Check for incoming connections
 		std::vector<pollfd>::iterator	it = _fds.begin();
 		
-		if (it->revents & POLLIN) {
-			
-			Client	client(_serverSocket);
-			
-			// Accept the connection
-			
-			try {
-				client.setClientSocket();
-			}
-			catch (const std::exception &e) {
-				std::cerr << RED << e.what() << RESET << std::endl;
-				continue ;
-			}
-
-			// Add the client to the fds array
-			if (_fds.size() == MAX_CLIENTS) {
-				std::cerr << "ERROR: Too many clients!" << std::endl;
-				close(client.getClientSocket());
-			} else {
-				pollfd	client_fd;
-				client_fd.fd = client.getClientSocket();
-				client_fd.events = POLLIN;
-				_fds.push_back(client_fd);
-				std::cout << "New client connected, fd = " << client.getClientSocket() << std::endl;
-			}
-			std::cout << YELLOW << "Server got connection from " << client.getInet() << RESET << std::endl;
-		}
-		
 		// Check for incoming data on the client sockets
-		for (it = _fds.begin() + 1; it != _fds.end(); it++)
+		for (it = _fds.begin(); it != _fds.end(); it++)
 		{
 			if (it->revents & POLLIN)
 			{
-				char buf[4096];
-				memset(buf, 0, sizeof(buf));
-				int bytesReceived = recv(it->fd, buf, sizeof(buf), 0);
-				if (bytesReceived == -1) {
-					std::cerr << "ERROR: Can't receive data from client!" << std::endl;
-				} else if (bytesReceived == 0) {
-					std::cout << "Client disconnected, fd = " << it->fd << std::endl;
-					close(it->fd);
-					it--;
-					_fds.erase(it + 1);
-				} else {
-					std::cout << "Received: " << std::string(buf, 0, bytesReceived) 
-						<< "from : " << it->fd << std::endl;
+				if (it == _fds.begin()) {
+					AUser	*client = new Client(_serverSocket);
+					
+					// Accept the connection
+					
+					try {
+						client->setClientSocket();
+					}
+					catch (const std::exception &e) {
+						std::cerr << RED << e.what() << RESET << std::endl;
+						continue ;
+					}
+
+					// Add the client to the fds array
+					if (_fds.size() == MAX_CLIENTS) {
+						std::cerr << "ERROR: Too many clients!" << std::endl;
+						close(client->getClientSocket());
+					} else {
+						pollfd	client_fd;
+						client_fd.fd = client->getClientSocket();
+						client_fd.events = POLLIN;
+						new_fds.push_back(client_fd);
+						std::cout << "New client connected, fd = " << client->getClientSocket() << std::endl;
+					}
+					std::cout << YELLOW << "Server got connection from " << client->getInet() << RESET << std::endl;
+				}
+				else
+				{
+					char buf[4096];
+					memset(buf, 0, sizeof(buf));
+					int bytesReceived = recv(it->fd, buf, sizeof(buf), 0);
+					if (bytesReceived == -1) {
+						std::cerr << "ERROR: Can't receive data from client!" << std::endl;
+					} else if (bytesReceived == 0) {
+						std::cout << "Client disconnected, fd = " << it->fd << std::endl;
+						close(it->fd);
+						it--;
+						_fds.erase(it + 1);
+					} else {
+						std::cout << "Received: " << std::string(buf, 0, bytesReceived) 
+							<< "from : " << it->fd << std::endl;
+					}
 				}
 			}
 		}
+		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}
+	
 }
