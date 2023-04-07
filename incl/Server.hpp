@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 16:33:23 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:15:06 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,29 +21,35 @@
 class Server
 {
 	private:
-
-		Server(void);
-		Server(const Server &src);
-
-		Server				&operator=(const Server &rhs);
-		
 		int					_serverSocket;
 		int					_port;
 		int					_reuse;
 		std::string			_password;
 		std::vector<pollfd>	_fds;
 		std::vector<Client>	_clients;
+		
+		// Constructors
+		Server(void);
+		Server(const Server &src);
+		
+		// Assignment Operator
+		Server	&operator=(const Server &rhs);
 
 	public:
-
-		~Server(void);
+		// Constructors
 		Server(std::string port, std::string password);
 		
+		// Destructors
+		~Server(void);
 
-		int					getServerSocket(void) const;
+		// Getter
+		int		getServerSocket(void) const;
 		
-		void				init(void);
-		void				launch(void);
+		// Setter
+
+		// Public member functions
+		void	init(void);
+		void	launch(void);
 };
 
 #endif

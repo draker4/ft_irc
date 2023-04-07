@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AUser.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:35:01 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 15:58:59 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:05:09 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,10 @@ class Accept : public std::exception
 class	AUser
 {
 	private:
-
-		void				*get_addr(sockaddr *saddr);
+		// Private functions
+		void	*get_addr(sockaddr *saddr);
 
 	protected:
-	
-		AUser(void);
-		AUser(const AUser &src);
-
 		int					_serverSocket;
 		int					_clientSocket;
 		char				_inet[INET6_ADDRSTRLEN];
@@ -43,18 +39,30 @@ class	AUser
 		std::string			_username;
 		sockaddr_storage	_client_addr;
 		socklen_t			_client_addr_size;
-	
+
+		// Constructors
+		AUser(void);
+		AUser(const AUser &src);
+
 	public:
-	
-		virtual ~AUser(void);
+		// Constructors
 		AUser(int serverSocket);
 		
-		AUser				&operator=(const AUser &rhs);
+		// Destructors
+		virtual ~AUser(void);
 		
-		void				setClientSocket(void);
+		// Assignment Operator
+		AUser	&operator=(const AUser &rhs);
 		
-		int					getClientSocket(void) const;
-		char				*getInet(void);
+		// Getter
+		char	*getInet(void);
+		int		getClientSocket(void) const;
+		
+		// Setter
+		void	setClientSocket(void);
+		
+		// Public member functions
+		
 };
 
 #endif

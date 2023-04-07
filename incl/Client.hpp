@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 13:33:16 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 15:20:48 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 17:12:12 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,27 @@
 class Client : public AUser
 {
 	private:
-	
+		// Constructors
 		Client(void);
+		// Private functions
 		
 	public:
 
-		virtual ~Client(void);
+		// Constructors
 		Client(int _serverSocket);
 		Client(const Client &src);
+		
+		// Destructors
+		virtual ~Client(void);
+		
+		// Assignment Operator
+		Client	&operator=(const Client &rhs);
+		
+		// Getter
+		
+		// Setter
+		
+		// Public member functions
 };
 
 #endif
