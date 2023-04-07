@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 18:56:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 19:31:11 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,12 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 	{
 		close(_serverSocket);
 		throw BindError();
+	}
+
+	// Listen for incoming connections
+	if (listen(_serverSocket, SOMAXCONN) == -1) {
+		close(_serverSocket);
+		throw Listen();
 	}
 }
 
@@ -181,24 +187,17 @@ void	Server::receive_data(std::vector<pollfd>::iterator &it)
 
 /* -----------------------  Public member functions  ------------------------ */
 
-void	Server::init(void)
+void	Server::launch(void)
 {
-	// Listen for incoming connections
-	if (listen(_serverSocket, SOMAXCONN) == -1) {
-		close(_serverSocket);
-		throw Listen();
-	}
-
+	
 	pollfd	server_fd;
+
 	server_fd.fd = _serverSocket;
 	server_fd.events = POLLIN;
 	_fds.push_back(server_fd);
-}
 
-void	Server::launch(void)
-{
-	while (serverOpen) {
-		
+	while (serverOpen)
+	{
 		std::vector<pollfd>	new_fds;
 		
 		// Call poll()
@@ -214,6 +213,8 @@ void	Server::launch(void)
 		// Check for incoming data on the client sockets
 		for (it = _fds.begin(); it != _fds.end(); it++)
 		{
+			if (!it->revents)
+				continue ;
 			if (it->revents & POLLIN)
 			{
 				if (it == _fds.begin())
@@ -233,5 +234,4 @@ void	Server::launch(void)
 		}
 		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}
-	
 }

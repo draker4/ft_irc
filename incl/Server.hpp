@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 18:56:06 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 19:05:37 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ class Server
 		// Setter
 
 		// Public member functions
-		void	init(void);
 		void	launch(void);
 };
 

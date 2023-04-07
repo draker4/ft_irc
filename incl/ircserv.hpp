@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/07 16:32:57 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 19:07:06 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,8 @@
 
 enum ErrorNum {
 	SUCCESS,
+	FAILURE,
 	ARG_NB,
-	GETADDRINFO,
-	SOCKET_OPTION,
-	SOCKET_BIND,
-	LISTEN,
 };
 
 class WrongArgs : public std::exception
