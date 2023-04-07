@@ -6,14 +6,14 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 12:57:45 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 13:48:46 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 # define SERVER_HPP
 
-#include "ircServ.hpp"
+#include "ircserv.hpp"
 
 #define MAX_CLIENTS 10
 
@@ -34,7 +34,7 @@ class Server
 		pollfd				_fds[MAX_CLIENTS + 1]; // plus 1 for the listening socket
 		sockaddr_storage	_client_addr;
 		char				inet[INET6_ADDRSTRLEN];
-		
+
 	public:
 
 		~Server(void);

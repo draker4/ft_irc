@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 12:56:20 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 14:28:56 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ extern bool	serverOpen;
 Server::~Server(void)
 {
 	close(_serverSocket);
+	std::cout << YELLOW << "\nServer is shutting down... " << RESET << std::endl;
 }
 
 // constructors
@@ -100,6 +101,7 @@ Server	&Server::operator=(const Server &rhs)
 	_port = rhs._port;
 	_reuse = rhs._reuse;
 	_password = rhs._password;
+	_nbClients = rhs._nbClients;
 	return *this;
 }
 
@@ -136,7 +138,7 @@ void	Server::init(void)
 
 void	Server::launch(void)
 {
-	socklen_t			client_addr_size = sizeof(_client_addr);
+	socklen_t	client_addr_size = sizeof(_client_addr);
 	
 	while (serverOpen) {
 		
@@ -149,6 +151,8 @@ void	Server::launch(void)
 		
 		// Check for incoming connections
 		if (_fds[0].revents & POLLIN) {
+			
+			//Client	client();
 			
 			// Accept the connection
 			if ((_clientSocket = accept(_serverSocket, (sockaddr *)&_client_addr, &client_addr_size)) == -1) {
@@ -171,6 +175,7 @@ void	Server::launch(void)
 			}
 			std::cout << YELLOW << "Server got connection from " << inet << std::endl;
 		}
+		
 		// Check for incoming data on the client sockets
 		for (int i = 1; i <= _nbClients; i++) {
 			if (_fds[i].revents & POLLIN) {

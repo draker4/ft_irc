@@ -6,17 +6,17 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 12:52:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/07 14:27:56 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ircServ.hpp"
+#include "ircserv.hpp"
 
 bool serverOpen = true;
 
 static void	handleSignal(int signal)
 {
-	std::cout << YELLOW << "\nServer is shutting down... " << signal << RESET << std::endl;
+	(void)signal;
 	serverOpen = false;
 }
 
