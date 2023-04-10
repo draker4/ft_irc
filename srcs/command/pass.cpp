@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/10 16:15:26 by bperriol         ###   ########lyon.fr   */
+/*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
+/*   Updated: 2023/04/10 19:06:39 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,17 @@ void pass(Server *server, Message message, int clientSocket)
 {
 	Client *user = server->getUser(clientSocket);
 
-	if (line.find_first_of(" ") == std::string::npos)
-	{
-		std::cout << RED;
-		if (user->getRegistered())
-			std::cout < < < < ERR_NEEDMOREPARAMS << std::endl;
-		return;
-	}
+	if (message.getParameters().empty())
+		//send ERR_NEEDMOREPARAMS
 	if (user->getRegistered())
-	{
-		std::cout << RED << ERR_ALREADYREGISTERED(user->get) << std::endl;
-		return;
-	}
-	user->setPassword();
+		// send ERR_ALREADYREGISTERED
+	
+	std::string	password;
+	size_t		pos = 0;
+	
+	if (message.getParameters().find_first_of(" ") != )
+	//if password not good
+		//send ERR_PASSWDMISMATCH
+	user->setPassword(message.getParameters());
 	// std::cout << BLUE << "PASS command called" << RESET << std::endl;
 }
