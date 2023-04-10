@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/07 15:55:31 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 16:15:23 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define COMMAND_HPP
 
 # include <iostream>
+# include "Server.hpp"
+# include <sstream>
 
 void invite (void);
 void join (void);
@@ -27,7 +29,7 @@ void nick (void);
 void notice (void);
 void oper (void);
 void part (void);
-void pass (void);
+void pass (Server *server, std::string line, int clientSocket);
 void ping (void);
 void privmsg (void);
 void quit (void);

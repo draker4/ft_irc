@@ -26,11 +26,9 @@ HEAD			=	CLient.hpp	\
 					colors.hpp	\
 					command.hpp	\
 					ircserv.hpp	\
-					AUser.hpp	\
 					Server.hpp
 
-SRCS			=	AUser.cpp	\
-					Client.cpp	\
+SRCS			=	Client.cpp	\
 					ircserv.cpp	\
 					Server.cpp
 

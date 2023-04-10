@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/03 08:34:04 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/07 19:07:06 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 15:26:59 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,9 @@
 #include <csignal>
 #include <cstdlib>
 #include <vector>
+#include <map>
 #include "Server.hpp"
+#include "errors.hpp"
 
 enum ErrorNum {
 	SUCCESS,
@@ -67,6 +69,12 @@ class Listen : public std::exception
 {
 	public:
 		virtual const char	*what() const throw() { return "ERROR: Server can't listen!"; }
+};
+
+class Accept : public std::exception
+{
+	public:
+		virtual const char	*what() const throw() { return "ERROR: Server can't accept new client socket!"; }
 };
 
 #endif
