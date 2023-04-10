@@ -32,6 +32,11 @@ class	Message
 	Message(const Message &src);
 	
 	Message	&operator=(const Message &rhs);
+
+	std::string getTags(void) const;
+	std::string getSource(void) const;
+	std::string getCommand(void) const;
+	std::string getParameters(void) const;
 };
 
 #endif

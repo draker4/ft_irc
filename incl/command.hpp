@@ -15,7 +15,7 @@
 
 # include <iostream>
 # include "Server.hpp"
-# include <sstream>
+# include "Message.hpp"
 
 void invite (void);
 void join (void);
@@ -29,7 +29,7 @@ void nick (void);
 void notice (void);
 void oper (void);
 void part (void);
-void pass (Server *server, std::string line, int clientSocket);
+void pass (Server *server, Message message, int clientSocket);
 void ping (void);
 void privmsg (void);
 void quit (void);

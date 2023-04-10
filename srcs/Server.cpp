@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/10 16:12:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/10 17:08:16 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,15 +224,11 @@ void Server::handle_command(std::string msg, int clientSocket)
 		if (!msg[begin_line])
 			break;
 		end_line = msg.find("\r\n", begin_line);
-		std::string line = msg.substr(begin_line, end_line);
-		if (msg.find(" ", begin_line) != std::string::npos)
-			cmd = msg.substr(begin_line, msg.find(" "));
-		else
-			cmd = msg;
-		if (!cmd.compare("PASS"))
-			pass(this, line, clientSocket);
-		else if (!cmd.compare("NICK"))
-			nick(this, line, clientSocket);
+		Message message(msg.substr(begin_line, end_line));
+		if (!message.getCommand().compare("PASS"))
+			pass(this, message, clientSocket);
+		else if (!message.getCommand().compare("NICK"))
+			nick(this, message, clientSocket);
 	}
 }
 

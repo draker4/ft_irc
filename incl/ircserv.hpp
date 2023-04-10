@@ -13,21 +13,22 @@
 #ifndef IRCSERV_HPP
 # define IRCSERV_HPP
 
-#include <iostream>
-#include <unistd.h>
-#include <stdlib.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <string>
-#include <cstring>
-#include "colors.hpp"
-#include <poll.h>
-#include <csignal>
-#include <cstdlib>
-#include <vector>
-#include <map>
-#include "Server.hpp"
-#include "errors.hpp"
+# include <iostream>
+# include <unistd.h>
+# include <stdlib.h>
+# include <netdb.h>
+# include <arpa/inet.h>
+# include <string>
+# include <cstring>
+# include "colors.hpp"
+# include <poll.h>
+# include <csignal>
+# include <cstdlib>
+# include <vector>
+# include <map>
+# include "Server.hpp"
+# include "errors.hpp"
+# include "Message.hpp"
 
 enum ErrorNum {
 	SUCCESS,
