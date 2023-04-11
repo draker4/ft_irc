@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:02:27 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:06:08 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Server
 		typedef std::vector<pollfd>::iterator itVecPollfd;
 		typedef void (*CmdFunction)(const int &, const Message &, Server*);
 		typedef std::map<std::string, CmdFunction> mapCommand;
+		typedef std::map<std::string, CmdFunction>::iterator itMapCommand;
 
 		// Constructors
 		Server(std::string port, std::string password);
