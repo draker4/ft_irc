@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/10 17:08:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:56:32 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 	// std::cout << GREEN << "Server Constructor called "
 	// 	<< RESET << std::endl;
 	if (port.empty() || port.find_first_not_of("0123456789") != std::string::npos || password.empty())
-		throw WrongArgs();
+		throw Server::ServerException("Error: Wrong arg format!");
 	double port_test = strtod(port.c_str(), NULL);
 	if (port_test < 0 || port_test > 65536)
-		throw WrongPort();
+		throw Server::ServerException("Error: Port number should be comprised between 0 and 65536!");
 
 	// set up the server adress struct
 	addrinfo hints, *indexInfo, *serverInfo;
@@ -44,7 +44,7 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 	{
 		std::cerr << RED << gai_strerror(info)
 				  << RESET << std::endl;
-		throw GetAddrInfo();
+		throw Server::ServerException("Error: GetAddrInfo function!");
 	}
 
 	// loop through all the results of getaddrinfo and bin the first possible
@@ -63,7 +63,7 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 		{
 			close(_serverSocket);
 			freeaddrinfo(serverInfo);
-			throw SetSockOpt();
+			throw Server::ServerException("ERROR: Cannot set any option for the server socket!");
 		}
 
 		// Bind the socket to the port
@@ -83,14 +83,14 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 	if (!indexInfo)
 	{
 		close(_serverSocket);
-		throw BindError();
+		throw Server::ServerException("ERROR: Server failed to bind to IP/Port!");
 	}
 
 	// Listen for incoming connections
 	if (listen(_serverSocket, SOMAXCONN) == -1)
 	{
 		close(_serverSocket);
-		throw Listen();
+		throw Server::ServerException("ERROR: Server can't listen!");
 	}
 }
 
@@ -120,9 +120,6 @@ Server::~Server(void)
 	{
 		delete it->second;
 	}
-
-	// delete container of clients
-
 	std::cout << YELLOW << "\nServer is shutting down... " << RESET << std::endl;
 }
 
@@ -148,20 +145,23 @@ int Server::getServerSocket(void) const
 	return _serverSocket;
 }
 
+Client *Server::getUser(int clientSocket)
+{
+	return _clients[clientSocket];
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
 
-void Server::addUser(std::vector<pollfd> &new_fds)
+void Server::_addUser(vecPollfd &new_fds)
 {
 	Client *client = new Client(_serverSocket);
 
 	// Accept the connection
-
-	if (client->setClientSocket())
-	{
+	if (client->setClientSocket()) {
 		delete client;
-		throw Accept();
+		throw Server::ServerException("ERROR: Server can't accept new client socket!");
 	}
 
 	// Add the client to the fds array
@@ -183,7 +183,7 @@ void Server::addUser(std::vector<pollfd> &new_fds)
 	}
 }
 
-void Server::receive_data(std::vector<pollfd>::iterator &it)
+void Server::_receiveData(itVecPollfd &it)
 {
 	char buf[4096];
 
@@ -203,16 +203,17 @@ void Server::receive_data(std::vector<pollfd>::iterator &it)
 	{
 		std::cout << YELLOW << "Server got :" << buf << "from " << it->fd << RESET << std::endl;
 		_clients[it->fd]->addBuffer(std::string(buf, 0, sizeof(buf)));
-		if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos \
-		&& _clients[it->fd]->getBuffer().find_last_of("\r\n") == _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2])
-		{
-			handle_command(_clients[it->fd]->getBuffer(), it->fd);
-			_clients[it->fd]->clearBuffer();
-		}
+		// if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
+		// 	&& _clients[it->fd]->getBuffer().find_last_of("\r\n") 
+		// 	== _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2])
+		// {
+		// 	_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
+		// 	_clients[it->fd]->clearBuffer();
+		// }
 	}
 }
 
-void Server::handle_command(std::string msg, int clientSocket)
+void Server::_handleCommand(std::string msg/*, int clientSocket*/)
 {
 	size_t end_line = -1;
 	size_t begin_line = 0;
@@ -225,10 +226,10 @@ void Server::handle_command(std::string msg, int clientSocket)
 			break;
 		end_line = msg.find("\r\n", begin_line);
 		Message message(msg.substr(begin_line, end_line));
-		if (!message.getCommand().compare("PASS"))
-			pass(this, message, clientSocket);
-		else if (!message.getCommand().compare("NICK"))
-			nick(this, message, clientSocket);
+		// if (!message.getCommand().compare("PASS"))
+		// 	pass(this, message, clientSocket);
+		// else if (!message.getCommand().compare("NICK"))
+		// 	nick(this, message, clientSocket);
 	}
 }
 
@@ -258,7 +259,7 @@ void Server::launch(void)
 		}
 
 		// Check for incoming connections
-		std::vector<pollfd>::iterator it = _fds.begin();
+		itVecPollfd it = _fds.begin();
 
 		// Check for incoming data on the client sockets
 		for (it = _fds.begin(); it != _fds.end(); it++)
@@ -271,7 +272,7 @@ void Server::launch(void)
 				{
 					try
 					{
-						addUser(new_fds);
+						_addUser(new_fds);
 					}
 					catch (const std::exception &e)
 					{
@@ -280,14 +281,10 @@ void Server::launch(void)
 					}
 				}
 				else
-					receive_data(it);
+					_receiveData(it);
 			}
 		}
 		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}
 }
 
-Client *Server::getUser(int clientSocket)
-{
-	return _clients[clientSocket];
-}

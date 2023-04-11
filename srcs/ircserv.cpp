@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ircserv.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/05 16:07:05 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/07 19:07:17 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:52:26 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ircserv.hpp"
+#include "Server.hpp"
 
 bool serverOpen = true;
 
@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 		signal(SIGINT, handleSignal);
 		server.launch();
 	}
-	catch (const std::exception &e) {
+	catch (const Server::ServerException &e) {
 		std::cerr << RED << e.what() << RESET << std::endl;
 		return EXIT_FAILURE;
 	}

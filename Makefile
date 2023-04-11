@@ -25,11 +25,13 @@ DIR_OBJS_D_C	=	.objs_debug/command/
 HEAD			=	CLient.hpp	\
 					colors.hpp	\
 					command.hpp	\
-					ircserv.hpp	\
+					errors.hpp	\
+					Message.hpp	\
 					Server.hpp
 
 SRCS			=	Client.cpp	\
 					ircserv.cpp	\
+					Message.cpp	\
 					Server.cpp
 
 SRCS_C			=	invite.cpp	\

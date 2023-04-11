@@ -3,45 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/10 15:57:28 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:55:32 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "ircserv.hpp"
-#include "Client.hpp"
-#include "command.hpp"
+# include <iostream>
+# include <unistd.h>
+# include <stdlib.h>
+# include <netdb.h>
+# include <arpa/inet.h>
+# include <string>
+# include <cstring>
+# include <poll.h>
+# include <csignal>
+# include <cstdlib>
+# include <vector>
+# include <map>
+# include "colors.hpp"
+# include "errors.hpp"
+# include "Message.hpp"
+# include "Client.hpp"
+# include "command.hpp"
 
 #define MAX_CLIENTS 10
 
+enum ErrorNum {
+	SUCCESS,
+	FAILURE,
+	ARG_NB,
+};
 class Server
 {
-private:
-	int _serverSocket;
-	int _port;
-	int _reuse;
-	std::string _password;
-	std::vector<pollfd> _fds;
-	std::map<int, Client *> _clients;
-
-	// Constructors
-	Server(void);
-	Server(const Server &src);
-
-	// Assignment Operator
-	Server &operator=(const Server &rhs);
-
-	// Private member functions
-	void addUser(std::vector<pollfd> &new_fds);
-	void receive_data(std::vector<pollfd>::iterator &it);
-	void handle_command(std::string msg, int clientSocket);
-
 public:
+	// Types
+	typedef std::map<int, Client *> mapClient;
+	typedef std::map<int, Client *>::iterator itMapClient;
+	typedef std::vector<pollfd> vecPollfd;
+	typedef std::vector<pollfd>::iterator itVecPollfd;
+	typedef void (*CmdFunction)(const int &, \
+				const std::vector<std::string> &, const std::string &, Server*);
+	typedef std::map<std::string, CmdFunction> mapCommand;
+
 	// Constructors
 	Server(std::string port, std::string password);
 
@@ -56,6 +64,39 @@ public:
 
 	// Public member functions
 	void launch(void);
+	
+	// Exceptions
+	class ServerException : public std::exception
+	{
+		private:
+			const char	*_msg;
+		public:
+			ServerException( const char *msg ) : _msg( msg ) {}
+			virtual const char *what() const throw() {
+				return ( _msg );
+			};
+	};
+
+private:
+	int			_serverSocket;
+	int			_port;
+	int 		_reuse;
+	std::string	_password;
+	vecPollfd	_fds;
+	mapClient	_clients;
+	mapCommand	_commands;
+
+	// Constructors
+	Server(void);
+	Server(const Server &src);
+
+	// Assignment Operator
+	Server &operator=(const Server &rhs);
+
+	// Private member functions
+	void _addUser(vecPollfd &new_fds);
+	void _receiveData(itVecPollfd &it);
+	void _handleCommand(std::string msg/*, int clientSocket*/);
 };
 
 #endif
