@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:07:43 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:11:16 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,9 @@ int Server::getServerSocket(void) const
 
 Client *Server::getUser(int clientSocket)
 {
-	return _clients[clientSocket];
+	if (_clients[clientSocket])
+		return _clients[clientSocket];
+	return NULL;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

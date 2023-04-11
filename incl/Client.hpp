@@ -57,6 +57,7 @@ class Client
 		int 		getClientSocket(void) const;
 		bool 		getRegistered(void) const;
 		std::string	getBuffer(void) const;
+		std::string	getNickname(void) const;
 
 		// Setter
 		int 		setClientSocket(void);

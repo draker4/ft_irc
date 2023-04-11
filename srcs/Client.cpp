@@ -82,6 +82,11 @@ std::string	Client::getBuffer(void) const
 	return _buffer;
 }
 
+std::string	Client::getNickname(void) const
+{
+	return _nickname;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 int Client::setClientSocket(void)

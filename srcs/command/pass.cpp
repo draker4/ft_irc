@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/11 16:02:13 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:18:54 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,16 @@
 void pass(const int &clientSocket, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PASS command called" << RESET << std::endl;
-	(void)clientSocket;
-	(void)message;
-	(void)server;
+
 	// std::string replyMsg;
-	// User *user = srv->getUserByFd(fd);
+	Client *client = server->getUser(clientSocket);
+
+	if (!client)
+		return ;
+	if (message.getParameters().empty())
+	{
+		server->sendClient(ERR_NEEDMOREPARAMS(std::string("0"), std::string("PASS")), clientSocket);
+	}
 
 	// if (user != 0)
 	// {
