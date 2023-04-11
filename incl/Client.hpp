@@ -19,6 +19,8 @@
 # include <arpa/inet.h>
 # include "colors.hpp"
 
+# define USERLEN 10
+
 class Client
 {
 	private:
@@ -32,11 +34,11 @@ class Client
 		std::string			_nickname;
 		std::string			_real_name;
 		std::string 		_username;
-		std::string 		_password;
 		std::string			_buffer;
 		sockaddr_storage	_client_addr;
 		socklen_t 			_client_addr_size;
 		bool 				_registered;
+		bool				_password_ok;
 		bool				_deconnect;
 
 		// Constructors
@@ -64,6 +66,10 @@ class Client
 		// Setter
 		int 		setClientSocket(void);
 		void		setDeconnect(bool boolean);
+		void		setPassword(bool boolean);
+		void		setUsername(std::string username);
+		void		setRealName(std::string realname);
+		void		setRegistered(bool boolean);
 
 		// Public member functions
 		void		addBuffer(std::string to_add);

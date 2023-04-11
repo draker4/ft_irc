@@ -22,7 +22,7 @@ Client::Client(void)
 
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), \
 _buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false), \
-_deconnect(false)
+_password_ok(false), _deconnect(false)
 {
 	// std::cout << GREEN << "Client Constructor called "
 	// 	<< RESET << std::endl;
@@ -52,7 +52,7 @@ Client &Client::operator=(const Client &rhs)
 	_nickname = rhs._nickname;
 	_real_name = rhs._nickname;
 	_username = rhs._username;
-	_password = rhs._password;
+	_password_ok = rhs._password_ok;
 	_client_addr = rhs._client_addr;
 	_client_addr_size = rhs._client_addr_size;
 	_serverSocket = rhs._serverSocket;
@@ -111,6 +111,28 @@ int Client::setClientSocket(void)
 void	Client::setDeconnect(bool boolean)
 {
 	_deconnect = boolean;
+}
+
+void	Client::setPassword(bool boolean)
+{
+	_password_ok = boolean;
+}
+
+void	Client::setUsername(std::string username)
+{
+	if (username.length() > USERLEN)
+		username = username.substr(0, 10);
+	_username = username;
+}
+
+void	Client::setRealName(std::string realname)
+{
+	_real_name = realname;
+}
+
+void	Client::setRegistered(bool boolean)
+{
+	_registered = boolean;
 }
 
 /* --------------------------  Private functions  --------------------------- */

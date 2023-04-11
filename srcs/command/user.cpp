@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   user.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:31:02 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 17:20:38 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,21 @@
  */
 void user(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "USER command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	// std::cout << BLUE << "USER command called" << RESET << std::endl;
+	if (message.getParameters().empty() || message.getParameters().front() == "0" \
+		|| message.getParameters().size() != 4) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
+			client->getClientSocket());
+		return ;
+	}
+	else if (client->getRegistered()) {
+		server->sendClient(ERR_ALREADYREGISTERED(client->getNickname()), 
+			client->getClientSocket());
+		return ;
+	}
+	else {
+		client->setUsername(message.getParameters()[0]);
+		client->setRealName(message.getParameters()[3]);
+		client->setRegistered(true);
+	}
 }
