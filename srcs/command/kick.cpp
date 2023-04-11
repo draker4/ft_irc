@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The KICK command can be used to request the forced removal of a user from a channel.
-void kick(const int &clientSocket, const Message &message, Server *server)
+void kick(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "KICK command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

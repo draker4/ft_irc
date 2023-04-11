@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The LIST command is used to get a list of channels along with some information about each channel.
-void list(const int &clientSocket, const Message &message, Server *server)
+void list(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "LIST command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

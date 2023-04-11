@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The TOPIC command is used to change or view the topic of the given channel.
-void topic(const int &clientSocket, const Message &message, Server *server)
+void topic(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "TOPIC command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

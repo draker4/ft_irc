@@ -228,7 +228,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 			itMapCommand 	itCommand = _commands.find(message.getCommand());
 			if (itCommand != _commands.end()) { // execute the command
 				CmdFunction	execCommand = itCommand->second;
-				execCommand(clientSocket, message, this);
+				execCommand(getUser(clientSocket), message, this);
 			} else { // the command is unknown, send something to the client
 				std::cerr << RED << "command not found " << message.getCommand()
 					<< RESET << std::endl;
@@ -241,6 +241,9 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 			}
 		}
 		catch (const Message::ErrorMsgFormat &e) {
+			std::cout << RED << e.what() << RESET << std::endl;
+		}
+		catch (const Server::ServerException &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
 		}
 		begin_line = end_line + 2;

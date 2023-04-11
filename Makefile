@@ -160,7 +160,7 @@ debug				:
 # -----------  Run Commands  --------- #
 
 run					:	all
-						./${NAME}
+						./${NAME} 4242 6262
 
 runl				:	all
 						${LEAKS} ./${NAME} 

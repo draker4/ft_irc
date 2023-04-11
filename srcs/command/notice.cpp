@@ -15,10 +15,10 @@
 // The NOTICE command is used to send notices between users, as well as to send notices
 // to channels. The difference between NOTICE and PRIVMSG is that automatic replies must
 // never be sent in response to a NOTICE message.
-void notice(const int &clientSocket, const Message &message, Server *server)
+void notice(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "NOTICE command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

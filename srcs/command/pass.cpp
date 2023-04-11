@@ -14,17 +14,16 @@
 
 // The PASS command is used to set a ‘connection password’. If set, the password
 // must be set before any attempt to register the connection is made.
-void pass(const int &clientSocket, const Message &message, Server *server)
+void pass(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
-	// std::string replyMsg;
-	Client *client = server->getUser(clientSocket);
-
+	// std::string replyMsg;;
 	if (!client)
 		return ;
 	if (message.getParameters().empty()) {
-		server->sendClient(ERR_NEEDMOREPARAMS(std::string("0"), std::string("PASS")), clientSocket);
+		server->sendClient(ERR_NEEDMOREPARAMS(std::string("0"), std::string("PASS")), 
+			client->getClientSocket());
 	}
 
 	// if (user != 0)

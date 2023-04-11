@@ -16,7 +16,7 @@
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":localhost 421 " + client + " " \
 		+ command + ": Unknown command\r\n") // 421 - Server::_handleCommand
 # define ERR_NEEDMOREPARAMS(client, command) ( ":localhost 461 " + client + " " \
-		+ command + ": Not Enoughhhh parameters\r\n") // 461 - PASS
+		+ command + ": Not Enough parameters\r\n") // 461 - PASS
 # define ERR_ALREADYREGISTERED(client) ( ":localhost 462 " + client \
 		+ ": You may not reregister\r\n") // 462 - PASS
 # define ERR_PASSWDMISMATCH(client) ( ":localhost 464 " + client \

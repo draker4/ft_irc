@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The OPER command is used by a normal user to obtain IRC operator privileges.
-void oper(const int &clientSocket, const Message &message, Server *server)
+void oper(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "OPER command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

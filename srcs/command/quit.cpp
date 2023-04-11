@@ -15,10 +15,10 @@
 // The QUIT command is used to terminate a client’s connection to the server.
 // The server acknowledges this by replying with an ERROR message and closing
 // the connection to the client.
-void quit(const int &clientSocket, const Message &message, Server *server)
+void quit(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "QUIT command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

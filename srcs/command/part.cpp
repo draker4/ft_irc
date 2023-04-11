@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The PART command removes the client from the given channel(s).
-void part(const int &clientSocket, const Message &message, Server *server)
+void part(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PART command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

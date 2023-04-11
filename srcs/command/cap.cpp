@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The INVITE command is used to invite a user to a channel.
-void cap(const int &clientSocket, const Message &message, Server *server)
+void cap(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "CAP command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

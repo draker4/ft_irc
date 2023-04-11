@@ -14,10 +14,10 @@
 
 // The NAMES command is used to view the nicknames joined to a channel and their channel
 // membership prefixes.
-void names(const int &clientSocket, const Message &message, Server *server)
+void names(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "NAMES command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

@@ -15,10 +15,10 @@
 // The KILL command is used to close the connection between a given client and
 // the server they are connected to. KILL is a privileged command and is available
 // only to IRC Operators.
-void kill(const int &clientSocket, const Message &message, Server *server)
+void kill(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "KILL command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

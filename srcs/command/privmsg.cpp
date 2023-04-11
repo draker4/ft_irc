@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The PRIVMSG command is used to send private messages between users, as well as to send messages to channels.
-void privmsg(const int &clientSocket, const Message &message, Server *server)
+void privmsg(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PRIVMSG command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

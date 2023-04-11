@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The MOTD command is used to get the “Message of the Day” of the given server.
-void motd(const int &clientSocket, const Message &message, Server *server)
+void motd(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "MOTD command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

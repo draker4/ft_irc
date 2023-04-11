@@ -14,10 +14,10 @@
 
 // The JOIN command indicates that the client wants to join the given channel(s),
 // each channel using the given key for it.
-void join(const int &clientSocket, const Message &message, Server *server)
+void join(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "JOIN command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

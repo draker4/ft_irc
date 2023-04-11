@@ -13,10 +13,10 @@
 # include "command.hpp"
 
 // The NICK command is used to give the client a nickname or change the previous one.
-void nick(const int &clientSocket, const Message &message, Server *server)
+void nick(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "NICK command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

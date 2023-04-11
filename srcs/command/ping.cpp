@@ -15,10 +15,10 @@
 // The PING command is sent by either clients or servers to check the other side of
 // the connection is still connected and/or to check for connection latency,
 // at the application layer.
-void ping(const int &clientSocket, const Message &message, Server *server)
+void ping(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PING command called" << RESET << std::endl;
-	(void)clientSocket;
+	(void)client;
 	(void)message;
 	(void)server;
 }

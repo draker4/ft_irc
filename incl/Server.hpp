@@ -47,7 +47,7 @@ class Server
 		typedef std::map<int, Client *>::iterator itMapClient;
 		typedef std::vector<pollfd> vecPollfd;
 		typedef std::vector<pollfd>::iterator itVecPollfd;
-		typedef void (*CmdFunction)(const int &, const Message &, Server*);
+		typedef void (*CmdFunction)(Client *, const Message &, Server*);
 		typedef std::map<std::string, CmdFunction> mapCommand;
 		typedef std::map<std::string, CmdFunction>::iterator itMapCommand;
 
