@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:33 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 18:58:30 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
  * 	- dot ('.').
  * 	
  * 	They MUST NOT start with any of the following characters: 
- * 	dollar ('$'), colon (':'), diese (#).
+ * 	dollar ('$'), colon (':'), diese (#), ampersand(&).
  * 	
  * 	Numeric Replies:
  * 
@@ -43,6 +43,28 @@
  * 	[CLIENT] /Nick mike
  * 
  */
+
+bool invalidChar(std::string nickname)
+{
+	if (nickname.find_first_of(" ,*?!@.") != std::string::npos
+		|| nickname[0] == '$' || nickname[0] == ':'
+		|| nickname[0] == '#' || nickname[0] == '&')
+		return (true);
+	return (false);
+}
+
+bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
+{
+	Server::mapClient	clientList = server->getClients();
+	for (Server::itMapClient itClient = clientList.begin();
+		itClient != clientList.end(); itClient++) {
+		if (itClient->second->getClientSocket() != client->getClientSocket()
+			&& itClient->second->getNickname() == nickname)
+			return (true);
+	}
+	return (false);
+}
+
 void nick(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "NICK command called" << RESET << std::endl;
@@ -50,12 +72,14 @@ void nick(Client *client, const Message &message, Server *server)
 		if (message.getParameters().empty()) {
 			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
 			return;
-		} else if (message.getParameters().front() != server->getPassword()) {
-			server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
+		} else if (invalidChar(message.getParameters()[0])) {
+			server->sendClient(ERR_ERRONEUSNICKNAME(message.getParameters()[0]), 
 				client->getClientSocket());
-			//kill client;
+		} else if (isAlreadyUsed(server, client, message.getParameters()[0])) {
+			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
+				client->getClientSocket());
 		} else {
-
+			client->setNickname(message.getParameters()[0]);
 		}
 		
 	}

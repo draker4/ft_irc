@@ -96,6 +96,11 @@ bool	Client::getDeconnect(void) const
 
 /* --------------------------------  Setter  -------------------------------- */
 
+void Client::setNickname(std::string nickname)
+{
+	_nickname = nickname;
+}
+
 int Client::setClientSocket(void)
 {
 	if ((_clientSocket = accept(_serverSocket, (sockaddr *)&_client_addr, &_client_addr_size)) == -1)

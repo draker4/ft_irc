@@ -151,6 +151,11 @@ std::string	Server::getPassword(void) const
 	return _password;
 }
 
+Server::mapClient Server::getClients(void) const
+{
+	return (_clients);
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
