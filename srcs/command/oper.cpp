@@ -12,7 +12,24 @@
 
 # include "command.hpp"
 
-// The OPER command is used by a normal user to obtain IRC operator privileges.
+/**
+ * @brief The OPER command is used by a normal user to obtain IRC operator privileges.
+ * 	Both parameters are required for the command to be successful.
+ *
+ *  Command: OPER
+ *  Parameters: <name> <password>
+ *
+ * Numeric Replies:
+ *
+ * ERR_NEEDMOREPARAMS (461)
+ * ERR_PASSWDMISMATCH (464)
+ * ERR_NOOPERHOST (491)
+ * RPL_YOUREOPER (381)
+ *
+ * Example:
+ *  [CLIENT] OPER foo bar
+ *  [SERVER] ; Attempt to register as an operator using a name of "foo" and the password "bar".
+ */
 void oper(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "OPER command called" << RESET << std::endl;
