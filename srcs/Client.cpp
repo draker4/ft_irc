@@ -21,7 +21,7 @@ Client::Client(void)
 }
 
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), \
-_buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false), \
+_buffer(""), _buffer_send(""), _client_addr_size(sizeof(_client_addr)), _registered(false), \
 _password_ok(false), _deconnect(false)
 {
 	// std::cout << GREEN << "Client Constructor called "
@@ -58,6 +58,7 @@ Client &Client::operator=(const Client &rhs)
 	_serverSocket = rhs._serverSocket;
 	_clientSocket = rhs._clientSocket;
 	_buffer = rhs._buffer;
+	_buffer_send = rhs._buffer_send;
 	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
 	return *this;
 }
@@ -84,6 +85,11 @@ std::string	Client::getBuffer(void) const
 	return _buffer;
 }
 
+std::string	Client::getBufferSend(void) const
+{
+	return _buffer_send;
+}
+
 std::string	Client::getNickname(void) const
 {
 	return _nickname;
@@ -92,6 +98,11 @@ std::string	Client::getNickname(void) const
 bool	Client::getDeconnect(void) const
 {
 	return _deconnect;
+}
+
+bool	Client::getPassword(void) const
+{
+	return _password_ok;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
@@ -156,8 +167,19 @@ void	Client::addBuffer(std::string to_add)
 	_buffer.append(to_add);
 }
 
+void	Client::addBufferSend(std::string to_add)
+{
+	_buffer_send.append(to_add);
+}
+
 void	Client::clearBuffer(void)
 {
 	_buffer.clear();
 	_buffer = "";
+}
+
+void	Client::clearBufferSend(void)
+{
+	_buffer_send.clear();
+	_buffer_send = "";
 }

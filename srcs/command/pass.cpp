@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/11 17:07:36 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 18:16:40 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ void pass(Client *client, const Message &message, Server *server)
 	// std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
 	if (message.getParameters().empty()) {
+		// client->addBufferSend(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")));
+		// std::cout << "add:" << client->getBufferSend() << std::endl;
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
 			client->getClientSocket());
 		return ;

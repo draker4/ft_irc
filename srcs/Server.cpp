@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:46:31 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 18:16:48 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,9 +297,9 @@ void Server::launch(void)
 	server_fd.events = POLLIN;
 	_fds.push_back(server_fd);
 
-	int	test = 0;
+	// int	test = 0;
 
-	while (serverOpen && test++ < 10)
+	while (serverOpen)// && test++ < 10)
 	{
 		std::vector<pollfd> new_fds;
 
@@ -319,7 +319,7 @@ void Server::launch(void)
 		{
 			if (!it->revents)
 				continue;
-			if (it->revents & POLLIN)
+			else if (it->revents & POLLIN)
 			{
 				if (it == _fds.begin())
 				{
@@ -335,6 +335,17 @@ void Server::launch(void)
 				else
 					_receiveData(it);
 			}
+			// else if (it->revents & POLLOUT)
+			// {
+			// 	std::string	to_send = _clients[it->fd]->getBufferSend();
+			// 	std::cout << RED << "HERE" << RESET << std::endl;
+			// 	if (to_send.find_first_of("\r\n") != std::string::npos
+			// 		&& to_send[to_send.length() - 2] == '\r')
+			// 	{
+			// 		sendClient(to_send, it->fd);
+			// 		_clients[it->fd]->clearBufferSend();
+			// 	}
+			// }
 		}
 		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}

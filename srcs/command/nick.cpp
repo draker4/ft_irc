@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 18:58:30 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 17:43:41 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,13 @@ bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 
 void nick(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "NICK command called" << RESET << std::endl;
-	if (client->getRegistered()) {
+	// std::cout << BLUE << "NICK command called" << RESET << std::endl;
+	if (!client->getPassword()) {
+		server->sendClient(ERROR_MESSAGE(std::string(\
+		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
+		client->getClientSocket());
+	}
+	else if (client->getRegistered()) {
 		if (message.getParameters().empty()) {
 			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
 			return;
@@ -81,6 +86,5 @@ void nick(Client *client, const Message &message, Server *server)
 		} else {
 			client->setNickname(message.getParameters()[0]);
 		}
-		
 	}
 }
