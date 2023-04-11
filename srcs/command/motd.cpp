@@ -12,7 +12,25 @@
 
 # include "command.hpp"
 
-// The MOTD command is used to get the “Message of the Day” of the given server.
+/**
+ * @brief The MOTD command is used to get the “Message of the Day” of the given 
+ * server. If <target> is not given, the MOTD of the server the client is 
+ * connected to should be returned.
+ * 
+ *  Syntax : MOTD [<target>]
+ * 
+ *  If the MOTD can be found, one RPL_MOTDSTART numeric is returned, followed by
+ *  one or more RPL_MOTD numeric, then one RPL_ENDOFMOTD numeric.
+ * 
+ * 	If the MOTD does not exist or could not be found, the ERR_NOMOTD numeric is returned.
+ * 
+ *  Numeric replies:
+ *   ERR_NOSUCHSERVER (402)
+ *   ERR_NOMOTD (422)
+ *   RPL_MOTDSTART (375)
+ *   RPL_MOTD (372)
+ *   RPL_ENDOFMOTD (376)
+ */
 void motd(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "MOTD command called" << RESET << std::endl;

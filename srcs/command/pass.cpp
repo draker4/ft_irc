@@ -12,8 +12,20 @@
 
 #include "command.hpp"
 
-// The PASS command is used to set a ‘connection password’. If set, the password
-// must be set before any attempt to register the connection is made.
+/**
+ * @brief The PASS command is used to set a ‘connection password’.
+ * The password supplied must match the one defined in the server configuration.
+ * 	
+ * Syntax: PASS <password>
+ * 
+ * Numeric replies:
+ * 	ERR_NEEDMOREPARAMS (461)
+ * 	ERR_ALREADYREGISTERED (462)
+ * 	ERR_PASSWDMISMATCH (464)
+ * 
+ * Example :
+ *  [CLIENT] /PASS secretpassword
+ */
 void pass(Client *client, const Message &message, Server *server)
 {
 	/**

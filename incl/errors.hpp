@@ -15,6 +15,11 @@
 
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":localhost 421 " + client + " " \
 		+ command + ": Unknown command\r\n") // 421 - Server::_handleCommand
+# define ERR_NONICKNAMEGIVEN ":localhost 431 : No nickname given\r\n" // 431 - NICK
+# define ERR_ERRONEUSNICKNAME(nickname) ( ":localhost 432 " + nickname \
+		+ ": Erroneus nickname\r\n") // 432 - NICK
+# define ERR_NICKNAMEINUSE(nickname) ( ":localhost 433 " + nickname \
+		+ ": Nickname is already in use\r\n") // 433 - NICK
 # define ERR_NEEDMOREPARAMS(client, command) ( ":localhost 461 " + client + " " \
 		+ command + ": Not Enough parameters\r\n") // 461 - PASS
 # define ERR_ALREADYREGISTERED(client) ( ":localhost 462 " + client \

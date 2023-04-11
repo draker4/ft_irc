@@ -12,7 +12,14 @@
 
 # include "command.hpp"
 
-// The INVITE command is used to invite a user to a channel.
+/**
+ * @brief The INVITE command is used to invite a user to a channel. 
+ * 	The parameter <nickname> is the nickname of the person to be invited to the 
+ * 	target channel <channel>.
+ * 
+ * 	Syntax : INVITE <nickname> <channel>
+ * 
+ */
 void invite(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "INVITE command called" << RESET << std::endl;

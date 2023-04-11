@@ -12,7 +12,14 @@
 
 # include "command.hpp"
 
-// The INVITE command is used to invite a user to a channel.
+/**
+ * @brief The CAP command is used to
+ * 	
+ * 	Syntax :
+ * 	CAP <...>
+ * 
+ * 		<...> represents ...
+ */
 void cap(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "CAP command called" << RESET << std::endl;
