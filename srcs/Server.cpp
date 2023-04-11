@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:33:11 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:46:31 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,12 +202,8 @@ void Server::_receiveData(itVecPollfd &it)
 	else if (bytesReceived == 0)
 	{
 		std::cout << "Client disconnected, fd = " << it->fd << std::endl;
-		// it--;
-		// deleteClient(it + 1);
-		close(it->fd);
-		_clients.erase(it->fd);
 		it--;
-		_fds.erase(it + 1);
+		deleteClient(it + 1);
 	}
 	else
 	{
@@ -218,11 +214,11 @@ void Server::_receiveData(itVecPollfd &it)
 		{
 			_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
 			_clients[it->fd]->clearBuffer();
-			// if (_clients[it->fd]->getDeconnect())
-			// {
-			// 	it--;
-			// 	deleteClient(it + 1);
-			// }
+			if (_clients[it->fd]->getDeconnect())
+			{
+				it--;
+				deleteClient(it + 1);
+			}
 		}
 	}
 }
@@ -236,7 +232,6 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 	{
 		end_line = msg.find("\r\n", begin_line);
 		try {
-			std::cout << PURPLE << msg.substr(begin_line, end_line - begin_line) << RESET << std::endl;
 			Message 		message(msg.substr(begin_line, end_line - begin_line));
 			itMapCommand 	itCommand = _commands.find(message.getCommand());
 			if (itCommand != _commands.end()) { // execute the command
@@ -299,7 +294,7 @@ void Server::launch(void)
 
 	int	test = 0;
 
-	while (serverOpen && test++ < 5)
+	while (serverOpen && test++ < 10)
 	{
 		std::vector<pollfd> new_fds;
 
@@ -357,6 +352,6 @@ void	Server::deleteClient(itVecPollfd it)
 {
 	close(it->fd);
 	delete _getClient(it->fd);
-	_fds.erase(it);
 	_clients.erase(it->fd);
+	_fds.erase(it);
 }
