@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:55:32 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 13:25:10 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,65 +38,67 @@ enum ErrorNum {
 	FAILURE,
 	ARG_NB,
 };
+
 class Server
 {
-public:
-	// Types
-	typedef std::map<int, Client *> mapClient;
-	typedef std::map<int, Client *>::iterator itMapClient;
-	typedef std::vector<pollfd> vecPollfd;
-	typedef std::vector<pollfd>::iterator itVecPollfd;
-	typedef void (*CmdFunction)(const int &, \
-				const std::vector<std::string> &, const std::string &, Server*);
-	typedef std::map<std::string, CmdFunction> mapCommand;
+	public:
+		// Types
+		typedef std::map<int, Client *> mapClient;
+		typedef std::map<int, Client *>::iterator itMapClient;
+		typedef std::vector<pollfd> vecPollfd;
+		typedef std::vector<pollfd>::iterator itVecPollfd;
+		typedef void (*CmdFunction)(const int &, \
+					const std::vector<std::string> &, const std::string &, Server*);
+		typedef std::map<std::string, CmdFunction> mapCommand;
 
-	// Constructors
-	Server(std::string port, std::string password);
+		// Constructors
+		Server(std::string port, std::string password);
 
-	// Destructors
-	~Server(void);
+		// Destructors
+		~Server(void);
 
-	// Getter
-	int getServerSocket(void) const;
-	Client *getUser(int clientSocket);
+		// Getter
+		int		getServerSocket(void) const;
+		Client *getUser(int clientSocket);
 
-	// Setter
+		// Setter
 
-	// Public member functions
-	void launch(void);
+		// Public member functions
+		void	launch(void);
+		void	sendClient(const std::string &msg, const int &clientSocket) const;
 	
-	// Exceptions
-	class ServerException : public std::exception
-	{
-		private:
-			const char	*_msg;
-		public:
-			ServerException( const char *msg ) : _msg( msg ) {}
-			virtual const char *what() const throw() {
-				return ( _msg );
-			};
-	};
+		// Exceptions
+		class ServerException : public std::exception
+		{
+			private:
+				const char	*_msg;
+			public:
+				ServerException( const char *msg ) : _msg( msg ) {}
+				virtual const char *what() const throw() {
+					return ( _msg );
+				};
+		};
 
-private:
-	int			_serverSocket;
-	int			_port;
-	int 		_reuse;
-	std::string	_password;
-	vecPollfd	_fds;
-	mapClient	_clients;
-	mapCommand	_commands;
+	private:
+		int			_serverSocket;
+		int			_port;
+		int 		_reuse;
+		std::string	_password;
+		vecPollfd	_fds;
+		mapClient	_clients;
+		mapCommand	_commands;
 
-	// Constructors
-	Server(void);
-	Server(const Server &src);
+		// Constructors
+		Server(void);
+		Server(const Server &src);
 
-	// Assignment Operator
-	Server &operator=(const Server &rhs);
+		// Assignment Operator
+		Server &operator=(const Server &rhs);
 
-	// Private member functions
-	void _addUser(vecPollfd &new_fds);
-	void _receiveData(itVecPollfd &it);
-	void _handleCommand(std::string msg/*, int clientSocket*/);
+		// Private member functions
+		void _addUser(vecPollfd &new_fds);
+		void _receiveData(itVecPollfd &it);
+		void _handleCommand(std::string msg, int clientSocket);
 };
 
 #endif
