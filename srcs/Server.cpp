@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:11:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:29:22 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,61 +223,26 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 	{
 		end_line = msg.find("\r\n", begin_line);
 		try {
-			Message message(msg.substr(begin_line, end_line));
-			if (message.getCommand() == "PASS")
-				pass(clientSocket, message, this);
+			Message 		message(msg.substr(begin_line, end_line));
+			itMapCommand 	itCommand = _commands.find(message.getCommand());
+			if (itCommand != _commands.end()) { // execute the command
+				CmdFunction	execCommand = itCommand->second;
+				execCommand(clientSocket, message, this);
+			} else { // the command is unknown, send something to the client
+				std::cerr << RED << "command not found" << RESET << std::endl;
+				// try { 
+				// 	this->sendClient(fd, numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));
+				// } catch (Server::invalidFdException &e) {
+				// 	printError(e.what(), 1, false);
+				// }
+			}
 		}
-		catch (const std::exception &e) {
+		catch (const Message::ErrorMsgFormat &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
 		}
 		begin_line = end_line + 2;
-		
-		// if (!message.getCommand().compare("PASS"))
-		// 	pass(this, message, clientSocket);
-		// else if (!message.getCommand().compare("NICK"))
-		// 	nick(this, message, clientSocket);
 	}
 }
-
-// void    Server::_executeCommands(const int fd, std::vector<Command> cmds)
-// {
-//     std::vector<Command>::iterator                  it;
-//     std::map<std::string, CmdFunction>::iterator    it_cmd;
-//     std::string                                     result;
-//     CmdFunction                                     exec_command;
-//     std::string                                     reply_str;
-//     User                                            *user;
-
-//     // for each command in the message
-//     for (it = cmds.begin(); it < cmds.end(); ++it)
-//     {
-//         // search if it is in the known commands list of the server
-// 		std::transform(it->command.begin(), it->command.end(),
-// 				it->command.begin(), ::toupper);
-// 		it_cmd = this->_cmdList.find(it->command);
-//         if (it_cmd != this->_cmdList.end())
-//         {
-//             // execute the command
-//             exec_command = it_cmd->second;
-// 			user = this->getUserByFd(fd);
-// 			// update client timers
-// 			user->setLastActivityTime();
-//             if (user->getAuthenticated() || isAuthenticationCmd(it_cmd->first)){
-// 				try { exec_command(fd, it->params, it->prefix, this); }
-// 				// send exception
-// 				catch (Server::invalidFdException &e)
-// 				{ printError(e.what(), 1, false); }
-// 			}
-//         }
-//         else // the command is unknown, send something to the client
-//         {
-//             try { this->sendClient(fd, 
-//                numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));}
-//             catch (Server::invalidFdException &e)
-//             { printError(e.what(), 1, false); }
-//         }
-//     }
-// }
 
 void Server::_initCommands(void)
 {
