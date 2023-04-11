@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 15:52:36 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:02:46 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,6 +229,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 		catch (const std::exception &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
 		}
+		
 		// if (!message.getCommand().compare("PASS"))
 		// 	pass(this, message, clientSocket);
 		// else if (!message.getCommand().compare("NICK"))

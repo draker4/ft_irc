@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 15:38:41 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:02:13 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // The USER command is used at the beginning of a connection to specify the username
 // and realname of a new user.
-void user(const int &clientSocket, Message *message, Server *server)
+void user(const int &clientSocket, const Message &message, Server *server)
 {
 	// std::cout << BLUE << "USER command called" << RESET << std::endl;
 	(void)clientSocket;
