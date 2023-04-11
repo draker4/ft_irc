@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:29:22 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:31:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 		close(_serverSocket);
 		throw Server::ServerException("ERROR: Server can't listen!");
 	}
+	_initCommands();
 }
 
 Server::Server(const Server &src)
