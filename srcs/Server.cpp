@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 15:52:36 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:01:02 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,8 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 		end_line = msg.find("\r\n", begin_line);
 		try {
 			Message message(msg.substr(begin_line, end_line));
+			if (message.getCommand() == "PASS")
+				pass(clientSocket, message, this);
 		}
 		catch (const std::exception &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
