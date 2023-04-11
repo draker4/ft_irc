@@ -60,6 +60,7 @@ class Server
 		// Getter
 		int			getServerSocket(void) const;
 		std::string	getPassword(void) const;
+		mapClient	getClient(void) const;
 
 		// Setter
 

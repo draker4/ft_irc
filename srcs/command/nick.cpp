@@ -30,7 +30,7 @@
  * 	- dot ('.').
  * 	
  * 	They MUST NOT start with any of the following characters: 
- * 	dollar ('$'), colon (':'), diese (#).
+ * 	dollar ('$'), colon (':'), diese (#), ampersand(&).
  * 	
  * 	Numeric Replies:
  * 
@@ -43,6 +43,31 @@
  * 	[CLIENT] /Nick mike
  * 
  */
+
+bool invalidChar(std::string nickname)
+{
+	if (nickname.find_first_of(" ,*?!@.") != std::string::npos
+		|| nickname[0] == '$' || nickname[0] == ':'
+		|| nickname[0] == '#' || nickname[0] == '&')
+		return (true);
+	return (false);
+}
+
+bool	isAlreadyUsed(Server *server, Client *client, std::string new_nickname)
+{
+	Server::mapClient	clientList	= server->getClients();
+	Server::itMapClient	client		= client_list.begin();
+
+	while (client != client_list.end())
+	{
+		if (client->second.getClientFd() != client_fd \
+			&& client->second.getNickname() == new_nickname)
+			return (true);
+		client++;
+	}
+	return (false);
+}
+
 void nick(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "NICK command called" << RESET << std::endl;
@@ -50,12 +75,13 @@ void nick(Client *client, const Message &message, Server *server)
 		if (message.getParameters().empty()) {
 			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
 			return;
-		} else if (message.getParameters().front() != server->getPassword()) {
-			server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
+		} else if (invalidChar(message.getParameters()[0])) {
+			server->sendClient(ERR_ERRONEUSNICKNAME(message.getParameters()[0]), 
 				client->getClientSocket());
-			//kill client;
+		} else if () {
+		
 		} else {
-
+			;
 		}
 		
 	}
