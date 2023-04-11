@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:05:56 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 14:07:43 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,13 +215,10 @@ void Server::_receiveData(itVecPollfd &it)
 void Server::_handleCommand(std::string msg, int clientSocket)
 {
 	size_t end_line = -2;
-	size_t begin_line;
-	(void)clientSocket;
-	while (true)
+	size_t begin_line = 0;
+
+	while (msg[begin_line])
 	{
-		begin_line = end_line + 2;
-		if (!msg[begin_line])
-			break;
 		end_line = msg.find("\r\n", begin_line);
 		try {
 			Message message(msg.substr(begin_line, end_line));
@@ -231,6 +228,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 		catch (const std::exception &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
 		}
+		begin_line = end_line + 2;
 		
 		// if (!message.getCommand().compare("PASS"))
 		// 	pass(this, message, clientSocket);
@@ -271,7 +269,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 //         }
 //         else // the command is unknown, send something to the client
 //         {
-//             try { this->sendClient(fd, \
+//             try { this->sendClient(fd, 
 //                numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));}
 //             catch (Server::invalidFdException &e)
 //             { printError(e.what(), 1, false); }
