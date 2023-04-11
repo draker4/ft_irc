@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/11 16:38:03 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:36:45 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,17 @@ void pass(Client *client, const Message &message, Server *server)
 {
 	std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
-	// std::string replyMsg;;
-	if (!client)
-		return ;
 	if (message.getParameters().empty()) {
-		server->sendClient(ERR_NEEDMOREPARAMS(std::string("0"), std::string("PASS")), 
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
 			client->getClientSocket());
+		return ;
 	}
-
+	else if (message.getParameters().front() != server->getPassword()) {
+		server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
+			client->getClientSocket());
+		//kill client;
+		return ;
+	}
 	// if (user != 0)
 	// {
 	// 	if (params.empty() || params[0].empty()) {

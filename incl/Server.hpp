@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:06:08 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:18:17 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,14 +58,14 @@ class Server
 		~Server(void);
 
 		// Getter
-		int		getServerSocket(void) const;
-		Client	*getUser(int clientSocket);
+		int			getServerSocket(void) const;
+		std::string	getPassword(void) const;
 
 		// Setter
 
 		// Public member functions
-		void	launch(void);
-		void	sendClient(const std::string &msg, const int &clientSocket) const;
+		void		launch(void);
+		void		sendClient(const std::string &msg, const int &clientSocket) const;
 	
 		// Exceptions
 		class ServerException : public std::exception
@@ -100,6 +100,7 @@ class Server
 		void	_receiveData(itVecPollfd &it);
 		void	_handleCommand(std::string msg, int clientSocket);
 		void	_initCommands(void);
+		Client	*_getClient(int clientSocket);
 };
 
 #endif

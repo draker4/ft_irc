@@ -20,7 +20,7 @@ Client::Client(void)
 	// 	<< RESET << std::endl;
 }
 
-Client::Client(int serverSocket) : _serverSocket(serverSocket), _buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false)
+Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), _buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false)
 {
 	// std::cout << GREEN << "Client Constructor called "
 	// 	<< RESET << std::endl;

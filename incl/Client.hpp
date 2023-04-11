@@ -26,17 +26,17 @@ class Client
 		void *get_addr(sockaddr *saddr);
 
 	protected:
-		int _serverSocket;
-		int _clientSocket;
-		char _inet[INET6_ADDRSTRLEN];
-		std::string _nickname;
-		std::string _real_name;
-		std::string _username;
-		std::string _password;
-		std::string	_buffer;
-		sockaddr_storage _client_addr;
-		socklen_t _client_addr_size;
-		bool _registered;
+		int 				_serverSocket;
+		int					_clientSocket;
+		char 				_inet[INET6_ADDRSTRLEN];
+		std::string			_nickname;
+		std::string			_real_name;
+		std::string 		_username;
+		std::string 		_password;
+		std::string			_buffer;
+		sockaddr_storage	_client_addr;
+		socklen_t 			_client_addr_size;
+		bool 				_registered;
 
 		// Constructors
 		Client(void);
