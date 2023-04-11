@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 15:49:14 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:52:36 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void Server::_addUser(vecPollfd &new_fds)
 		new_fds.push_back(client_fd);
 		_clients[client_fd.fd] = client;
 		std::cout << "New client connected, fd = " << client_fd.fd << std::endl;
-		std::cout << YELLOW << "Server got connection from " << client->getInet() << RESET << std::endl;
+		std::cout << GREEN << "Server got connection from " << client->getInet() << RESET << std::endl;
 	}
 }
 
@@ -203,29 +203,32 @@ void Server::_receiveData(itVecPollfd &it)
 	{
 		std::cout << YELLOW << "Server got :" << buf << "from " << it->fd << RESET << std::endl;
 		_clients[it->fd]->addBuffer(std::string(buf, 0, sizeof(buf)));
-		// if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
-		// 	&& _clients[it->fd]->getBuffer().find_last_of("\r\n") 
-		// 	== _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2])
-		// {
-		// 	_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
-		// 	_clients[it->fd]->clearBuffer();
-		// }
+		if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
+			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r')
+		{
+			_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
+			_clients[it->fd]->clearBuffer();
+		}
 	}
 }
 
-void Server::_handleCommand(std::string msg/*, int clientSocket*/)
+void Server::_handleCommand(std::string msg, int clientSocket)
 {
-	size_t end_line = -1;
-	size_t begin_line = 0;
-	std::string cmd;
-
+	size_t end_line = -2;
+	size_t begin_line;
+	(void)clientSocket;
 	while (true)
 	{
-		begin_line = end_line + 1;
+		begin_line = end_line + 2;
 		if (!msg[begin_line])
 			break;
 		end_line = msg.find("\r\n", begin_line);
-		Message message(msg.substr(begin_line, end_line));
+		try {
+			Message message(msg.substr(begin_line, end_line));
+		}
+		catch (const std::exception &e) {
+			std::cout << RED << e.what() << RESET << std::endl;
+		}
 		// if (!message.getCommand().compare("PASS"))
 		// 	pass(this, message, clientSocket);
 		// else if (!message.getCommand().compare("NICK"))
@@ -350,3 +353,15 @@ void Server::launch(void)
 	}
 }
 
+void	Server::sendClient(const std::string &msg, const int &clientSocket) const
+{
+	size_t	bytes_sent = 0;
+
+	while (bytes_sent < msg.length())
+	{
+		const int	len = send(clientSocket, &(msg.c_str())[bytes_sent], msg.length() - bytes_sent, 0);
+		if (len < 0)
+			throw ServerException("Error: Server can't send all bytes!");
+		bytes_sent += len;
+	}
+}
