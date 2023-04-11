@@ -37,6 +37,7 @@ class Client
 		sockaddr_storage	_client_addr;
 		socklen_t 			_client_addr_size;
 		bool 				_registered;
+		bool				_deconnect;
 
 		// Constructors
 		Client(void);
@@ -56,11 +57,13 @@ class Client
 		char 		*getInet(void);
 		int 		getClientSocket(void) const;
 		bool 		getRegistered(void) const;
+		bool		getDeconnect(void) const;
 		std::string	getBuffer(void) const;
 		std::string	getNickname(void) const;
 
 		// Setter
 		int 		setClientSocket(void);
+		void		setDeconnect(bool boolean);
 
 		// Public member functions
 		void		addBuffer(std::string to_add);
