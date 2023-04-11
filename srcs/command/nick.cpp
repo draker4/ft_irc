@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:33 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 18:58:30 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,17 +53,14 @@ bool invalidChar(std::string nickname)
 	return (false);
 }
 
-bool	isAlreadyUsed(Server *server, Client *client, std::string new_nickname)
+bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 {
-	Server::mapClient	clientList	= server->getClients();
-	Server::itMapClient	client		= client_list.begin();
-
-	while (client != client_list.end())
-	{
-		if (client->second.getClientFd() != client_fd \
-			&& client->second.getNickname() == new_nickname)
+	Server::mapClient	clientList = server->getClients();
+	for (Server::itMapClient itClient = clientList.begin();
+		itClient != clientList.end(); itClient++) {
+		if (itClient->second->getClientSocket() != client->getClientSocket()
+			&& itClient->second->getNickname() == nickname)
 			return (true);
-		client++;
 	}
 	return (false);
 }
@@ -78,10 +75,11 @@ void nick(Client *client, const Message &message, Server *server)
 		} else if (invalidChar(message.getParameters()[0])) {
 			server->sendClient(ERR_ERRONEUSNICKNAME(message.getParameters()[0]), 
 				client->getClientSocket());
-		} else if () {
-		
+		} else if (isAlreadyUsed(server, client, message.getParameters()[0])) {
+			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
+				client->getClientSocket());
 		} else {
-			;
+			client->setNickname(message.getParameters()[0]);
 		}
 		
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:02:48 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 18:53:10 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ class Server
 		// Getter
 		int			getServerSocket(void) const;
 		std::string	getPassword(void) const;
-		mapClient	getClient(void) const;
+		mapClient	getClients(void) const;
 
 		// Setter
 

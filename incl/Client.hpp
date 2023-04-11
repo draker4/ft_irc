@@ -62,6 +62,7 @@ class Client
 		std::string	getNickname(void) const;
 
 		// Setter
+		void 		setNickname(std::string nickname);
 		int 		setClientSocket(void);
 		void		setDeconnect(bool boolean);
 
