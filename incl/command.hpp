@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:02:13 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:31:14 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 class Server;
 
+void	cap(const int &clientSocket, const Message &message, Server *server);
 void	invite(const int &clientSocket, const Message &message, Server *server);
 void	join(const int &clientSocket, const Message &message, Server *server);
 void	kick(const int &clientSocket, const Message &message, Server *server);

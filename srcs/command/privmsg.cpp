@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:02:13 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:30:52 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // The PRIVMSG command is used to send private messages between users, as well as to send messages to channels.
 void privmsg(const int &clientSocket, const Message &message, Server *server)
 {
-	// std::cout << BLUE << "PRIVMSG command called" << RESET << std::endl;
+	std::cout << BLUE << "PRIVMSG command called" << RESET << std::endl;
 	(void)clientSocket;
 	(void)message;
 	(void)server;

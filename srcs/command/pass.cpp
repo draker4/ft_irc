@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pass.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/11 14:18:54 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:38:03 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,7 @@ void pass(const int &clientSocket, const Message &message, Server *server)
 
 	if (!client)
 		return ;
-	if (message.getParameters().empty())
-	{
+	if (message.getParameters().empty()) {
 		server->sendClient(ERR_NEEDMOREPARAMS(std::string("0"), std::string("PASS")), clientSocket);
 	}
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:31:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:35:03 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,9 +230,11 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 				CmdFunction	execCommand = itCommand->second;
 				execCommand(clientSocket, message, this);
 			} else { // the command is unknown, send something to the client
-				std::cerr << RED << "command not found" << RESET << std::endl;
+				std::cerr << RED << "command not found " << message.getCommand()
+					<< RESET << std::endl;
+				sendClient(ERR_UNKNOWNCOMMAND(std::string("0"), message.getCommand()), clientSocket);
 				// try { 
-				// 	this->sendClient(fd, numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));
+					
 				// } catch (Server::invalidFdException &e) {
 				// 	printError(e.what(), 1, false);
 				// }
@@ -247,6 +249,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 
 void Server::_initCommands(void)
 {
+	_commands["CAP"] = &cap;
 	_commands["INVITE"] = &invite;
 	_commands["JOIN"] = &join;
 	_commands["KICK"] = &kick;

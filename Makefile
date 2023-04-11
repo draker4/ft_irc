@@ -1,7 +1,7 @@
 # ***********************  FT_IRC MAKEFILE  ************************ #
 
 .PHONY			:	all clean fclean re bonus debug run runl runs rund
-SHOWRULES		=	TRUE
+SHOWRULES		=	FALSE
 
 # **************************  VARIABLES  *************************** #
 
@@ -34,7 +34,8 @@ SRCS			=	Client.cpp	\
 					Message.cpp	\
 					Server.cpp
 
-SRCS_C			=	invite.cpp	\
+SRCS_C			=	cap.cpp		\
+					invite.cpp	\
 					join.cpp	\
 					kick.cpp	\
 					kill.cpp	\
