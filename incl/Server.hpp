@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:55:32 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:19:10 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@ public:
 	typedef std::map<int, Client *>::iterator itMapClient;
 	typedef std::vector<pollfd> vecPollfd;
 	typedef std::vector<pollfd>::iterator itVecPollfd;
-	typedef void (*CmdFunction)(const int &, \
-				const std::vector<std::string> &, const std::string &, Server*);
+	typedef void (*CmdFunction)(const int &, Message *, Server*);
 	typedef std::map<std::string, CmdFunction> mapCommand;
 
 	// Constructors
@@ -57,13 +56,13 @@ public:
 	~Server(void);
 
 	// Getter
-	int getServerSocket(void) const;
-	Client *getUser(int clientSocket);
+	int		getServerSocket(void) const;
+	Client	*getUser(int clientSocket);
 
 	// Setter
 
 	// Public member functions
-	void launch(void);
+	void	launch(void);
 	
 	// Exceptions
 	class ServerException : public std::exception
@@ -94,9 +93,10 @@ private:
 	Server &operator=(const Server &rhs);
 
 	// Private member functions
-	void _addUser(vecPollfd &new_fds);
-	void _receiveData(itVecPollfd &it);
-	void _handleCommand(std::string msg/*, int clientSocket*/);
+	void	_addUser(vecPollfd &new_fds);
+	void	_receiveData(itVecPollfd &it);
+	void	_handleCommand(std::string msg/*, int clientSocket*/);
+	void	_initCommands(void);
 };
 
 #endif

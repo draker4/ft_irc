@@ -1,7 +1,7 @@
 # ***********************  FT_IRC MAKEFILE  ************************ #
 
 .PHONY			:	all clean fclean re bonus debug run runl runs rund
-SHOWRULES		=	FALSE
+SHOWRULES		=	TRUE
 
 # **************************  VARIABLES  *************************** #
 
@@ -22,7 +22,7 @@ DIR_OBJS_D_C	=	.objs_debug/command/
 
 # -------------  Files  -------------- #
 
-HEAD			=	CLient.hpp	\
+HEAD			=	Client.hpp	\
 					colors.hpp	\
 					command.hpp	\
 					errors.hpp	\
@@ -81,14 +81,6 @@ LEAKS			=	leaks -atExit --
 LLDB			=	lldb
 CP				=	cp
 VALGRIND		=	valgrind
-
-# -------------  Colors  ------------- #
-
-CCRESET			=	echo -e "\033[0;30m"
-CCRED			=	$(shell echo "\033[0;31m")
-CCGREEN			=	$(shell echo "\033[0;32m")
-CCYELLOW		=	$(shell echo "\033[0;33m")
-CCBLUE			=	$(shell echo "\033[0;34m")
 
 ifeq ($(SHOWRULES),TRUE)
 	HIDE = 

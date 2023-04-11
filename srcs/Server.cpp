@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:56:32 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:49:14 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -231,6 +231,68 @@ void Server::_handleCommand(std::string msg/*, int clientSocket*/)
 		// else if (!message.getCommand().compare("NICK"))
 		// 	nick(this, message, clientSocket);
 	}
+}
+
+// void    Server::_executeCommands(const int fd, std::vector<Command> cmds)
+// {
+//     std::vector<Command>::iterator                  it;
+//     std::map<std::string, CmdFunction>::iterator    it_cmd;
+//     std::string                                     result;
+//     CmdFunction                                     exec_command;
+//     std::string                                     reply_str;
+//     User                                            *user;
+
+//     // for each command in the message
+//     for (it = cmds.begin(); it < cmds.end(); ++it)
+//     {
+//         // search if it is in the known commands list of the server
+// 		std::transform(it->command.begin(), it->command.end(),
+// 				it->command.begin(), ::toupper);
+// 		it_cmd = this->_cmdList.find(it->command);
+//         if (it_cmd != this->_cmdList.end())
+//         {
+//             // execute the command
+//             exec_command = it_cmd->second;
+// 			user = this->getUserByFd(fd);
+// 			// update client timers
+// 			user->setLastActivityTime();
+//             if (user->getAuthenticated() || isAuthenticationCmd(it_cmd->first)){
+// 				try { exec_command(fd, it->params, it->prefix, this); }
+// 				// send exception
+// 				catch (Server::invalidFdException &e)
+// 				{ printError(e.what(), 1, false); }
+// 			}
+//         }
+//         else // the command is unknown, send something to the client
+//         {
+//             try { this->sendClient(fd, \
+//                numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));}
+//             catch (Server::invalidFdException &e)
+//             { printError(e.what(), 1, false); }
+//         }
+//     }
+// }
+
+void Server::_initCommands(void)
+{
+	_commands["INVITE"] = &invite;
+	_commands["JOIN"] = &join;
+	_commands["KICK"] = &kick;
+	_commands["KILL"] = &kill;
+	_commands["LIST"] = &list;
+	_commands["MODE"] = &mode;
+	_commands["MOTD"] = &motd;
+	_commands["NAMES"] = &names;
+	_commands["NICK"] = &nick;
+	_commands["NOTICE"] = &notice;
+	_commands["OPER"] = &oper;
+	_commands["PART"] = &part;
+	_commands["PASS"] = &pass;
+	_commands["PING"] = &ping;
+	_commands["PRIVMSG"] = &privmsg;
+	_commands["QUIT"] = &quit;
+	_commands["TOPIC"] = &topic;
+	_commands["USER"] = &user;
 }
 
 /* -----------------------  Public member functions  ------------------------ */
