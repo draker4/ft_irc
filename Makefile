@@ -81,7 +81,7 @@ MKDIR			=	mkdir -p
 LEAKS			=	leaks -atExit --
 LLDB			=	lldb
 CP				=	cp
-VALGRIND		=	valgrind
+VALGRIND		=	valgrind --leak-check=full
 
 ifeq ($(SHOWRULES),TRUE)
 	HIDE = 
@@ -172,4 +172,4 @@ rund				:	debug
 						${LLDB} ./${DEBUG}
 
 runv				:	all
-						${VALGRIND} ./${NAME}
+						${VALGRIND} ./${NAME} 4242 6262

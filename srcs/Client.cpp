@@ -20,7 +20,9 @@ Client::Client(void)
 	// 	<< RESET << std::endl;
 }
 
-Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), _buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false)
+Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), \
+_buffer(""), _client_addr_size(sizeof(_client_addr)), _registered(false), \
+_deconnect(false)
 {
 	// std::cout << GREEN << "Client Constructor called "
 	// 	<< RESET << std::endl;
@@ -87,6 +89,11 @@ std::string	Client::getNickname(void) const
 	return _nickname;
 }
 
+bool	Client::getDeconnect(void) const
+{
+	return _deconnect;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 int Client::setClientSocket(void)
@@ -99,6 +106,11 @@ int Client::setClientSocket(void)
 	// get ipv4 or ipv6 address from client
 	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
 	return EXIT_SUCCESS;
+}
+
+void	Client::setDeconnect(bool boolean)
+{
+	_deconnect = boolean;
 }
 
 /* --------------------------  Private functions  --------------------------- */

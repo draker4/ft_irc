@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 15:19:02 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:46:31 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,10 +207,8 @@ void Server::_receiveData(itVecPollfd &it)
 	else if (bytesReceived == 0)
 	{
 		std::cout << "Client disconnected, fd = " << it->fd << std::endl;
-		close(it->fd);
-		_clients.erase(it->fd);
 		it--;
-		_fds.erase(it + 1);
+		deleteClient(it + 1);
 	}
 	else
 	{
@@ -221,6 +219,11 @@ void Server::_receiveData(itVecPollfd &it)
 		{
 			_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
 			_clients[it->fd]->clearBuffer();
+			if (_clients[it->fd]->getDeconnect())
+			{
+				it--;
+				deleteClient(it + 1);
+			}
 		}
 	}
 }
@@ -234,7 +237,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 	{
 		end_line = msg.find("\r\n", begin_line);
 		try {
-			Message 		message(msg.substr(begin_line, end_line));
+			Message 		message(msg.substr(begin_line, end_line - begin_line));
 			itMapCommand 	itCommand = _commands.find(message.getCommand());
 			if (itCommand != _commands.end()) { // execute the command
 				CmdFunction	execCommand = itCommand->second;
@@ -294,9 +297,9 @@ void Server::launch(void)
 	server_fd.events = POLLIN;
 	_fds.push_back(server_fd);
 
-	// int	test = 0;
+	int	test = 0;
 
-	while (serverOpen) // && test++ < 5)
+	while (serverOpen && test++ < 10)
 	{
 		std::vector<pollfd> new_fds;
 
@@ -327,7 +330,6 @@ void Server::launch(void)
 					catch (const std::exception &e)
 					{
 						std::cerr << RED << e.what() << RESET << std::endl;
-						continue;
 					}
 				}
 				else
@@ -349,4 +351,12 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 			throw ServerException("Error: Server can't send all bytes!");
 		bytes_sent += len;
 	}
+}
+
+void	Server::deleteClient(itVecPollfd it)
+{
+	close(it->fd);
+	delete _getClient(it->fd);
+	_clients.erase(it->fd);
+	_fds.erase(it);
 }

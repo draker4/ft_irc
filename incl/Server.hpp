@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 15:18:17 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:02:48 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Server
 		// Public member functions
 		void		launch(void);
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
+		void		deleteClient(itVecPollfd it);
 	
 		// Exceptions
 		class ServerException : public std::exception

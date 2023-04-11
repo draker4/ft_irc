@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/11 15:36:45 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:25:28 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,21 @@
  */
 void pass(Client *client, const Message &message, Server *server)
 {
+	/**
+	 * @brief The PASS command is used to set a ‘connection password’.
+	 * The password supplied must match the one defined in the server configuration.
+	 * 	
+	 * Syntax: PASS <password>
+	 * 
+	 * Numeric replies:
+	 * 	ERR_NEEDMOREPARAMS (461)
+	 * 	ERR_ALREADYREGISTERED (462)
+	 * 	ERR_PASSWDMISMATCH (464)
+	 * 
+	 * Example :
+	 *  [CLIENT] /PASS secretpassword
+	 */
+	
 	std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
 	if (message.getParameters().empty()) {
@@ -36,11 +51,13 @@ void pass(Client *client, const Message &message, Server *server)
 		return ;
 	}
 	else if (message.getParameters().front() != server->getPassword()) {
+		std::cout << message.getParameters().front() << ": et :" << server->getPassword() << std::endl;
 		server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
 			client->getClientSocket());
-		//kill client;
+		client->setDeconnect(true);
 		return ;
 	}
+	
 	// if (user != 0)
 	// {
 	// 	if (params.empty() || params[0].empty()) {
