@@ -6,7 +6,7 @@
 /*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:07:56 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 16:23:48 by baptiste         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,90 +215,31 @@ void Server::_receiveData(itVecPollfd &it)
 void Server::_handleCommand(std::string msg, int clientSocket)
 {
 	size_t end_line = -2;
-	size_t begin_line;
-	(void)clientSocket;
-	while (true)
+	size_t begin_line = 0;
+
+	while (msg[begin_line])
 	{
-		begin_line = end_line + 2;
-		if (!msg[begin_line])
-			break;
 		end_line = msg.find("\r\n", begin_line);
 		try {
-			Message message(msg.substr(begin_line, end_line));
-			itMapCommand itCommand = _commands.find(message.getCommand());
-			
+			Message 		message(msg.substr(begin_line, end_line));
+			itMapCommand 	itCommand = _commands.find(message.getCommand());
+			if (itCommand != _commands.end()) { // execute the command
+				CmdFunction	execCommand = itCommand->second;
+				execCommand(clientSocket, message, this);
+			} else { // the command is unknown, send something to the client
+				std::cerr << RED << "command not found" << RESET << std::endl;
+				// try { 
+				// 	this->sendClient(fd, numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));
+				// } catch (Server::invalidFdException &e) {
+				// 	printError(e.what(), 1, false);
+				// }
+			}
 		}
-		catch (const std::exception &e) {
+		catch (const Message::ErrorMsgFormat &e) {
 			std::cout << RED << e.what() << RESET << std::endl;
 		}
-		
-		it_cmd = this->_cmdList.find(it->command);
-        if (it_cmd != this->_cmdList.end())
-        {
-            // execute the command
-            exec_command = it_cmd->second;
-			user = this->getUserByFd(fd);
-			// update client timers
-			user->setLastActivityTime();
-            if (user->getAuthenticated() || isAuthenticationCmd(it_cmd->first)){
-				try { exec_command(fd, it->params, it->prefix, this); }
-				// send exception
-				catch (Server::invalidFdException &e)
-				{ printError(e.what(), 1, false); }
-			}
-        }
-        else // the command is unknown, send something to the client
-        {
-            try { this->sendClient(fd, \
-               numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));}
-            catch (Server::invalidFdException &e)
-            { printError(e.what(), 1, false); }
-        }
-		// if (!message.getCommand().compare("PASS"))
-		// 	pass(this, message, clientSocket);
-		// else if (!message.getCommand().compare("NICK"))
-		// 	nick(this, message, clientSocket);
+		begin_line = end_line + 2;
 	}
-}
-
-void    Server::_executeCommands(const int fd, std::vector<Command> cmds)
-{
-    std::vector<Command>::iterator                  it;
-    std::map<std::string, CmdFunction>::iterator    it_cmd;
-    std::string                                     result;
-    CmdFunction                                     exec_command;
-    std::string                                     reply_str;
-    User                                            *user;
-
-    // for each command in the message
-    for (it = cmds.begin(); it < cmds.end(); ++it)
-    {
-        // search if it is in the known commands list of the server
-		std::transform(it->command.begin(), it->command.end(),
-				it->command.begin(), ::toupper);
-		it_cmd = this->_cmdList.find(it->command);
-        if (it_cmd != this->_cmdList.end())
-        {
-            // execute the command
-            exec_command = it_cmd->second;
-			user = this->getUserByFd(fd);
-			// update client timers
-			user->setLastActivityTime();
-            if (user->getAuthenticated() || isAuthenticationCmd(it_cmd->first)){
-				try { exec_command(fd, it->params, it->prefix, this); }
-				// send exception
-				catch (Server::invalidFdException &e)
-				{ printError(e.what(), 1, false); }
-			}
-        }
-        else // the command is unknown, send something to the client
-        {
-            try { this->sendClient(fd, \
-               numericReply(this, fd, "421", ERR_UNKNOWNCOMMAND(it->command)));}
-            catch (Server::invalidFdException &e)
-            { printError(e.what(), 1, false); }
-        }
-    }
 }
 
 void Server::_initCommands(void)
