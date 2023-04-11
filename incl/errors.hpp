@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 14:29:18 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:32:42 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,7 @@
 		+ ": You may not reregister\r\n") // 462 - PASS
 # define ERR_PASSWDMISMATCH(client) ( ":localhost 464 " + client \
 		+ ": Password incorrect\r\n") // 464 - PASS
+# define ERROR_MESSAGE(reason) ( ":localhost ERROR: " \
+		+ reason + "\r\n") // ERROR Message
 
 #endif

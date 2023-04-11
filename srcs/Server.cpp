@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:35:03 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/11 15:19:02 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,16 +146,21 @@ int Server::getServerSocket(void) const
 	return _serverSocket;
 }
 
-Client *Server::getUser(int clientSocket)
+std::string	Server::getPassword(void) const
 {
-	if (_clients[clientSocket])
-		return _clients[clientSocket];
-	return NULL;
+	return _password;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
+
+Client *Server::_getClient(int clientSocket)
+{
+	if (_clients[clientSocket])
+		return _clients[clientSocket];
+	throw ServerException("Error: Server can't find client!");
+}
 
 void Server::_addUser(vecPollfd &new_fds)
 {
@@ -228,7 +233,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 			itMapCommand 	itCommand = _commands.find(message.getCommand());
 			if (itCommand != _commands.end()) { // execute the command
 				CmdFunction	execCommand = itCommand->second;
-				execCommand(getUser(clientSocket), message, this);
+				execCommand(_getClient(clientSocket), message, this);
 			} else { // the command is unknown, send something to the client
 				std::cerr << RED << "command not found " << message.getCommand()
 					<< RESET << std::endl;
