@@ -41,7 +41,8 @@
  */
 void topic(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "TOPIC command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "TOPIC command called" << RESET << std::endl;
 	(void)client;
 	(void)message;
 	(void)server;

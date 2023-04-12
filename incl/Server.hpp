@@ -34,6 +34,7 @@
 # include "command.hpp"
 # include <fcntl.h>
 
+# define DEBUG_SERVER true
 # define SERVERNAME std::string("localhost")
 # define VERSION std::string("1.0")
 # define MAX_CLIENTS 1000

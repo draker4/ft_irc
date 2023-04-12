@@ -18,26 +18,39 @@
 # include <algorithm>
 # include <vector>
 # include <iostream>
+# include "colors.hpp"
+
+# define DEBUG_MESSAGE false
 
 class	Message
 {
 	public:
+		//Types
 		typedef	std::vector<std::string>			vecString;
 		typedef	std::vector<std::string>::iterator	itVecString;
 		typedef	std::string::iterator				itString;
 
+		//Constructors
 		Message(std::string message);
-		~Message(void);
-		
 		Message(const Message &src);
-		
+
+		//Destructor
+		~Message(void);
+
+		// Assignment Operator
 		Message	&operator=(const Message &rhs);
 
+		// Getter
 		vecString	getTags(void) const;
 		std::string	getSource(void) const;
 		std::string	getCommand(void) const;
 		vecString	getParameters(void) const;
 		
+		// Setter
+
+		// Publice member functions
+
+		// Exceptions
 		class ErrorMsgFormat : public std::exception
 		{
 			public:
@@ -45,13 +58,16 @@ class	Message
 		};
 	
 	private:
-		Message(void);
-
 		vecString	_tags;
 		std::string	_source;
 		std::string	_command;
 		vecString	_parameters;
-		
+
+		//Constructors
+		Message(void);
+
+		//Private functions
+		void		_printReceive(void);
 		vecString	_split(std::string message, std::string character);
 };
 

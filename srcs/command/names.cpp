@@ -31,7 +31,8 @@
  */
 void names(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "NAMES command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "NAMES command called" << RESET << std::endl;
 	(void)client;
 	(void)message;
 	(void)server;
