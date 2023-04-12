@@ -110,6 +110,11 @@ std::string	Client::getRealName(void) const
 	return _real_name;
 }
 
+std::string	Client::getOldNickname(void) const
+{
+	return _oldNickname;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 void Client::setNickname(std::string nickname)
