@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/12 13:36:03 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 14:41:20 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 			continue;
 		}
 
+		// change the file decriptor propriety to non blocking
+		fcntl(_serverSocket, F_SETFL, O_NONBLOCK);
+
 		// set options for the socket
 		if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_reuse, sizeof(int)) == -1)
 		{
@@ -92,6 +95,12 @@ Server::Server(std::string port, std::string password) : _port(strtod(port.c_str
 		close(_serverSocket);
 		throw Server::ServerException("ERROR: Server can't listen!");
 	}
+
+	// Server created
+	_t_create = time(NULL);
+	_t_create_str = ctime(&_t_create);
+	_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
+	
 	_initCommands();
 }
 
@@ -357,8 +366,11 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 
 void	Server::sendWelcome(Client *client) const
 {
-	std::cout << PURPLE << client->getNickname() << RESET << std::endl;
-	sendClient(RPL_WELCOME(client->getNickname()), client->getClientSocket());
+	sendClient(RPL_WELCOME(client->getNickname(), client->getInet()), client->getClientSocket());
+	sendClient(RPL_YOURHOST(client->getNickname()), client->getClientSocket());
+	sendClient(RPL_CREATED(client->getNickname(), _t_create_str), client->getClientSocket());
+
+	// add message 004 and 005
 }
 
 void	Server::deleteClient(itVecPollfd it)

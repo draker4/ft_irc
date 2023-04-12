@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/12 13:33:53 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 14:16:31 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <poll.h>
 # include <csignal>
 # include <cstdlib>
+# include <ctime>
 # include <vector>
 # include <map>
 # include "colors.hpp"
@@ -31,8 +32,10 @@
 # include "Message.hpp"
 # include "Client.hpp"
 # include "command.hpp"
+# include <fcntl.h>
 
 # define SERVERNAME std::string("localhost")
+# define VERSION std::string("1.0")
 # define MAX_CLIENTS 1000
 
 enum ErrorNum {
@@ -92,6 +95,8 @@ class Server
 		vecPollfd	_fds;
 		mapClient	_clients;
 		mapCommand	_commands;
+		time_t		_t_create;
+		std::string	_t_create_str;
 
 		// Constructors
 		Server(void);
