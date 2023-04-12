@@ -42,10 +42,9 @@ void user(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "USER command called" << RESET << std::endl;
 	
 	if (message.getParameters().empty() || message.getParameters().front() == "0" \
-		|| message.getParameters().size() != 4) {
+		|| message.getParameters().size() < 3 ) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("USER")), 
 			client->getClientSocket());
-		return ;
 	}
 	else if (!client->getPassword()) {
 		server->sendClient(ERROR_MESSAGE(std::string(
@@ -55,12 +54,14 @@ void user(Client *client, const Message &message, Server *server)
 	else if (client->getRegistered()) {
 		server->sendClient(ERR_ALREADYREGISTERED(client->getNickname()), 
 			client->getClientSocket());
-		return ;
 	}
 	else {
 		client->setUsername(message.getParameters()[0]);
-		client->setRealName(message.getParameters()[3]);
-		client->setRegistered(true);
-		server->sendWelcome(client);
+		if (message.getParameters().size() > 3)
+			client->setRealName(message.getParameters()[3]);
+		if (client->getNickname().size()) {
+			client->setRegistered(true);
+			server->sendWelcome(client);
+		}
 	}
 }

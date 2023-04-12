@@ -44,6 +44,8 @@ class Client
 		std::string	getBuffer(void) const;
 		std::string	getNickname(void) const;
 		std::string	getOldNickname(void) const;
+		std::string	getUsername(void) const;
+		std::string	getRealName(void) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);

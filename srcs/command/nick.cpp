@@ -75,7 +75,7 @@ void nick(Client *client, const Message &message, Server *server)
 		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
 		client->getClientSocket());
 	}
-	else if (!client->getRegistered()) {
+	else {
 		if (message.getParameters().empty()) {
 			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
 			return;
@@ -86,7 +86,12 @@ void nick(Client *client, const Message &message, Server *server)
 			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
 				client->getClientSocket());
 		} else {
+			client->setOldNickname(client->getNickname());
 			client->setNickname(message.getParameters()[0]);
+			if (!client->getRegistered() && client->getUsername().size()) {
+				client->setRegistered(true);
+				server->sendWelcome(client);
+			}
 		}
-	} else {}
+	}
 }
