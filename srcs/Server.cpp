@@ -351,7 +351,7 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 
 void	Server::sendWelcome(Client *client) const
 {
-	sendClient(RPL_WELCOME(client->getNickname(), client->getInet()), client->getClientSocket());
+	sendClient(RPL_WELCOME(client->getNickname(), client->getUsername(), client->getInet()), client->getClientSocket());
 	sendClient(RPL_YOURHOST(client->getNickname()), client->getClientSocket());
 	sendClient(RPL_CREATED(client->getNickname(), _t_create_str), client->getClientSocket());
 

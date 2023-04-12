@@ -91,6 +91,9 @@ void nick(Client *client, const Message &message, Server *server)
 			if (!client->getRegistered() && client->getUsername().size()) {
 				client->setRegistered(true);
 				server->sendWelcome(client);
+			} else {
+				server->sendClient(RPL_NICK(client->getOldNickname(), client->getNickname(),
+					client->getUsername(), client->getInet()), client->getClientSocket());
 			}
 		}
 	}
