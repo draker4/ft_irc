@@ -100,6 +100,16 @@ bool	Client::getPassword(void) const
 	return _password_ok;
 }
 
+std::string	Client::getUsername(void) const
+{
+	return _username;
+}
+
+std::string	Client::getRealName(void) const
+{
+	return _real_name;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 void Client::setNickname(std::string nickname)
@@ -144,6 +154,12 @@ void	Client::setRealName(std::string realname)
 void	Client::setRegistered(bool boolean)
 {
 	_registered = boolean;
+	
+}
+
+void	Client::setOldNickname(std::string old_nickname)
+{
+	_oldNickname = old_nickname;
 }
 
 /* --------------------------  Private functions  --------------------------- */
