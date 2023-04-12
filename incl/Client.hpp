@@ -71,7 +71,7 @@ class Client
 		sockaddr_storage	_client_addr;
 		socklen_t 			_client_addr_size;
 		bool 				_registered;
-		bool				_password_ok;
+		bool				_password_ok;	
 		bool				_deconnect;
 
 		// Constructors
