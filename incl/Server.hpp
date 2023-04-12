@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 18:53:10 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 13:33:53 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@
 # include <map>
 # include "colors.hpp"
 # include "errors.hpp"
+# include "replies.hpp"
 # include "Message.hpp"
 # include "Client.hpp"
 # include "command.hpp"
 
-#define MAX_CLIENTS 10
+# define SERVERNAME std::string("localhost")
+# define MAX_CLIENTS 1000
 
 enum ErrorNum {
 	SUCCESS,
@@ -68,6 +70,7 @@ class Server
 		void		launch(void);
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
 		void		deleteClient(itVecPollfd it);
+		void		sendWelcome(Client *client) const;
 	
 		// Exceptions
 		class ServerException : public std::exception

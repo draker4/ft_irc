@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 18:16:48 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 13:36:03 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,17 +335,6 @@ void Server::launch(void)
 				else
 					_receiveData(it);
 			}
-			// else if (it->revents & POLLOUT)
-			// {
-			// 	std::string	to_send = _clients[it->fd]->getBufferSend();
-			// 	std::cout << RED << "HERE" << RESET << std::endl;
-			// 	if (to_send.find_first_of("\r\n") != std::string::npos
-			// 		&& to_send[to_send.length() - 2] == '\r')
-			// 	{
-			// 		sendClient(to_send, it->fd);
-			// 		_clients[it->fd]->clearBufferSend();
-			// 	}
-			// }
 		}
 		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}
@@ -355,6 +344,8 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 {
 	size_t	bytes_sent = 0;
 
+	std::cout << PURPLE << BOLD << msg << RESET << std::endl;
+	
 	while (bytes_sent < msg.length())
 	{
 		const int	len = send(clientSocket, &(msg.c_str())[bytes_sent], msg.length() - bytes_sent, 0);
@@ -362,6 +353,12 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 			throw ServerException("Error: Server can't send all bytes!");
 		bytes_sent += len;
 	}
+}
+
+void	Server::sendWelcome(Client *client) const
+{
+	std::cout << PURPLE << client->getNickname() << RESET << std::endl;
+	sendClient(RPL_WELCOME(client->getNickname()), client->getClientSocket());
 }
 
 void	Server::deleteClient(itVecPollfd it)

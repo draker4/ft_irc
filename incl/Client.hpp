@@ -35,7 +35,6 @@ class Client
 		std::string			_real_name;
 		std::string 		_username;
 		std::string			_buffer;
-		std::string			_buffer_send;
 		sockaddr_storage	_client_addr;
 		socklen_t 			_client_addr_size;
 		bool 				_registered;
@@ -63,7 +62,6 @@ class Client
 		bool		getDeconnect(void) const;
 		bool		getPassword(void) const;
 		std::string	getBuffer(void) const;
-		std::string	getBufferSend(void) const;
 		std::string	getNickname(void) const;
 
 		// Setter
@@ -77,9 +75,7 @@ class Client
 
 		// Public member functions
 		void		addBuffer(std::string to_add);
-		void		addBufferSend(std::string to_add);
 		void		clearBuffer(void);
-		void		clearBufferSend(void);
 };
 
 #endif

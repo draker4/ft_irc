@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 17:45:42 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 13:19:20 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@
  */
 void user(Client *client, const Message &message, Server *server)
 {
-	// std::cout << BLUE << "USER command called" << RESET << std::endl;
+	std::cout << BLUE << "USER command called" << RESET << std::endl;
+	
 	if (message.getParameters().empty() || message.getParameters().front() == "0" \
 		|| message.getParameters().size() != 4) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("USER")), 
@@ -46,7 +47,7 @@ void user(Client *client, const Message &message, Server *server)
 		return ;
 	}
 	else if (!client->getPassword()) {
-		server->sendClient(ERROR_MESSAGE(std::string(\
+		server->sendClient(ERROR_MESSAGE(std::string(
 		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
 		client->getClientSocket());
 	}
@@ -59,5 +60,6 @@ void user(Client *client, const Message &message, Server *server)
 		client->setUsername(message.getParameters()[0]);
 		client->setRealName(message.getParameters()[3]);
 		client->setRegistered(true);
+		server->sendWelcome(client);
 	}
 }

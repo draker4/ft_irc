@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 17:43:41 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 13:37:20 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 
 void nick(Client *client, const Message &message, Server *server)
 {
-	// std::cout << BLUE << "NICK command called" << RESET << std::endl;
+	std::cout << BLUE << "NICK command called" << RESET << std::endl;
+	
 	if (!client->getPassword()) {
 		server->sendClient(ERROR_MESSAGE(std::string(\
 		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
@@ -84,6 +85,7 @@ void nick(Client *client, const Message &message, Server *server)
 			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
 				client->getClientSocket());
 		} else {
+			std::cout << RED << "here =" << message.getParameters()[0] << RESET << std::endl;
 			client->setNickname(message.getParameters()[0]);
 		}
 	}
