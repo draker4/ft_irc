@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/12 13:37:20 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 13:39:44 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void nick(Client *client, const Message &message, Server *server)
 		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
 		client->getClientSocket());
 	}
-	else if (client->getRegistered()) {
+	else if (!client->getRegistered()) {
 		if (message.getParameters().empty()) {
 			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
 			return;
@@ -85,8 +85,8 @@ void nick(Client *client, const Message &message, Server *server)
 			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
 				client->getClientSocket());
 		} else {
-			std::cout << RED << "here =" << message.getParameters()[0] << RESET << std::endl;
 			client->setNickname(message.getParameters()[0]);
 		}
 	}
+	// else change
 }
