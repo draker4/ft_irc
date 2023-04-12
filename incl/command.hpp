@@ -15,6 +15,8 @@
 
 # include "Server.hpp"
 
+# define DEBUG_COMMAND false
+
 class Server;
 
 // The CAP command is used to 

@@ -15,10 +15,15 @@
 /* -----------------------------  Constructors  ----------------------------- */
 
 Message::Message(void)
-{}
+{
+	if (DEBUG_MESSAGE)
+		std::cout << GREEN << "Message Default Constructor called " << RESET << std::endl;
+}
 
 Message::Message(std::string message) : _source("")
 {
+	if (DEBUG_MESSAGE)
+		std::cout << GREEN << "Message Constructor called " << RESET << std::endl;
 	if (message.empty() || message[0] == ' ')
 		throw ErrorMsgFormat();
 
@@ -56,19 +61,14 @@ Message::Message(std::string message) : _source("")
 		_parameters.push_back(*it);
 	}
 
-	// print
-	// for (std::vector<std::string>::iterator it = _tags.begin(); it != _tags.end(); it++) {
-	// 	std::cout << "tags = " << *it << std::endl;
-	// }
-	// std::cout << "source = " << _source << std::endl;
-	// std::cout << "command = " << _command << std::endl;
-	// for (std::vector<std::string>::iterator it = _parameters.begin(); it != _parameters.end(); it++) {
-	// 	std::cout << "parameters = " << *it << std::endl;
-	// }
+	if (DEBUG_MESSAGE)
+		_printReceive();
 }
 
 Message::Message(const Message &src)
 {
+	if (DEBUG_MESSAGE)
+		std::cout << GREEN << "Message Copy Constructor called " << RESET << std::endl;
 	*this = src;
 }
 
@@ -76,12 +76,16 @@ Message::Message(const Message &src)
 
 Message::~Message(void)
 {
+	if (DEBUG_MESSAGE)
+		std::cout << RED << "Message Destructor called " << RESET << std::endl;
 }
 
 /* -------------------------  Assignment Operator  -------------------------- */
 
 Message	&Message::operator=(const Message &rhs)
 {
+	if (DEBUG_MESSAGE)
+		std::cout << GREEN << "Message Assignment Operator called " << RESET << std::endl;
 	_tags = rhs._tags;
 	_source = rhs._source;
 	_command = rhs._command;
@@ -91,7 +95,7 @@ Message	&Message::operator=(const Message &rhs)
 
 /* --------------------------------  Getter  -------------------------------- */
 
-std::vector<std::string>	Message::getTags(void) const
+Message::vecString	Message::getTags(void) const
 {
 	return _tags;
 }
@@ -106,7 +110,7 @@ std::string	Message::getCommand(void) const
 	return _command;
 }
 
-std::vector<std::string>	Message::getParameters(void) const
+Message::vecString	Message::getParameters(void) const
 {
 	return _parameters;
 }
@@ -115,7 +119,19 @@ std::vector<std::string>	Message::getParameters(void) const
 
 /* ----------------------  Private member functions  ------------------------ */
 
-std::vector<std::string>	Message::_split(std::string message, std::string character)
+void	Message::_printReceive(void)
+{
+	for (std::vector<std::string>::iterator it = _tags.begin(); it != _tags.end(); it++) {
+		std::cout << "tags = " << *it << std::endl;
+	}
+	std::cout << "source = " << _source << std::endl;
+	std::cout << "command = " << _command << std::endl;
+	for (std::vector<std::string>::iterator it = _parameters.begin(); it != _parameters.end(); it++) {
+		std::cout << "parameters = " << *it << std::endl;
+	}
+}
+
+Message::vecString	Message::_split(std::string message, std::string character)
 {
 	std::vector<std::string>	result;
 	bool						keep_spaces = false;
@@ -137,15 +153,3 @@ std::vector<std::string>	Message::_split(std::string message, std::string charac
 }
 
 /* -----------------------  Public member functions  ------------------------ */
-
-// int main(void)
-// {
-// 	std::string	str = "@ceci;est;un;tag :hahaouiiii allo coucou toi :ouahh ca     marche\r\n";
-// 	// std::string	str = "PASS\r\n";
-// 	try {
-// 		Message	message(str);
-// 	}
-// 	catch(const std::exception &e) {
-// 		std::cout << e.what() << std::endl;
-// 	}
-// }

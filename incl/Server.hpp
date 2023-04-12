@@ -32,6 +32,7 @@
 # include "Client.hpp"
 # include "command.hpp"
 
+# define DEBUG_SERVER true
 # define SERVERNAME std::string("localhost")
 # define MAX_CLIENTS 1000
 

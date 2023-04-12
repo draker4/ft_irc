@@ -16,22 +16,23 @@
 
 Client::Client(void)
 {
-	// std::cout << GREEN << "Client Default Constructor called "
-	// 	<< RESET << std::endl;
+	if (DEBUG_CLIENT)
+		std::cout << GREEN << "Client Default Constructor called " << RESET << std::endl;
 }
 
-Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""), \
-_buffer(""),  _client_addr_size(sizeof(_client_addr)), _registered(false), \
+Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
+_oldNickname(""), _real_name(""), _username(""), _buffer(""),
+_client_addr_size(sizeof(_client_addr)), _registered(false),
 _password_ok(false), _deconnect(false)
 {
-	// std::cout << GREEN << "Client Constructor called "
-	// 	<< RESET << std::endl;
+	if (DEBUG_CLIENT)
+		std::cout << GREEN << "Client Constructor called " << RESET << std::endl;
 }
 
 Client::Client(const Client &src)
 {
-	// std::cout << GREEN << "Client Copy Constructor called "
-	// 	<< RESET << std::endl;
+	if (DEBUG_CLIENT)
+		std::cout << GREEN << "Client Copy Constructor called " << RESET << std::endl;
 	*this = src;
 }
 
@@ -39,16 +40,16 @@ Client::Client(const Client &src)
 
 Client::~Client(void)
 {
-	// std::cout << RED << "Client Destructor called "
-	// 	<< RESET << std::endl;
+	if (DEBUG_CLIENT)
+		std::cout << RED << "Client Destructor called " << RESET << std::endl;
 }
 
 /* -------------------------  Assignment Operator  -------------------------- */
 
 Client &Client::operator=(const Client &rhs)
 {
-	// std::cout << GREEN << "Client Assignment Operator called "
-	// 	<< RESET << std::endl;
+	if (DEBUG_CLIENT)
+		std::cout << GREEN << "Client Assignment Operator called " << RESET << std::endl;
 	_nickname = rhs._nickname;
 	_real_name = rhs._nickname;
 	_username = rhs._username;

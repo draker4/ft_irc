@@ -32,7 +32,8 @@
  */
 void oper(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "OPER command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "OPER command called" << RESET << std::endl;
 	(void)client;
 	(void)message;
 	(void)server;

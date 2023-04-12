@@ -67,7 +67,8 @@ bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 
 void nick(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "NICK command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "NICK command called" << RESET << std::endl;
 	
 	if (!client->getPassword()) {
 		server->sendClient(ERROR_MESSAGE(std::string(\
@@ -87,6 +88,5 @@ void nick(Client *client, const Message &message, Server *server)
 		} else {
 			client->setNickname(message.getParameters()[0]);
 		}
-	}
-	// else change
+	} else {}
 }

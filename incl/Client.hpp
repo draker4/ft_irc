@@ -21,30 +21,10 @@
 
 # define USERLEN 10
 
+# define DEBUG_CLIENT false
+
 class Client
 {
-	private:
-		// Private functions
-		void *get_addr(sockaddr *saddr);
-
-	protected:
-		int 				_serverSocket;
-		int					_clientSocket;
-		char 				_inet[INET6_ADDRSTRLEN];
-		std::string			_nickname;
-		std::string			_real_name;
-		std::string 		_username;
-		std::string			_buffer;
-		sockaddr_storage	_client_addr;
-		socklen_t 			_client_addr_size;
-		bool 				_registered;
-		bool				_password_ok;
-		bool				_deconnect;
-
-		// Constructors
-		Client(void);
-		Client(const Client &src);
-
 	public:
 		// Constructors
 		Client(int serverSocket);
@@ -63,9 +43,11 @@ class Client
 		bool		getPassword(void) const;
 		std::string	getBuffer(void) const;
 		std::string	getNickname(void) const;
+		std::string	getOldNickname(void) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);
+		void 		setOldNickname(std::string oldNickname);
 		int 		setClientSocket(void);
 		void		setDeconnect(bool boolean);
 		void		setPassword(bool boolean);
@@ -76,6 +58,29 @@ class Client
 		// Public member functions
 		void		addBuffer(std::string to_add);
 		void		clearBuffer(void);
+	
+	protected:
+		int 				_serverSocket;
+		int					_clientSocket;
+		char 				_inet[INET6_ADDRSTRLEN];
+		std::string			_nickname;
+		std::string			_oldNickname;
+		std::string			_real_name;
+		std::string 		_username;
+		std::string			_buffer;
+		sockaddr_storage	_client_addr;
+		socklen_t 			_client_addr_size;
+		bool 				_registered;
+		bool				_password_ok;
+		bool				_deconnect;
+
+		// Constructors
+		Client(void);
+		Client(const Client &src);
+
+	private:
+		// Private functions
+		void *get_addr(sockaddr *saddr);
 };
 
 #endif

@@ -38,7 +38,8 @@
  */
 void kick(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "KICK command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "KICK command called" << RESET << std::endl;
 	(void)client;
 	(void)message;
 	(void)server;

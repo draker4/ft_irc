@@ -38,7 +38,8 @@
  */
 void user(Client *client, const Message &message, Server *server)
 {
-	std::cout << BLUE << "USER command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "USER command called" << RESET << std::endl;
 	
 	if (message.getParameters().empty() || message.getParameters().front() == "0" \
 		|| message.getParameters().size() != 4) {

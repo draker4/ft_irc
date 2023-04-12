@@ -43,7 +43,8 @@ void pass(Client *client, const Message &message, Server *server)
 	 *  [CLIENT] /PASS secretpassword
 	 */
 	
-	std::cout << BLUE << "PASS command called" << RESET << std::endl;
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
 	if (message.getParameters().empty()) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
