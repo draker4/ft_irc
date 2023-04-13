@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/12 13:19:14 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 16:32:49 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,16 @@ void pass(Client *client, const Message &message, Server *server)
 	if (message.getParameters().empty()) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
 			client->getClientSocket());
-		return ;
 	}
 	else if (client->getRegistered()) {
 		server->sendClient(ERR_ALREADYREGISTERED(client->getNickname()),
 			client->getClientSocket());
-		return ;
 	}
 	else if (message.getParameters().front() != server->getPassword()) {
 		std::cout << message.getParameters().front() << ": et :" << server->getPassword() << std::endl;
 		server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
 			client->getClientSocket());
 		client->setDeconnect(true);
-		return ;
 	}
 	else
 		client->setPassword(true);

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/12 14:16:31 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 13:07:48 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@
 # include "Message.hpp"
 # include "Client.hpp"
 # include "command.hpp"
-# include <fcntl.h>
+# include <sstream>
+# include <sys/time.h>
+# include <cstdlib>
 
 # define DEBUG_SERVER true
 # define SERVERNAME std::string("localhost")

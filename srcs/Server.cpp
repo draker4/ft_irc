@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/12 14:41:20 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 12:28:37 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,6 @@ Server::Server(std::string port, std::string password) :
 			std::cerr << RED << "ERROR: Cannot create socket!" << RESET << std::endl;
 			continue;
 		}
-
-		// change the file decriptor propriety to non blocking
-		fcntl(_serverSocket, F_SETFL, O_NONBLOCK);
 
 		// set options for the socket
 		if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &_reuse, sizeof(int)) == -1) {

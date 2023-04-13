@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 16:21:27 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 12:51:34 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/12 16:53:01 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <iostream>
 # include "colors.hpp"
 
-# define DEBUG_MESSAGE false
+# define DEBUG_MESSAGE true
 
 class	Message
 {

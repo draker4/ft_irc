@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   kill.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:21 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 13:45:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ void kill(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "KILL command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	if (!client->getIsOperator())
+		server->sendClient(ERR_NOPRIVILEGES(client->getNickname()), client->getClientSocket());
+	else
+	{
+		(void)message;
+	}
 }

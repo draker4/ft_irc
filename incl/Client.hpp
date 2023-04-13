@@ -46,7 +46,7 @@ class Client
 		std::string	getOldNickname(void) const;
 		std::string	getUsername(void) const;
 		std::string	getRealName(void) const;
-		bool	getIsOperator(void) const;
+		bool		getIsOperator(void) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);
@@ -57,12 +57,13 @@ class Client
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
 		void		setRegistered(bool boolean);
+		void		setIsOperator(bool boolean);
 
 		// Public member functions
 		void		addBuffer(std::string to_add);
 		void		clearBuffer(void);
 	
-	protected:
+	private:
 		int 				_serverSocket;
 		int					_clientSocket;
 		char 				_inet[INET6_ADDRSTRLEN];
@@ -82,7 +83,6 @@ class Client
 		Client(void);
 		Client(const Client &src);
 
-	private:
 		// Private functions
 		void *get_addr(sockaddr *saddr);
 };
