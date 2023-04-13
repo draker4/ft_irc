@@ -127,6 +127,11 @@ bool	Client::getMode(char c) const
 	return false;
 }
 
+Client::vecChannel	Client::getChannels() const
+{
+	return _channels;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 void Client::setNickname(std::string nickname)

@@ -28,6 +28,7 @@ class Client
 {
 	public:
 		// Types
+		typedef std::vector<Channel>			vecChannel;
 		typedef std::string::const_iterator		itString;
 		typedef std::vector<Channel>::iterator	itVecChannel;
 
@@ -52,6 +53,7 @@ class Client
 		std::string	getUsername(void) const;
 		std::string	getRealName(void) const;
 		bool		getMode(char c) const;
+		vecChannel	getChannels(void) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);
@@ -83,7 +85,7 @@ class Client
 		bool					_password_ok;	
 		bool					_deconnect;
 		bool					_isOperator;
-		std::vector<Channels>	_channels;
+		vecChannel				_channels;
 
 		// Constructors
 		Client(void);

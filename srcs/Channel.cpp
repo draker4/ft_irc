@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/12 15:38:09 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 17:16:17 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,11 @@ Channel	&Channel::operator=(const Channel &rhs)
 }
 
 /* --------------------------------  Getter  -------------------------------- */
+
+Channel::mapClients	Channel::getClients(void) const
+{
+	return _clients;
+}
 
 /* --------------------------------  Setter  -------------------------------- */
 

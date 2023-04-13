@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 16:25:32 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 17:18:13 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,13 @@ void kill(Client *client, const Message &message, Server *server)
 		std::string("KILL"), std::string("")), to_kill->getClientSocket());
 		
 		// send quit message to all users in channel
-		for ()
+		Client::vecChannel	channels = to_kill->getChannels();
+		for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+			Channel::mapClients	clients = it->getClients();
+			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+				server->sendClient(RPL_CMD(client->getNickname(), to_kill->getUsername(), to_kill->getInet(),
+					std::string("KILL"), std::string("")), to_kill->getClientSocket());
+			}
+		}
 	}
 }
