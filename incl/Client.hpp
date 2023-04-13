@@ -46,6 +46,7 @@ class Client
 		std::string	getOldNickname(void) const;
 		std::string	getUsername(void) const;
 		std::string	getRealName(void) const;
+		bool	getIsOperator(void) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);
@@ -75,6 +76,7 @@ class Client
 		bool 				_registered;
 		bool				_password_ok;	
 		bool				_deconnect;
+		bool				_isOperator;
 
 		// Constructors
 		Client(void);

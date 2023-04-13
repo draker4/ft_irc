@@ -23,7 +23,7 @@ Client::Client(void)
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
 _oldNickname(""), _real_name(""), _username(""), _buffer(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
-_password_ok(false), _deconnect(false)
+_password_ok(false), _deconnect(false), _isOperator(false)
 {
 	if (DEBUG_CLIENT)
 		std::cout << GREEN << "Client Constructor called " << RESET << std::endl;
@@ -60,6 +60,9 @@ Client &Client::operator=(const Client &rhs)
 	_clientSocket = rhs._clientSocket;
 	_buffer = rhs._buffer;
 	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
+	_registered = rhs._registered;
+	_deconnect = rhs._deconnect;
+	_isOperator = rhs._isOperator;
 	return *this;
 }
 
@@ -113,6 +116,11 @@ std::string	Client::getRealName(void) const
 std::string	Client::getOldNickname(void) const
 {
 	return _oldNickname;
+}
+
+bool	Client::getIsOperator(void) const
+{
+	return _isOperator;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
