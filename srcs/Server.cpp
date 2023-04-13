@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 12:28:37 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 14:32:04 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,6 +213,8 @@ void Server::_receiveData(itVecPollfd &it)
 				<< it->fd << RESET << std::endl;
 		}
 		_clients[it->fd]->addBuffer(std::string(buf, 0, sizeof(buf)));
+		
+		std::cout << RED << BOLD << _clients[it->fd]->getBuffer() << ":" << RESET << std::endl;
 		if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
 			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r')
 		{
@@ -231,6 +233,7 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 	size_t end_line = -2;
 	size_t begin_line = 0;
 
+	std::cout << "handle command" << std::endl;
 	while (msg[begin_line])
 	{
 		end_line = msg.find("\r\n", begin_line);

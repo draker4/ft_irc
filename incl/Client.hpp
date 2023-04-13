@@ -72,6 +72,7 @@ class Client
 		std::string			_real_name;
 		std::string 		_username;
 		std::string			_buffer;
+		std::string			_mode;
 		sockaddr_storage	_client_addr;
 		socklen_t 			_client_addr_size;
 		bool 				_registered;

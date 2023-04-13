@@ -21,7 +21,7 @@ Client::Client(void)
 }
 
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
-_oldNickname(""), _real_name(""), _username(""), _buffer(""),
+_oldNickname(""), _real_name(""), _username(""), _buffer(""), _mode(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
 _password_ok(false), _deconnect(false), _isOperator(false)
 {
