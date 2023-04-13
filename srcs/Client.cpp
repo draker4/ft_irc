@@ -23,7 +23,7 @@ Client::Client(void)
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
 _oldNickname(""), _real_name(""), _username(""), _buffer(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
-_password_ok(false), _deconnect(false)
+_password_ok(false), _deconnect(false), _is_op(false)
 {
 	if (DEBUG_CLIENT)
 		std::cout << GREEN << "Client Constructor called " << RESET << std::endl;
@@ -100,6 +100,11 @@ bool	Client::getPassword(void) const
 	return _password_ok;
 }
 
+bool	Client::getIsOperator(void) const
+{
+	return _is_op;
+}
+
 std::string	Client::getUsername(void) const
 {
 	return _username;
@@ -165,6 +170,11 @@ void	Client::setRegistered(bool boolean)
 void	Client::setOldNickname(std::string old_nickname)
 {
 	_oldNickname = old_nickname;
+}
+
+void	Client::setIsOperator(bool boolean)
+{
+	_is_op = boolean;
 }
 
 /* --------------------------  Private functions  --------------------------- */

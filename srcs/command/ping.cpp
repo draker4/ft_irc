@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ping.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:49 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 13:09:41 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,23 @@ void ping(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "PING command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	
+	if (message.getParameters().empty())
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PING")), 
+			client->getClientSocket());
+	else
+	{
+		// regler with real timestamp !!
+		timeval	tm;
+		gettimeofday(&tm, NULL);
+		double	time = (tm.tv_sec - 50000) * 1000 + tm.tv_usec / 1000 - strtod(message.getParameters()[0].c_str(), NULL);
+		// std::cout << BLUE << std::fixed << time << std::endl;
+		std::stringstream	ss;
+		ss << std::fixed << strtod(message.getParameters()[0].c_str(), NULL) - time;
+		std::cout << RED << std::string(ss.str()) << std::endl;
+
+		server->sendClient(RPL_CMD(client->getNickname(), client->getUsername(), client->getInet(),
+		std::string("PONG"), SERVERNAME +std::string(" ") + std::string(ss.str())),
+			client->getClientSocket());
+	}
 }
