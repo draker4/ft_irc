@@ -30,7 +30,7 @@
 # define ERR_NICKNAMEINUSE(nickname) ( ":" + SERVERNAME + " 433 " + nickname \
 		+ " :Nickname is already in use\r\n")
 
-// 461 - PASS - USER
+// 461 - PASS - USER - OPER
 # define ERR_NEEDMOREPARAMS(client, command) (":" +  SERVERNAME + " 461 " + client + " " \
 		+ command + " :Not Enough parameters\r\n")
 
@@ -38,13 +38,17 @@
 # define ERR_ALREADYREGISTERED(client) ( ":" + SERVERNAME + " 462 " + client \
 		+ " :You may not reregister\r\n")
 
-// 464 - PASS
+// 464 - PASS - OPER
 # define ERR_PASSWDMISMATCH(client) ( ":" + SERVERNAME + " 464 " + client \
 		+ " : Password incorrect\r\n")
 
 // 481 - KILL
 # define ERR_NOPRIVILEGES(client) ( ":" + SERVERNAME + " 481 " + client \
 		+ " :Permission Denied- You're not an IRC operator\r\n")
+
+// 491 - OPER
+# define ERR_NOOPERHOST(client) ( ":" + SERVERNAME + " 491 " + client \
+		+ " :No O-lines for your host\r\n")
 
 // 723 - KILL
 # define ERR_NOPRIVS(client, priv) ( ":" + SERVERNAME + " 723 " + client + " " \

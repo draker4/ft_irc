@@ -14,6 +14,7 @@
 #define SERVER_HPP
 
 # include <iostream>
+# include <fstream>
 # include <unistd.h>
 # include <stdlib.h>
 # include <netdb.h>
@@ -47,17 +48,26 @@ enum ErrorNum {
 	ARG_NB,
 };
 
+typedef struct	s_opeConf
+{
+	std::string 	name;
+	std::string		host;
+	std::string 	password;
+}				t_opeConfig;
+
 class Server
 {
 	public:
 		// Types
-		typedef std::map<int, Client *> mapClient;
-		typedef std::map<int, Client *>::iterator itMapClient;
-		typedef std::vector<pollfd> vecPollfd;
-		typedef std::vector<pollfd>::iterator itVecPollfd;
+		typedef std::map<int, Client *>							mapClient;
+		typedef std::map<int, Client *>::iterator				itMapClient;
+		typedef std::vector<pollfd> 							vecPollfd;
+		typedef std::vector<pollfd>::iterator					itVecPollfd;
 		typedef void (*CmdFunction)(Client *, const Message &, Server*);
-		typedef std::map<std::string, CmdFunction> mapCommand;
-		typedef std::map<std::string, CmdFunction>::iterator itMapCommand;
+		typedef std::map<std::string, CmdFunction> 				mapCommand;
+		typedef std::map<std::string, CmdFunction>::iterator	itMapCommand;
+		typedef std::vector<t_opeConfig>						vecOpeConfig;
+		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
 
 		// Constructors
 		Server(std::string port, std::string password);
@@ -66,9 +76,10 @@ class Server
 		~Server(void);
 
 		// Getter
-		int			getServerSocket(void) const;
-		std::string	getPassword(void) const;
-		mapClient	getClients(void) const;
+		int				getServerSocket(void) const;
+		std::string		getPassword(void) const;
+		mapClient		getClients(void) const;
+		vecOpeConfig	getOpeConf(void) const;
 
 		// Setter
 
@@ -91,15 +102,16 @@ class Server
 		};
 
 	private:
-		int			_serverSocket;
-		int			_port;
-		int 		_reuse;
-		std::string	_password;
-		vecPollfd	_fds;
-		mapClient	_clients;
-		mapCommand	_commands;
-		time_t		_t_create;
-		std::string	_t_create_str;
+		int				_serverSocket;
+		int				_port;
+		int 			_reuse;
+		std::string		_password;
+		vecPollfd		_fds;
+		mapClient		_clients;
+		mapCommand		_commands;
+		time_t			_t_create;
+		std::string		_t_create_str;
+		vecOpeConfig	_opeConf;
 
 		// Constructors
 		Server(void);
@@ -113,6 +125,7 @@ class Server
 		void	_receiveData(itVecPollfd &it);
 		void	_handleCommand(std::string msg, int clientSocket);
 		void	_initCommands(void);
+		void	_initOperatorConfig(void);
 		Client	*_getClient(int clientSocket);
 };
 

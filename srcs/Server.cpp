@@ -92,6 +92,8 @@ Server::Server(std::string port, std::string password) :
 	_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
 	
 	_initCommands();
+	_initOperatorConfig();
+	
 }
 
 Server::Server(const Server &src)
@@ -151,6 +153,11 @@ std::string	Server::getPassword(void) const
 Server::mapClient Server::getClients(void) const
 {
 	return (_clients);
+}
+
+Server::vecOpeConfig Server::getOpeConf(void) const
+{
+	return (_opeConf);
 }
 
 /* --------------------------------  Setter  -------------------------------- */
@@ -284,6 +291,29 @@ void Server::_initCommands(void)
 	_commands["QUIT"] = &quit;
 	_commands["TOPIC"] = &topic;
 	_commands["USER"] = &user;
+}
+
+void Server::_initOperatorConfig(void)
+{
+	std::ifstream	file;
+	std::string		line;
+
+	file.open("config/operator.conf");
+	if (!file.is_open()) {
+		throw Server::ServerException("ERROR: Can't open config/oper.conf!");
+	}
+	while (std::getline(file, line)) {
+		t_opeConfig	opeConfig;
+		std::stringstream ss(line);
+		ss >> opeConfig.name >> opeConfig.host >> opeConfig.password;
+		std::cout << "name: " << opeConfig.name << " host: " << opeConfig.host
+			<< " password: " << opeConfig.password << std::endl;
+		_opeConf.push_back(opeConfig);
+	}
+	file.close();
+	if (_opeConf.empty()) {
+		throw Server::ServerException("ERROR: No operator in config/operator.conf!");
+	}
 }
 
 /* -----------------------  Public member functions  ------------------------ */
