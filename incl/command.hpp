@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 12:28:21 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 14:24:37 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "Server.hpp"
 
-# define DEBUG_COMMAND false
+# define DEBUG_COMMAND true
 
 class Server;
 

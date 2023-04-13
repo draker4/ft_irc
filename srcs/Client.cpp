@@ -21,7 +21,7 @@ Client::Client(void)
 }
 
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
-_oldNickname(""), _real_name(""), _username(""), _buffer(""),
+_oldNickname(""), _real_name(""), _username(""), _buffer(""), _mode(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
 _password_ok(false), _deconnect(false), _isOperator(false)
 {
@@ -118,9 +118,13 @@ std::string	Client::getOldNickname(void) const
 	return _oldNickname;
 }
 
-bool	Client::getIsOperator(void) const
+bool	Client::getMode(char c) const
 {
-	return _isOperator;
+	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+		if (*it == c)
+			return true;
+	}
+	return false;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
@@ -195,4 +199,21 @@ void	Client::clearBuffer(void)
 {
 	_buffer.clear();
 	_buffer = "";
+}
+
+void	Client::addMode(char c)
+{
+	if (_mode.find(c) == std::string::npos){
+		_mode.push_back(c);
+	}
+}
+
+void	Client::removeMode(char c)
+{
+	int i = 0;
+	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+		if (*it == c)
+			_mode.erase(_mode.begin() + i);
+		i++;
+	}
 }

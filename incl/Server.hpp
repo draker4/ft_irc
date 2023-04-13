@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 13:07:48 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 16:08:51 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <arpa/inet.h>
 # include <string>
 # include <cstring>
+# include <cstdio>
 # include <poll.h>
 # include <csignal>
 # include <cstdlib>
@@ -61,6 +62,7 @@ class Server
 		// Types
 		typedef std::map<int, Client *>							mapClient;
 		typedef std::map<int, Client *>::iterator				itMapClient;
+		typedef std::map<int, Client *>::const_iterator 		constItMapClient;
 		typedef std::vector<pollfd> 							vecPollfd;
 		typedef std::vector<pollfd>::iterator					itVecPollfd;
 		typedef void (*CmdFunction)(Client *, const Message &, Server*);
@@ -79,6 +81,7 @@ class Server
 		int				getServerSocket(void) const;
 		std::string		getPassword(void) const;
 		mapClient		getClients(void) const;
+		Client			*getClient(std::string username) const;
 		vecOpeConfig	getOpeConf(void) const;
 
 		// Setter
@@ -130,3 +133,4 @@ class Server
 };
 
 #endif
+

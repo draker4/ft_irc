@@ -46,7 +46,7 @@ void oper(Client *client, const Message &message, Server *server)
 			itOpeConf != opeConf.end(); itOpeConf++) {
 			if (itOpeConf->name == name && itOpeConf->password == password) {
 				if (itOpeConf->host == client->getInet()) {
-					client->setOperator(true);
+					client->addMode('o');
 					server->sendClient(RPL_YOUREOPER(client->getNickname()),
 						client->getClientSocket());
 					return ;
@@ -55,6 +55,13 @@ void oper(Client *client, const Message &message, Server *server)
 				}
 				
 			}
+		}
+		if (rejectHost) {
+			server->sendClient(ERR_NOOPERHOST(client->getNickname()),
+				client->getClientSocket());
+		} else {
+			server->sendClient(ERR_PASSWDMISMATCH(client->getNickname()),
+				client->getClientSocket());
 		}
 	}
 }
