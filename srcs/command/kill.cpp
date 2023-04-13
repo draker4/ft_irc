@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 13:24:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 13:45:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,6 @@ void kill(Client *client, const Message &message, Server *server)
 		server->sendClient(ERR_NOPRIVILEGES(client->getNickname()), client->getClientSocket());
 	else
 	{
-		
+		(void)message;
 	}
 }
