@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 14:32:04 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 16:07:07 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,15 @@ std::string	Server::getPassword(void) const
 Server::mapClient Server::getClients(void) const
 {
 	return (_clients);
+}
+
+Client	*Server::getClient(std::string username) const
+{
+	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
+		if (it->second->getUsername() == username)
+			return it->second;
+	}
+	return NULL;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

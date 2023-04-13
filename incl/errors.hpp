@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 13:33:17 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 16:16:47 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,13 @@
 
 # include "Server.hpp"
 
+// 401 - KILL
+# define ERR_NOSUCHNICK(client, nickname) ( ":" + SERVERNAME + " 401 " + client + " " \
+		+ nickname + " :No such nick\r\n")
+
 // 421 - Server::_handleCommand
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":" + SERVERNAME + " 421 " + client + " " \
-		+ command + ":Unknown command\r\n")
+		+ command + " :Unknown command\r\n")
 
 // 431 - NICK
 # define ERR_NONICKNAMEGIVEN ":" + SERVERNAME + " 431 :No nickname given\r\n"
@@ -47,8 +51,8 @@
 		+ " :Permission Denied- You're not an IRC operator\r\n")
 
 // 723 - KILL
-# define ERR_NOPRIVS(client, priv) ( ":" + SERVERNAME + " 723 " + client + " " \
-		+ priv + " :Insufficient oper privileges.\r\n")
+// # define ERR_NOPRIVS(client, priv) ( ":" + SERVERNAME + " 723 " + client + " "
+// 		+ priv + " :Insufficient oper privileges.\r\n")
 
 // ERROR Message - PASS
 # define ERROR_MESSAGE(reason) ( ":" + SERVERNAME + " ERROR:" + reason + "\r\n")

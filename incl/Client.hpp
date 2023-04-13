@@ -18,6 +18,7 @@
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include "colors.hpp"
+# include "Channel.hpp"
 
 # define USERLEN 10
 
@@ -26,6 +27,10 @@
 class Client
 {
 	public:
+		// Types
+		typedef std::string::const_iterator		itString;
+		typedef std::vector<Channel>::iterator	itVecChannel;
+
 		// Constructors
 		Client(int serverSocket);
 
@@ -46,7 +51,7 @@ class Client
 		std::string	getOldNickname(void) const;
 		std::string	getUsername(void) const;
 		std::string	getRealName(void) const;
-		bool		getIsOperator(void) const;
+		bool		getMode(char c) const;
 
 		// Setter
 		void 		setNickname(std::string nickname);
@@ -57,28 +62,28 @@ class Client
 		void		setUsername(std::string username);
 		void		setRealName(std::string realname);
 		void		setRegistered(bool boolean);
-		void		setIsOperator(bool boolean);
 
 		// Public member functions
 		void		addBuffer(std::string to_add);
 		void		clearBuffer(void);
 	
 	private:
-		int 				_serverSocket;
-		int					_clientSocket;
-		char 				_inet[INET6_ADDRSTRLEN];
-		std::string			_nickname;
-		std::string			_oldNickname;
-		std::string			_real_name;
-		std::string 		_username;
-		std::string			_buffer;
-		std::string			_mode;
-		sockaddr_storage	_client_addr;
-		socklen_t 			_client_addr_size;
-		bool 				_registered;
-		bool				_password_ok;	
-		bool				_deconnect;
-		bool				_isOperator;
+		int 					_serverSocket;
+		int						_clientSocket;
+		char 					_inet[INET6_ADDRSTRLEN];
+		std::string				_nickname;
+		std::string				_oldNickname;
+		std::string				_real_name;
+		std::string 			_username;
+		std::string				_buffer;
+		std::string				_mode;
+		sockaddr_storage		_client_addr;
+		socklen_t 				_client_addr_size;
+		bool 					_registered;
+		bool					_password_ok;	
+		bool					_deconnect;
+		bool					_isOperator;
+		std::vector<Channels>	_channels;
 
 		// Constructors
 		Client(void);

@@ -118,9 +118,13 @@ std::string	Client::getOldNickname(void) const
 	return _oldNickname;
 }
 
-bool	Client::getIsOperator(void) const
+bool	Client::getMode(char c) const
 {
-	return _isOperator;
+	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+		if (*it == c)
+			return true;
+	}
+	return false;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

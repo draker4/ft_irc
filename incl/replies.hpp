@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 12:45:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 16:19:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 	+ newNickname + "\r\n") // SPE_CODE - NICK
 
 # define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
-	+ cmd + " " + reply + "\r\n") // SPE_CODE - NICK
-
+	+ cmd + " " + reply + "\r\n") // SPE_CODE - KILL - PING
 
 #endif
