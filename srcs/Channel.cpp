@@ -6,11 +6,12 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 17:16:17 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:11:47 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+# include "Client.hpp"
 
 /* -----------------------------  Constructors  ----------------------------- */
 
@@ -41,6 +42,8 @@ Channel	&Channel::operator=(const Channel &rhs)
 {
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Assignment operator called " << RESET << std::endl;
+	(void)rhs;
+	return *this;
 }
 
 /* --------------------------------  Getter  -------------------------------- */

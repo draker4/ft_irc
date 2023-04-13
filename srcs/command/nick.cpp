@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 14:46:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:21:02 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ void nick(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "NICK command called" << RESET << std::endl;
 	
 	if (!client->getPassword()) {
-		server->sendClient(ERROR_MESSAGE(std::string(\
-		"You need to enter the password first\nUsage: PASS, NICK, USER.")), \
+		server->sendClient(ERROR_MESSAGE(std::string("Usage: PASS, NICK, USER.")),
 		client->getClientSocket());
 	}
 	else {

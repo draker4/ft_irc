@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 17:16:02 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:11:14 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 # include <iostream>
 # include "colors.hpp"
-# include "Client.hpp"
 # include <map>
 
 # define DEBUG_CHANNEL false
+
+class Client;
 
 class	Channel
 {
@@ -29,6 +30,7 @@ class	Channel
 		
 		Channel(void);
 		Channel(const Channel &src);
+		~Channel(void);
 
 		Channel	&operator=(const Channel &rhs);
 		
@@ -38,7 +40,7 @@ class	Channel
 	private:
 		std::string			_key;
 		mapClients			_clients;
-		const unsigned int	_client_limit;
+		// const unsigned int	_client_limit;
 };
 
 #endif

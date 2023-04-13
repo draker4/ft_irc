@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 16:07:07 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:38:05 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,8 @@ Server::Server(std::string port, std::string password) :
 	_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
 	
 	_initCommands();
+	_initOperatorConfig();
+	
 }
 
 Server::Server(const Server &src)
@@ -153,10 +155,15 @@ Server::mapClient Server::getClients(void) const
 	return (_clients);
 }
 
-Client	*Server::getClient(std::string username) const
+Server::vecOpeConfig Server::getOpeConf(void) const
+{
+	return (_opeConf);
+}
+
+Client	*Server::getClient(std::string nickname) const
 {
 	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second->getUsername() == username)
+		if (it->second->getNickname() == nickname)
 			return it->second;
 	}
 	return NULL;
@@ -223,7 +230,6 @@ void Server::_receiveData(itVecPollfd &it)
 		}
 		_clients[it->fd]->addBuffer(std::string(buf, 0, sizeof(buf)));
 		
-		std::cout << RED << BOLD << _clients[it->fd]->getBuffer() << ":" << RESET << std::endl;
 		if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
 			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r')
 		{
@@ -242,7 +248,6 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 	size_t end_line = -2;
 	size_t begin_line = 0;
 
-	std::cout << "handle command" << std::endl;
 	while (msg[begin_line])
 	{
 		end_line = msg.find("\r\n", begin_line);
@@ -296,6 +301,29 @@ void Server::_initCommands(void)
 	_commands["QUIT"] = &quit;
 	_commands["TOPIC"] = &topic;
 	_commands["USER"] = &user;
+}
+
+void Server::_initOperatorConfig(void)
+{
+	std::ifstream	file;
+	std::string		line;
+
+	file.open("config/operator.conf");
+	if (!file.is_open()) {
+		throw Server::ServerException("ERROR: Can't open config/oper.conf!");
+	}
+	while (std::getline(file, line)) {
+		t_opeConfig	opeConfig;
+		std::stringstream ss(line);
+		ss >> opeConfig.name >> opeConfig.host >> opeConfig.password;
+		std::cout << "name: " << opeConfig.name << " host: " << opeConfig.host
+			<< " password: " << opeConfig.password << std::endl;
+		_opeConf.push_back(opeConfig);
+	}
+	file.close();
+	if (_opeConf.empty()) {
+		throw Server::ServerException("ERROR: No operator in config/operator.conf!");
+	}
 }
 
 /* -----------------------  Public member functions  ------------------------ */

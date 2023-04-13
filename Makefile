@@ -23,6 +23,7 @@ DIR_OBJS_D_C	=	.objs_debug/command/
 # -------------  Files  -------------- #
 
 HEAD			=	Client.hpp	\
+					Channel.hpp \
 					colors.hpp	\
 					command.hpp	\
 					errors.hpp	\
@@ -30,6 +31,7 @@ HEAD			=	Client.hpp	\
 					Server.hpp
 
 SRCS			=	Client.cpp	\
+					Channel.cpp \
 					ircserv.cpp	\
 					Message.cpp	\
 					Server.cpp

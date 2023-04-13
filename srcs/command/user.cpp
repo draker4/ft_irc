@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/12 13:19:20 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:21:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,13 @@ void user(Client *client, const Message &message, Server *server)
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "USER command called" << RESET << std::endl;
 	
-	if (message.getParameters().empty() || message.getParameters().front() == "0" \
+	if (message.getParameters().empty() || message.getParameters().front() == "0"
 		|| message.getParameters().size() < 3 ) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("USER")), 
 			client->getClientSocket());
 	}
 	else if (!client->getPassword()) {
-		server->sendClient(ERROR_MESSAGE(std::string(
-		"ERROR: You need to enter the password first\nUsage: PASS, NICK, USER.")), \
+		server->sendClient(ERROR_MESSAGE(std::string("Usage: PASS, NICK, USER.")),
 		client->getClientSocket());
 	}
 	else if (client->getRegistered()) {

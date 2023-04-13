@@ -15,19 +15,28 @@
 
 # include "Server.hpp"
 
+// 001 - Server::sendWelcome
 # define RPL_WELCOME(nickName, user, host) ( ":" + SERVERNAME + " 001 " + nickName \
-		+ " :Welcome to the " + SERVERNAME + " Network, " + nickName + "!" + user + "@" + host + "\r\n") // 001 - Server::sendWelcome
+		+ " :Welcome to the " + SERVERNAME + " Network, " + nickName + "!" + user + "@" + host + "\r\n")
 
+// 002 - Server::sendWelcome
 # define RPL_YOURHOST(nickName) ( ":" + SERVERNAME + " 002 " + nickName \
-		+ " :Your host is " + SERVERNAME + ", running version " + VERSION + "\r\n") // 002 - Server::sendWelcome
+		+ " :Your host is " + SERVERNAME + ", running version " + VERSION + "\r\n")
 
+// 003 - Server::sendWelcome
 # define RPL_CREATED(nickName, datetime) ( ":" + SERVERNAME + " 003 " + nickName \
-		+ " :This server was created " + datetime + "\r\n") // 003 - Server::sendWelcome
+		+ " :This server was created " + datetime + "\r\n")
 
+// 381 - OPER
+# define RPL_YOUREOPER(nickName) ( ":" + SERVERNAME + " 381 " + nickName \
+		+ " :You are now an IRC operator\r\n")
+
+// SPE_CODE - NICK
 # define RPL_NICK(oldNickname, newNickname, user, host) ( ":" + oldNickname + "!" + user + "@" + host + " NICK " \
-	+ newNickname + "\r\n") // SPE_CODE - NICK
+	+ newNickname + "\r\n") 
 
+// SPE_CODE - KILL - PING
 # define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
-	+ cmd + " " + reply + "\r\n") // SPE_CODE - KILL - PING
+	+ cmd + " " + reply + "\r\n") 
 
 #endif

@@ -34,7 +34,34 @@ void oper(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "OPER command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	if (message.getParameters().size() < 2) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), message.getCommand()),
+			client->getClientSocket());
+	} else {
+		bool					rejectHost = false;	
+		std::string 			name = message.getParameters()[0];
+		std::string				password = message.getParameters()[1];
+		Server::vecOpeConfig	opeConf = server->getOpeConf();
+		for (Server::itVecOpeConfig itOpeConf = opeConf.begin();
+			itOpeConf != opeConf.end(); itOpeConf++) {
+			if (itOpeConf->name == name && itOpeConf->password == password) {
+				if (itOpeConf->host == client->getInet()) {
+					client->addMode('o');
+					server->sendClient(RPL_YOUREOPER(client->getNickname()),
+						client->getClientSocket());
+					return ;
+				} else {
+					rejectHost = true;
+				}
+				
+			}
+		}
+		if (rejectHost) {
+			server->sendClient(ERR_NOOPERHOST(client->getNickname()),
+				client->getClientSocket());
+		} else {
+			server->sendClient(ERR_PASSWDMISMATCH(client->getNickname()),
+				client->getClientSocket());
+		}
+	}
 }

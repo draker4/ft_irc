@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 18:54:03 by draker            #+#    #+#             */
-/*   Updated: 2023/04/13 14:24:29 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/13 18:29:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,9 @@ void pass(Client *client, const Message &message, Server *server)
 			client->getClientSocket());
 	}
 	else if (message.getParameters().front() != server->getPassword()) {
-		std::cout << message.getParameters().front() << ": et :" << server->getPassword() << std::endl;
-		server->sendClient(ERROR_MESSAGE(std::string("Wrong password")), 
+		server->sendClient(ERR_PASSWDMISMATCH(std::string("Client")),
+			client->getClientSocket());
+		server->sendClient(ERROR_MESSAGE(std::string("Connexion stopped because of wrong password")), 
 			client->getClientSocket());
 		client->setDeconnect(true);
 	}

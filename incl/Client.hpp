@@ -15,10 +15,12 @@
 
 # include <iostream>
 # include <cstdlib>
+# include <cstdio>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include "colors.hpp"
 # include "Channel.hpp"
+# include <vector>
 
 # define USERLEN 10
 
@@ -68,6 +70,8 @@ class Client
 		// Public member functions
 		void		addBuffer(std::string to_add);
 		void		clearBuffer(void);
+		void		addMode(char c);
+		void		removeMode(char c);
 	
 	private:
 		int 					_serverSocket;

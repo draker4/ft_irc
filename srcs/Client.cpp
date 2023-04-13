@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Channel.hpp"
 #include "Client.hpp"
 
 /* -----------------------------  Constructors  ----------------------------- */
@@ -204,4 +205,21 @@ void	Client::clearBuffer(void)
 {
 	_buffer.clear();
 	_buffer = "";
+}
+
+void	Client::addMode(char c)
+{
+	if (_mode.find(c) == std::string::npos){
+		_mode.push_back(c);
+	}
+}
+
+void	Client::removeMode(char c)
+{
+	int i = 0;
+	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+		if (*it == c)
+			_mode.erase(_mode.begin() + i);
+		i++;
+	}
 }
