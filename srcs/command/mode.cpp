@@ -55,14 +55,95 @@
  * 
  */
 
-void userMode (Client *client, const Message &message, Server *server)
+
+void removeModeClient(Client *client, Server *server, char mode)
+{
+	if (client->getModeStatus(mode)) {				
+		client->removeMode(mode);
+		server->sendClient(RPL_MODE(client->getNickName(), client->getUserName(),
+			client->getInet(), "-", mode), client->getClientSocket());
+	}
+}
+
+void addModeClient(Client *client, Server *server, char mode)
+{
+	if (!client->getModeStatus(mode)) {
+		client->addMode(mode);
+		server->sendClient(RPL_MODE(client->getNickName(), client->getUserName(),
+			client->getInet(), "+", mode), client->getClientSocket());
+	}
+}
+
+void userAddMode(Client *client, const Message &message, Server *server, size_t *i)
+{
+	size_t j = *i + 1;
+	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
+		&& message.getParameters()[1][j] != '+') {
+		if (message.getParameters()[1][j] == 'r') {
+			addModeClient(client, server, 'r');
+		} else if (message.getParameters()[1][j] == 'w') {
+			addModeClient(client, server, 'w');
+		} else if (message.getParameters()[1][j] == 'i') {
+			addModeClient(client, server, 'i');
+		} else {
+			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
+				client->getClientSocket());
+		}
+		j++;
+	}
+	*i = j;
+}
+
+void userRemoveMode(Client *client, const Message &message, Server *server, size_t *i)
+{
+	size_t j = *i + 1;
+	while(j < message.getParameters()[1].size()
+		&& message.getParameters()[1][j] != '-'
+		&& message.getParameters()[1][j] != '+') {
+		if (message.getParameters()[1][j] == 'r') {
+			removeModeClient(client, server, 'r');
+		} else if (message.getParameters()[1][j] == 'w') {
+			removeModeClient(client, server, 'w');
+		} else if (message.getParameters()[1][j] == 'i') {
+			removeModeClient(client, server, 'i');
+		} else {
+			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
+				client->getClientSocket());
+		}
+		j++;
+	}
+	*i = j;
+}
+
+void userMode(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "MODE for user" << RESET << std::endl;
 	Client *clientModed = server->getClient(message.getParameters()[0]);
-	if (!clientModed)
+	if (!clientModed) { // if client doesn't exist : ERR_NOSUCHNICK
 		server->sendClient(ERR_NOSUCHNICK(client->getNickName(),
 			message.getParameters()[0]), client->getClientSocket());
+	} else if (client->getNickName() != message.getParameters()[0]) { // if client is not the sender : ERR_USERSDONTMATCH
+		server->sendClient(ERR_USERSDONTMATCH(client->getNickName()),
+			client->getClientSocket());
+	} else if (message.getParameters().size() == 1) { // if no mode is given : send current mode
+		server->sendClient(RPL_UMODEIS(client->getNickName(), client->getMode()),
+			client->getClientSocket());
+	} else { // handle mode changment
+		size_t i = 0;
+		while(i < message.getParameters()[1].size()) {
+			if (message.getParameters()[1][i] == '+') { // add mode
+				userAddMode(client, message, server, &i);
+			} else if (message.getParameters()[1][i] == '-') { // remove mode
+				userRemoveMode(client, message, server, &i);
+			} else {
+				server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
+					client->getClientSocket());
+				return;
+				i++;
+			}
+		}
+	}
 }
 
 void channelMode (Client *client, const Message &message, Server *server)

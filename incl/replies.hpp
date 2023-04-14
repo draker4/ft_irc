@@ -27,16 +27,24 @@
 # define RPL_CREATED(nickName, datetime) ( ":" + SERVERNAME + " 003 " + nickName \
 		+ " :This server was created " + datetime + "\r\n")
 
+// 221 - MODE
+# define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
+		+ " :+" + userModes + "\r\n")
+
 // 381 - OPER
 # define RPL_YOUREOPER(nickName) ( ":" + SERVERNAME + " 381 " + nickName \
 		+ " :You are now an IRC operator\r\n")
+
+// SPE_CODE - KILL - PING
+# define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
+	+ cmd + " " + reply + "\r\n") 
 
 // SPE_CODE - NICK
 # define RPL_NICK(oldNickname, newNickname, user, host) ( ":" + oldNickname + "!" + user + "@" + host + " NICK " \
 	+ newNickname + "\r\n") 
 
-// SPE_CODE - KILL - PING
-# define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
-	+ cmd + " " + reply + "\r\n") 
+// SPE_CODE - MODE
+# define RPL_MODE(nickname, user, host, sign, mode) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ nickname + " " + sign + mode + "\r\n") 
 
 #endif

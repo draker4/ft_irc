@@ -67,7 +67,8 @@ static vecString	split(std::string str, std::string c)
 
 static void	addClient(Client *client, Channel *channel)
 {
-
+	(void)client;
+	(void)channel;
 }
 
 void join(Client *client, const Message &message, Server *server)

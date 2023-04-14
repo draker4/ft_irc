@@ -69,6 +69,14 @@
 # define ERR_NOOPERHOST(client) ( ":" + SERVERNAME + " 491 " + client \
 		+ " :No O-lines for your host\r\n")
 
+// 501 - MODE
+# define ERR_UMODEUNKNOWNFLAG(client) ( ":" + SERVERNAME + " 501 " + client \
+		+ " :Unknown MODE flag\r\n")
+
+// 502 - MODE
+# define ERR_USERSDONTMATCH(client) ( ":" + SERVERNAME + " 502 " + client \
+		+ " :Cant change mode for other users\r\n")
+
 // 723 - KILL
 // # define ERR_NOPRIVS(client, priv) ( ":" + SERVERNAME + " 723 " + client + " "
 // 		+ priv + " :Insufficient oper privileges.\r\n")

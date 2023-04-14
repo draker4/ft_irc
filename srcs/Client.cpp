@@ -226,8 +226,10 @@ void	Client::removeMode(char c)
 {
 	int i = 0;
 	for (itString it = _mode.begin(); it != _mode.end(); it++) {
-		if (*it == c)
+		if (*it == c) {
 			_mode.erase(_mode.begin() + i);
+			return;
+		}
 		i++;
 	}
 }
