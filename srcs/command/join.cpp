@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 15:18:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:28:23 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,11 @@ static vecString	split(std::string str, std::string c)
 	return vec;
 }
 
+static void	addClient(Client *client, Channel *channel)
+{
+
+}
+
 void join(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
@@ -87,6 +92,7 @@ void join(Client *client, const Message &message, Server *server)
 		vecString	keys;
 		if (message.getParameters().size() > 1)
 			keys = split(message.getParameters()[1], ",");
+		itVecString	itKeys = keys.begin();
 		
 		for (itVecString it = keys.begin(); it != keys.end(); it++) {
 			std::cout << UNDERLINE << GREEN << *it << RESET << std::endl;
@@ -119,8 +125,17 @@ void join(Client *client, const Message &message, Server *server)
 			} else {
 				
 				// check if channel need a key
-				// channel->addClient(client);
+				if (channel->getModeStatus('k')) {
+					if (channel->getKey() == *itKeys)
+						addClient(client,channel);
+					else
+						server->sendClient(ERR_BADCHANNELKEY(client->getNickName(), *it), 
+							client->getClientSocket());
+				}
+				else
+					addClient(client,channel);
 			}
+			itKeys++;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:20:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:24:31 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,11 @@ bool	Channel::getModeStatus(char c) const
 			return true;
 	}
 	return false;
+}
+
+std::string	Channel::getKey(void) const
+{
+	return _key;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 14:52:04 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:29:32 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,13 @@
 // 464 - PASS - OPER
 # define ERR_PASSWDMISMATCH(client) ( ":" + SERVERNAME + " 464 " + client \
 		+ " :Password incorrect\r\n")
+
+// 474 - JOIN
+// # define ERR_BANNEDFROMCHAN
+
+// 475 - JOIN
+# define ERR_BADCHANNELKEY(client, channel) ( ":" + SERVERNAME + " 475 " + client \
+		+ " " + channel + " :Cannot join channel (+k)\r\n")
 
 // 481 - KILL
 # define ERR_NOPRIVILEGES(client) ( ":" + SERVERNAME + " 481 " + client \

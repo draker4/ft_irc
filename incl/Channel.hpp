@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:19:45 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:24:04 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class	Channel
 		
 		// getter
 		std::string		getName(void) const;
+		std::string		getKey(void) const;
 		mapClients		getClients(void) const;
 		bool			getModeStatus(char c) const;
 
@@ -68,6 +69,7 @@ class	Channel
 
 	private:
 		std::string 	_name;
+		std::string		_key;
 		mapClients		_clients;
 		vecNickName		_banned;
 		vecNickName		_invited;
