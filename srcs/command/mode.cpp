@@ -54,11 +54,36 @@
  * https://www.techbull.com/techbull/guide/internet/irccommande.html
  * 
  */
+
+void userMode (Client *client, Message::vecString parameters, Server *server)
+{
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "MODE for user" << RESET << std::endl;
+	(void)parameters;
+	(void)server;
+	(void)client;
+}
+
+void channelMode (Client *client, Message::vecString parameters, Server *server)
+{
+	if (DEBUG_COMMAND)
+		std::cout << BLUE << "MODE for channel" << RESET << std::endl;
+	(void)parameters;
+	(void)server;
+	(void)client;
+}
+
 void mode(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "MODE command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	if (message.getParameters().empty()) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), "MODE"),
+		client->getClientSocket());
+	} else if (message.getParameters()[0][0] == '#'
+		|| message.getParameters()[0][0] == '&') {
+		channelMode (client, message.getParameters(), server);
+	} else {
+		userMode (client, message.getParameters(), server);
+	}
 }

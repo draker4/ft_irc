@@ -142,13 +142,15 @@ Message::vecString	Message::_split(std::string message, std::string character)
 	{
 		if (keep_spaces && message.substr(prev, pos - prev)[0] == ':')
 			break ;
-		result.push_back(message.substr(prev, pos - prev));
+		if (!message.substr(prev, pos - prev).empty())
+			result.push_back(message.substr(prev, pos - prev));
 		if (result.back()[0] != '@' && result.back()[0] != ':')
 			keep_spaces = true;
 		prev = pos + 1;
 	}
 	pos = message.find_first_of("\r\n");
-	result.push_back(message.substr(prev, pos - prev));
+	if (!message.substr(prev, pos - prev).empty())
+		result.push_back(message.substr(prev, pos - prev));
 	return result;
 }
 

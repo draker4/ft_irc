@@ -42,7 +42,7 @@
 # define ERR_NICKNAMEINUSE(nickname) ( ":" + SERVERNAME + " 433 " + nickname \
 		+ " :Nickname is already in use\r\n")
 
-// 461 - PASS - USER - OPER
+// 461 - PASS - USER - OPER - MODE
 # define ERR_NEEDMOREPARAMS(client, command) (":" +  SERVERNAME + " 461 " + client + " " \
 		+ command + " :Not Enough parameters\r\n")
 

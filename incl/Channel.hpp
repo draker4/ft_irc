@@ -38,7 +38,7 @@ class	Channel
 		typedef std::vector<std::string>::iterator			itVecNickName;
 		
 		//Constructors
-		Channel(Client *client);
+		Channel(std::string name, Client *client);
 
 		//Destructor
 		~Channel(void);
@@ -64,6 +64,7 @@ class	Channel
 		};
 
 	private:
+		std::string 	_name;
 		mapClients		_clients;
 		vecNickName		_banned;
 		vecNickName		_invited;
