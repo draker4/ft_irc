@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 16:19:57 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 16:30:19 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,19 @@
 // 221 - MODE
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")
+// 353 - JOIN
+# define RPL_NAMREPLY(nickName, symbol, channel, prefix) ( ":" + SERVERNAME + " 353 " + nickName \
+		+ " " + symbol + " " + channel + " :" + prefix + nickName + "\r\n")
+
+// 366 - JOIN
+# define RPL_ENDOFNAMES(nickName, channel) ( ":" + SERVERNAME + " 366 " + nickName \
+		+ " " + channel + " :End of /NAMES list\r\n")
 
 // 381 - OPER
 # define RPL_YOUREOPER(nickName) ( ":" + SERVERNAME + " 381 " + nickName \
 		+ " :You are now an IRC operator\r\n")
 
-// SPE_CODE - KILL - PING
+// SPE_CODE - KILL - PING - JOIN
 # define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
 	+ cmd + " " + reply + "\r\n") 
 

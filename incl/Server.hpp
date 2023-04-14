@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:12:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 16:14:32 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 
 // RPL_ISUPPORT
 # define CHANLIMIT	10
+// PREFIX
 
 # define MAX_CLIENTS 1000
 

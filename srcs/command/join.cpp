@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 15:28:23 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 16:52:42 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,46 @@ static vecString	split(std::string str, std::string c)
 	return vec;
 }
 
-static void	addClient(Client *client, Channel *channel)
+static void	addClient(Server *server, Client *client, Channel *channel)
 {
-	(void)client;
-	(void)channel;
+	// check if user is not banned from channel
+	if (channel->isBanned(client->getNickName()))
+		server->sendClient(ERR_BANNEDFROMCHAN(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
+	
+	// check if channel is not full
+	else if (channel->getModeStatus('l') && channel->isFull())
+		server->sendClient(ERR_CHANNELISFULL(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
+	
+	// check if user has to be invited and is invited
+	else if (channel->getModeStatus('i') && channel->isInvited(client->getNickName()))
+		server->sendClient(ERR_CHANNELISFULL(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
+	
+	// SUCCESS
+	else {
+
+		client->addChannel(channel);
+		channel->addClient(client);
+		Channel::mapClients	clients = channel->getClients();
+
+		// send JOIN message to all clients in the channel
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+				client->getInet(), std::string("JOIN"), channel->getName()), 
+				it->second.client->getClientSocket());
+		}
+		
+		//send channel topic
+		
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			server->sendClient(RPL_NAMREPLY(it->second.client->getNickName(), channel->getSymbol(),
+						channel->getName(), channel->getPrefix(client)), client->getClientSocket());
+		}
+		server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
+			client->getClientSocket());
+	}
 }
 
 void join(Client *client, const Message &message, Server *server)
@@ -86,30 +122,34 @@ void join(Client *client, const Message &message, Server *server)
 	else {
 		vecString	channels = split(message.getParameters()[0], ",");
 		
-		for (itVecString it = channels.begin(); it != channels.end(); it++) {
-			std::cout << UNDERLINE << PURPLE << *it << RESET << std::endl;
-		}
+		// for (itVecString it = channels.begin(); it != channels.end(); it++) {
+		// 	std::cout << UNDERLINE << PURPLE << *it << RESET << std::endl;
+		// }
 		
 		vecString	keys;
 		if (message.getParameters().size() > 1)
 			keys = split(message.getParameters()[1], ",");
 		itVecString	itKeys = keys.begin();
 		
-		for (itVecString it = keys.begin(); it != keys.end(); it++) {
-			std::cout << UNDERLINE << GREEN << *it << RESET << std::endl;
-		}
+		// for (itVecString it = keys.begin(); it != keys.end(); it++) {
+		// 	std::cout << UNDERLINE << GREEN << *it << RESET << std::endl;
+		// }
 		
 		for (itVecString it = channels.begin(); it != channels.end(); it++) {
 			
 			// check first char of the channel name
-			if ((*it)[0] == '#' || (*it)[0] == '&')
+			if ((*it)[0] != '#' && (*it)[0] != '&') {
 				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
 					client->getClientSocket());
+				return ;
+			}
 			
 			// check how many channels the client already follows
-			if (client->getChannels().size() >= CHANLIMIT)
+			if (client->getChannels().size() >= CHANLIMIT) {
 				server->sendClient(ERR_TOOMANYCHANNELS(client->getNickName(), *it), 
 					client->getClientSocket());
+				return ;
+			}
 			
 			// check if the channel exists
 			
@@ -122,21 +162,29 @@ void join(Client *client, const Message &message, Server *server)
 				// add channel to server and to client's channel list
 				server->addChannel(channel);
 				client->addChannel(channel);
+				server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+					client->getInet(), std::string("JOIN"), channel->getName()), 
+					client->getClientSocket());
+				server->sendClient(RPL_NAMREPLY(client->getNickName(), channel->getSymbol(),
+					channel->getName(), channel->getPrefix(client)), client->getClientSocket());
+				server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
+					client->getClientSocket());
 				
 			} else {
 				
 				// check if channel need a key
 				if (channel->getModeStatus('k')) {
-					if (channel->getKey() == *itKeys)
-						addClient(client,channel);
+					if (itKeys != keys.end() && channel->getKey() == *itKeys)
+						addClient(server, client, channel);
 					else
 						server->sendClient(ERR_BADCHANNELKEY(client->getNickName(), *it), 
 							client->getClientSocket());
 				}
 				else
-					addClient(client,channel);
+					addClient(server, client, channel);
 			}
-			itKeys++;
+			if (itKeys != keys.end())
+				itKeys++;
 		}
 	}
 }
