@@ -63,6 +63,11 @@ Channel	&Channel::operator=(const Channel &rhs)
 
 /* --------------------------------  Getter  -------------------------------- */
 
+std::string	Channel::getName(void) const
+{
+	return _name;
+}
+
 Channel::mapClients	Channel::getClients(void) const
 {
 	return _clients;

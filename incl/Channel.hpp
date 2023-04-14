@@ -44,7 +44,8 @@ class	Channel
 		~Channel(void);
 		
 		// getter
-		mapClients	getClients(void) const;
+		std::string		getName(void) const;
+		mapClients		getClients(void) const;
 
 		// setter
 
