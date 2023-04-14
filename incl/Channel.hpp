@@ -14,22 +14,32 @@
 # define CHANNEL_HPP
 
 # include <iostream>
-# include "colors.hpp"
 # include <map>
+# include <vector>
+# include "colors.hpp"
 
 # define DEBUG_CHANNEL false
 
 class Client;
 
+typedef struct	s_connect
+{
+	Client		*client;
+	char		oper;
+}				t_connect;
+
 class	Channel
 {
 	public:
 		// Types
-		typedef std::map<Client *, std::string>				mapClients;
-		typedef std::map<Client *, std::string>::iterator	itMapClients;
+		typedef std::map<std::string, t_connect>			mapClients;
+		typedef std::map<std::string, t_connect>::iterator	itMapClients;
+		typedef std::vector<std::string>					vecNickName;
+		typedef std::vector<std::string>::iterator			itVecNickName;
 		
 		//Constructors
 		Channel(void);
+		Channel(Client *client);
 		Channel(const Channel &src);
 
 		//Destructor
@@ -44,6 +54,7 @@ class	Channel
 		// setter
 
 		// Public member functions
+		void	addClient(Client *client);
 
 		//Exceptions
 		class ChannelException : public std::exception
@@ -58,9 +69,14 @@ class	Channel
 		};
 
 	private:
-		std::string			_key;
 		mapClients			_clients;
-		// const unsigned int	_client_limit;
+		vecNickName			_banned;
+		vecNickName			_invited;
+		std::string			_mode;
+		std::string			_topic;
+		unsigned int		_clientLimit;
+		time_t			_t_create;
+		std::string		_t_create_str;
 
 		// Private functions
 };

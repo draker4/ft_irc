@@ -13,12 +13,26 @@
 #include "Channel.hpp"
 # include "Client.hpp"
 
+
 /* -----------------------------  Constructors  ----------------------------- */
 
 Channel::Channel(void)
 {
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Default Constructor called " << RESET << std::endl;
+}
+
+Channel::Channel(Client *client) : _mode(""), _topic(""), _clientLimit(0)
+{
+	if (DEBUG_CHANNEL)
+		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
+	addClient(client);
+	_clients[client->getNickName()].oper = 'q'; // q = owner
+	
+	// Server created
+	_t_create = time(NULL);
+	_t_create_str = ctime(&_t_create);
+	_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
 }
 
 Channel::Channel(const Channel &src)
@@ -58,3 +72,12 @@ Channel::mapClients	Channel::getClients(void) const
 /* --------------------------  Private functions  --------------------------- */
 
 /* -----------------------  Public member functions  ------------------------ */
+
+void Channel::addClient(Client *client)
+{
+	t_connect	newClient;
+
+	newClient.client = client;
+	newClient.oper = '\0';
+	_clients.insert(std::pair<std::string, t_connect>(client->getNickName(), newClient));
+}

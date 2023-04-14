@@ -67,7 +67,7 @@ void kill(Client *client, const Message &message, Server *server)
 			Channel::mapClients	clients = it->getClients();
 			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
 				server->sendClient(RPL_CMD(to_kill->getNickName(), to_kill->getUserName(), to_kill->getInet(),
-					std::string("QUIT"), rpl_quit), it_client->first->getClientSocket());
+					std::string("QUIT"), rpl_quit), it_client->second.client->getClientSocket());
 			}
 		}
 		
