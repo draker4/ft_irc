@@ -37,42 +37,42 @@ void kill(Client *client, const Message &message, Server *server)
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "KILL command called" << RESET << std::endl;
 	
-	if (!client->getMode('o'))
+	if (!client->getModeStatus('o'))
 	{
-		server->sendClient(ERR_NOPRIVILEGES(client->getNickname()), client->getClientSocket());
+		server->sendClient(ERR_NOPRIVILEGES(client->getNickName()), client->getClientSocket());
 		return ;
 	}
 	// else if (!client.getMode('find mode'))
 	// 	server->sendClient(ERR_NOPRIVS);
 	else if (message.getParameters().size() < 2)
 	{
-		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("KILL")), 
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("KILL")), 
 			client->getClientSocket());
 		return ;
 	}
 	Client	*to_kill = server->getClient(message.getParameters()[0]);
 	if (!to_kill)
-		server->sendClient(ERR_NOSUCHNICK(client->getNickname(), message.getParameters()[0]),
+		server->sendClient(ERR_NOSUCHNICK(client->getNickName(), message.getParameters()[0]),
 			client->getClientSocket());
 	else {
 		// send kill reply to client being killed
-		std::string	rpl_kill = to_kill->getNickname() + " " + message.getParameters()[1];
-		server->sendClient(RPL_CMD(client->getNickname(), client->getUsername(), client->getInet(),
+		std::string	rpl_kill = to_kill->getNickName() + " " + message.getParameters()[1];
+		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
 		std::string("KILL"), rpl_kill), to_kill->getClientSocket());
 		
 		// send quit message to all users in channel
-		std::string	rpl_quit = ":Killed by " + client->getUsername() + " because " + message.getParameters()[1];
+		std::string	rpl_quit = ":Killed by " + client->getUserName() + " because " + message.getParameters()[1];
 		Client::vecChannel	channels = to_kill->getChannels();
 		for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
 			Channel::mapClients	clients = it->getClients();
 			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
-				server->sendClient(RPL_CMD(to_kill->getNickname(), to_kill->getUsername(), to_kill->getInet(),
+				server->sendClient(RPL_CMD(to_kill->getNickName(), to_kill->getUserName(), to_kill->getInet(),
 					std::string("QUIT"), rpl_quit), it_client->first->getClientSocket());
 			}
 		}
 		
 		// send error msg to client being killed
-		std::string	rpl_error = "Closing link: " + SERVERNAME + " Killed " + client->getUsername() + " because " +
+		std::string	rpl_error = "Closing link: " + SERVERNAME + " Killed " + client->getUserName() + " because " +
 			message.getParameters()[1];
 		server->sendClient(ERROR_MESSAGE(rpl_error), client->getClientSocket());
 		

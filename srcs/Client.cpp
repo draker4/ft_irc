@@ -21,10 +21,10 @@ Client::Client(void)
 		std::cout << GREEN << "Client Default Constructor called " << RESET << std::endl;
 }
 
-Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickname(""),
-_oldNickname(""), _real_name(""), _username(""), _buffer(""), _mode(""),
+Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickName(""),
+_oldNickName(""), _realName(""), _userName(""), _buffer(""), _mode(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
-_password_ok(false), _deconnect(false), _isOperator(false)
+_passwordSet(false), _deconnect(false)
 {
 	if (DEBUG_CLIENT)
 		std::cout << GREEN << "Client Constructor called " << RESET << std::endl;
@@ -51,19 +51,21 @@ Client &Client::operator=(const Client &rhs)
 {
 	if (DEBUG_CLIENT)
 		std::cout << GREEN << "Client Assignment Operator called " << RESET << std::endl;
-	_nickname = rhs._nickname;
-	_real_name = rhs._nickname;
-	_username = rhs._username;
-	_password_ok = rhs._password_ok;
-	_client_addr = rhs._client_addr;
-	_client_addr_size = rhs._client_addr_size;
 	_serverSocket = rhs._serverSocket;
 	_clientSocket = rhs._clientSocket;
+	_nickName = rhs._nickName;
+	_oldNickName = rhs._oldNickName;	
+	_realName = rhs._nickName;
+	_userName = rhs._userName;
 	_buffer = rhs._buffer;
-	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
+	_mode = rhs._mode;
+	_client_addr = rhs._client_addr;
+	_client_addr_size = rhs._client_addr_size;
+	inet_ntop(_client_addr.ss_family, _get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
 	_registered = rhs._registered;
+	_passwordSet = rhs._passwordSet;
 	_deconnect = rhs._deconnect;
-	_isOperator = rhs._isOperator;
+	_channels = rhs._channels;
 	return *this;
 }
 
@@ -89,9 +91,9 @@ std::string	Client::getBuffer(void) const
 	return _buffer;
 }
 
-std::string	Client::getNickname(void) const
+std::string	Client::getNickName(void) const
 {
-	return _nickname;
+	return _nickName;
 }
 
 bool	Client::getDeconnect(void) const
@@ -99,27 +101,32 @@ bool	Client::getDeconnect(void) const
 	return _deconnect;
 }
 
-bool	Client::getPassword(void) const
+bool	Client::getPasswordStatus(void) const
 {
-	return _password_ok;
+	return _passwordSet;
 }
 
-std::string	Client::getUsername(void) const
+std::string	Client::getUserName(void) const
 {
-	return _username;
+	return _userName;
 }
 
 std::string	Client::getRealName(void) const
 {
-	return _real_name;
+	return _realName;
 }
 
-std::string	Client::getOldNickname(void) const
+std::string	Client::getOldNickName(void) const
 {
-	return _oldNickname;
+	return _oldNickName;
 }
 
-bool	Client::getMode(char c) const
+std::string	Client::getMode(void) const
+{
+	return _mode;
+}
+
+bool	Client::getModeStatus(char c) const
 {
 	for (itString it = _mode.begin(); it != _mode.end(); it++) {
 		if (*it == c)
@@ -135,20 +142,16 @@ Client::vecChannel	Client::getChannels() const
 
 /* --------------------------------  Setter  -------------------------------- */
 
-void Client::setNickname(std::string nickname)
-{
-	_nickname = nickname;
-}
-
 int Client::setClientSocket(void)
 {
-	if ((_clientSocket = accept(_serverSocket, (sockaddr *)&_client_addr, &_client_addr_size)) == -1)
-	{
+	if ((_clientSocket = accept(_serverSocket, (sockaddr *)&_client_addr,
+		&_client_addr_size)) == -1) {
 		return EXIT_FAILURE;
 	}
 
 	// get ipv4 or ipv6 address from client
-	inet_ntop(_client_addr.ss_family, get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
+	inet_ntop(_client_addr.ss_family, _get_addr((sockaddr *)&_client_addr),
+		_inet, sizeof(_inet));
 	return EXIT_SUCCESS;
 }
 
@@ -157,37 +160,42 @@ void	Client::setDeconnect(bool boolean)
 	_deconnect = boolean;
 }
 
-void	Client::setPassword(bool boolean)
+void	Client::setPasswordStatus(bool boolean)
 {
-	_password_ok = boolean;
+	_passwordSet = boolean;
 }
 
-void	Client::setUsername(std::string username)
+void Client::setNickName(std::string nickName)
 {
-	if (username.length() > USERLEN)
-		username = username.substr(0, 10);
-	_username = username;
+	_nickName = nickName;
 }
 
-void	Client::setRealName(std::string realname)
+void	Client::setUserName(std::string userName)
 {
-	_real_name = realname;
+	if (userName.length() > USERLEN)
+		userName = userName.substr(0, 10);
+	_userName = userName;
+}
+
+void	Client::setRealName(std::string realName)
+{
+	_realName = realName;
+}
+
+
+void	Client::setOldNickName(std::string oldNickName)
+{
+	_oldNickName = oldNickName;
 }
 
 void	Client::setRegistered(bool boolean)
 {
 	_registered = boolean;
-	
-}
-
-void	Client::setOldNickname(std::string old_nickname)
-{
-	_oldNickname = old_nickname;
 }
 
 /* --------------------------  Private functions  --------------------------- */
 
-void *Client::get_addr(sockaddr *saddr)
+void *Client::_get_addr(sockaddr *saddr)
 {
 	if (saddr->sa_family == AF_INET)
 		return &(((sockaddr_in *)saddr)->sin_addr);

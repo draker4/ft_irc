@@ -163,7 +163,7 @@ Server::vecOpeConfig Server::getOpeConf(void) const
 Client	*Server::getClient(std::string nickname) const
 {
 	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second->getNickname() == nickname)
+		if (it->second->getNickName() == nickname)
 			return it->second;
 	}
 	return NULL;
@@ -388,9 +388,9 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 
 void	Server::sendWelcome(Client *client) const
 {
-	sendClient(RPL_WELCOME(client->getNickname(), client->getUsername(), client->getInet()), client->getClientSocket());
-	sendClient(RPL_YOURHOST(client->getNickname()), client->getClientSocket());
-	sendClient(RPL_CREATED(client->getNickname(), _t_create_str), client->getClientSocket());
+	sendClient(RPL_WELCOME(client->getNickName(), client->getUserName(), client->getInet()), client->getClientSocket());
+	sendClient(RPL_YOURHOST(client->getNickName()), client->getClientSocket());
+	sendClient(RPL_CREATED(client->getNickName(), _t_create_str), client->getClientSocket());
 
 	// add message 004 and 005
 }

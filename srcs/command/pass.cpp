@@ -47,11 +47,11 @@ void pass(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "PASS command called" << RESET << std::endl;
 
 	if (message.getParameters().empty()) {
-		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PASS")), 
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("PASS")), 
 			client->getClientSocket());
 	}
 	else if (client->getRegistered()) {
-		server->sendClient(ERR_ALREADYREGISTERED(client->getNickname()),
+		server->sendClient(ERR_ALREADYREGISTERED(client->getNickName()),
 			client->getClientSocket());
 	}
 	else if (message.getParameters().front() != server->getPassword()) {
@@ -62,5 +62,5 @@ void pass(Client *client, const Message &message, Server *server)
 		client->setDeconnect(true);
 	}
 	else
-		client->setPassword(true);
+		client->setPasswordStatus(true);
 }

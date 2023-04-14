@@ -48,23 +48,24 @@ class Client
 		int 		getClientSocket(void) const;
 		bool 		getRegistered(void) const;
 		bool		getDeconnect(void) const;
-		bool		getPassword(void) const;
+		bool		getPasswordStatus(void) const;
 		std::string	getBuffer(void) const;
-		std::string	getNickname(void) const;
-		std::string	getOldNickname(void) const;
-		std::string	getUsername(void) const;
+		std::string	getNickName(void) const;
+		std::string	getOldNickName(void) const;
+		std::string	getUserName(void) const;
 		std::string	getRealName(void) const;
-		bool		getMode(char c) const;
+		std::string	getMode(void) const;
+		bool		getModeStatus(char c) const;
 		vecChannel	getChannels(void) const;
 
 		// Setter
-		void 		setNickname(std::string nickname);
-		void 		setOldNickname(std::string oldNickname);
 		int 		setClientSocket(void);
 		void		setDeconnect(bool boolean);
-		void		setPassword(bool boolean);
-		void		setUsername(std::string username);
-		void		setRealName(std::string realname);
+		void		setPasswordStatus(bool boolean);
+		void 		setNickName(std::string nickName);
+		void		setUserName(std::string userName);
+		void		setRealName(std::string realName);
+		void 		setOldNickName(std::string oldNickName);
 		void		setRegistered(bool boolean);
 
 		// Public member functions
@@ -77,18 +78,17 @@ class Client
 		int 					_serverSocket;
 		int						_clientSocket;
 		char 					_inet[INET6_ADDRSTRLEN];
-		std::string				_nickname;
-		std::string				_oldNickname;
-		std::string				_real_name;
-		std::string 			_username;
+		std::string				_nickName;
+		std::string				_oldNickName;
+		std::string				_realName;
+		std::string 			_userName;
 		std::string				_buffer;
 		std::string				_mode;
 		sockaddr_storage		_client_addr;
 		socklen_t 				_client_addr_size;
 		bool 					_registered;
-		bool					_password_ok;	
+		bool					_passwordSet;	
 		bool					_deconnect;
-		bool					_isOperator;
 		vecChannel				_channels;
 
 		// Constructors
@@ -96,7 +96,7 @@ class Client
 		Client(const Client &src);
 
 		// Private functions
-		void *get_addr(sockaddr *saddr);
+		void *_get_addr(sockaddr *saddr);
 };
 
 #endif

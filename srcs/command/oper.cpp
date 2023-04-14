@@ -35,7 +35,7 @@ void oper(Client *client, const Message &message, Server *server)
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "OPER command called" << RESET << std::endl;
 	if (message.getParameters().size() < 2) {
-		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), message.getCommand()),
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), message.getCommand()),
 			client->getClientSocket());
 	} else {
 		bool					rejectHost = false;	
@@ -47,7 +47,7 @@ void oper(Client *client, const Message &message, Server *server)
 			if (itOpeConf->name == name && itOpeConf->password == password) {
 				if (itOpeConf->host == client->getInet()) {
 					client->addMode('o');
-					server->sendClient(RPL_YOUREOPER(client->getNickname()),
+					server->sendClient(RPL_YOUREOPER(client->getNickName()),
 						client->getClientSocket());
 					return ;
 				} else {
@@ -57,10 +57,10 @@ void oper(Client *client, const Message &message, Server *server)
 			}
 		}
 		if (rejectHost) {
-			server->sendClient(ERR_NOOPERHOST(client->getNickname()),
+			server->sendClient(ERR_NOOPERHOST(client->getNickName()),
 				client->getClientSocket());
 		} else {
-			server->sendClient(ERR_PASSWDMISMATCH(client->getNickname()),
+			server->sendClient(ERR_PASSWDMISMATCH(client->getNickName()),
 				client->getClientSocket());
 		}
 	}

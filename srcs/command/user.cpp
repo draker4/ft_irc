@@ -43,22 +43,22 @@ void user(Client *client, const Message &message, Server *server)
 	
 	if (message.getParameters().empty() || message.getParameters().front() == "0"
 		|| message.getParameters().size() < 3 ) {
-		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("USER")), 
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("USER")), 
 			client->getClientSocket());
 	}
-	else if (!client->getPassword()) {
+	else if (!client->getPasswordStatus()) {
 		server->sendClient(ERROR_MESSAGE(std::string("Usage: PASS, NICK, USER.")),
 		client->getClientSocket());
 	}
 	else if (client->getRegistered()) {
-		server->sendClient(ERR_ALREADYREGISTERED(client->getNickname()), 
+		server->sendClient(ERR_ALREADYREGISTERED(client->getNickName()), 
 			client->getClientSocket());
 	}
 	else {
-		client->setUsername(message.getParameters()[0]);
+		client->setUserName(message.getParameters()[0]);
 		if (message.getParameters().size() > 3)
 			client->setRealName(message.getParameters()[3]);
-		if (client->getNickname().size()) {
+		if (client->getNickName().size()) {
 			client->setRegistered(true);
 			server->sendWelcome(client);
 		}

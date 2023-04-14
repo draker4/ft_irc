@@ -28,19 +28,41 @@ class	Channel
 		typedef std::map<Client *, std::string>				mapClients;
 		typedef std::map<Client *, std::string>::iterator	itMapClients;
 		
+		//Constructors
 		Channel(void);
 		Channel(const Channel &src);
+
+		//Destructor
 		~Channel(void);
 
+		//Assignement operator
 		Channel	&operator=(const Channel &rhs);
 		
 		// getter
-		mapClients			getClients(void) const;
+		mapClients	getClients(void) const;
+
+		// setter
+
+		// Public member functions
+
+		//Exceptions
+		class ChannelException : public std::exception
+		{
+			private:
+				const char	*_msg;
+			public:
+				ChannelException( const char *msg ) : _msg( msg ) {}
+				virtual const char *what() const throw() {
+					return ( _msg );
+				};
+		};
 
 	private:
 		std::string			_key;
 		mapClients			_clients;
 		// const unsigned int	_client_limit;
+
+		// Private functions
 };
 
 #endif

@@ -59,7 +59,7 @@ bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 	for (Server::itMapClient itClient = clientList.begin();
 		itClient != clientList.end(); itClient++) {
 		if (itClient->second->getClientSocket() != client->getClientSocket()
-			&& itClient->second->getNickname() == nickname)
+			&& itClient->second->getNickName() == nickname)
 			return (true);
 	}
 	return (false);
@@ -70,7 +70,7 @@ void nick(Client *client, const Message &message, Server *server)
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "NICK command called" << RESET << std::endl;
 	
-	if (!client->getPassword()) {
+	if (!client->getPasswordStatus()) {
 		server->sendClient(ERROR_MESSAGE(std::string("Usage: PASS, NICK, USER.")),
 		client->getClientSocket());
 	}
@@ -85,14 +85,14 @@ void nick(Client *client, const Message &message, Server *server)
 			server->sendClient(ERR_NICKNAMEINUSE(message.getParameters()[0]), 
 				client->getClientSocket());
 		} else {
-			client->setOldNickname(client->getNickname());
-			client->setNickname(message.getParameters()[0]);
-			if (!client->getRegistered() && client->getUsername().size()) {
+			client->setOldNickName(client->getNickName());
+			client->setNickName(message.getParameters()[0]);
+			if (!client->getRegistered() && client->getUserName().size()) {
 				client->setRegistered(true);
 				server->sendWelcome(client);
 			} else {
-				server->sendClient(RPL_NICK(client->getOldNickname(), client->getNickname(),
-					client->getUsername(), client->getInet()), client->getClientSocket());
+				server->sendClient(RPL_NICK(client->getOldNickName(), client->getNickName(),
+					client->getUserName(), client->getInet()), client->getClientSocket());
 			}
 		}
 	}

@@ -123,7 +123,7 @@ class Server
 		// Assignment Operator
 		Server &operator=(const Server &rhs);
 
-		// Private member functions
+		// Private functions
 		void	_addUser(vecPollfd &new_fds);
 		void	_receiveData(itVecPollfd &it);
 		void	_handleCommand(std::string msg, int clientSocket);

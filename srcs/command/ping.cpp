@@ -36,7 +36,7 @@ void ping(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "PING command called" << RESET << std::endl;
 	
 	if (message.getParameters().empty())
-		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickname(), std::string("PING")), 
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("PING")), 
 			client->getClientSocket());
 	else
 	{
@@ -49,7 +49,7 @@ void ping(Client *client, const Message &message, Server *server)
 		ss << std::fixed << strtod(message.getParameters()[0].c_str(), NULL) - time;
 		std::cout << RED << std::string(ss.str()) << std::endl;
 
-		server->sendClient(RPL_CMD(client->getNickname(), client->getUsername(), client->getInet(),
+		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
 		std::string("PONG"), SERVERNAME +std::string(" ") + std::string(ss.str())),
 			client->getClientSocket());
 	}
