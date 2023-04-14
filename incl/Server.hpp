@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 13:43:39 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:12:40 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ class Server
 		typedef std::vector<t_opeConfig>						vecOpeConfig;
 		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
 		typedef std::vector<Channel *>							vecChannel;
-		typedef std::vector<Channel *>::iterator				itVecChannel;
+		typedef std::vector<Channel *>::iterator			itVecChannel;
 
 		// Constructors
 		Server(std::string port, std::string password);
@@ -89,6 +89,7 @@ class Server
 		mapClient		getClients(void) const;
 		Client			*getClient(std::string nickname) const;
 		vecOpeConfig	getOpeConf(void) const;
+		Channel			*getChannel(std::string name);
 
 		// Setter
 
@@ -97,6 +98,7 @@ class Server
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
 		void		sendWelcome(Client *client) const;
 		void		deleteClient(Client *client);
+		void		addChannel(Channel *channel);
 	
 		// Exceptions
 		class ServerException : public std::exception
@@ -121,6 +123,7 @@ class Server
 		time_t			_t_create;
 		std::string		_t_create_str;
 		vecOpeConfig	_opeConf;
+		vecChannel		_channels;
 
 		// Constructors
 		Server(void);

@@ -231,3 +231,8 @@ void	Client::removeMode(char c)
 		i++;
 	}
 }
+
+void	Client::addChannel(Channel *channel)
+{
+	_channels.push_back(channel);
+}

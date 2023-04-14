@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 13:08:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:12:34 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,17 @@ Client	*Server::getClient(std::string nickname) const
 	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
 		if (it->second->getNickName() == nickname)
 			return it->second;
+	}
+	return NULL;
+}
+
+Channel	*Server::getChannel(std::string name)
+{
+	if (_channels.empty())
+		return NULL;
+	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+		if ((*it)->getName() == name)
+			return *it;
 	}
 	return NULL;
 }
@@ -416,4 +427,9 @@ void	Server::deleteClient(Client *client)
 		}
 	}
 	delete client;
+}
+
+void	Server::addChannel(Channel *channel)
+{
+	_channels.push_back(channel);
 }

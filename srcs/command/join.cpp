@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 14:52:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:18:16 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,34 @@ void join(Client *client, const Message &message, Server *server)
 		}
 		
 		for (itVecString it = channels.begin(); it != channels.end(); it++) {
+			
+			// check first char of the channel name
 			if ((*it)[0] == '#' || (*it)[0] == '&')
 				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
 					client->getClientSocket());
+			
+			// check how many channels the client already follows
 			if (client->getChannels().size() >= CHANLIMIT)
 				server->sendClient(ERR_TOOMANYCHANNELS(client->getNickName(), *it), 
 					client->getClientSocket());
+			
+			// check if the channel exists
+			
+			Channel	*channel = server->getChannel(*it);
+			if (!channel) {
+				
+				// create channel
+				channel = new Channel(*it, client);
+				
+				// add channel to server and to client's channel list
+				server->addChannel(channel);
+				client->addChannel(channel);
+				
+			} else {
+				
+				// check if channel need a key
+				// channel->addClient(client);
+			}
 		}
 	}
 }

@@ -73,6 +73,7 @@ class Client
 		void		clearBuffer(void);
 		void		addMode(char c);
 		void		removeMode(char c);
+		void		addChannel(Channel *channel);
 	
 	private:
 		int 					_serverSocket;

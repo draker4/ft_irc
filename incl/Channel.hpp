@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 18:11:14 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:17:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class	Channel
 		typedef std::map<std::string, t_connect>::iterator	itMapClients;
 		typedef std::vector<std::string>					vecNickName;
 		typedef std::vector<std::string>::iterator			itVecNickName;
+		typedef std::string::const_iterator						itString;
 		
 		//Constructors
 		Channel(std::string name, Client *client);
@@ -45,6 +46,8 @@ class	Channel
 		
 		// getter
 		mapClients	getClients(void) const;
+		std::string	getName(void) const;
+		bool		getModeStatus(char c) const;
 
 		// setter
 
