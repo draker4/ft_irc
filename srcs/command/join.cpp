@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 17:32:21 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 18:35:09 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,24 +88,28 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 		client->addChannel(channel);
 		channel->addClient(client);
 		Channel::mapClients	clients = channel->getClients();
+		std::string	list_names = "";
 
 		// send JOIN message to all clients in the channel
 		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
 				client->getInet(), std::string("JOIN"), channel->getName()), 
 				it->second.client->getClientSocket());
+			if (it != clients.begin())
+				list_names.append(" ");
+			list_names.append(channel->getPrefix(it->second.client) + it->second.client->getNickName());
 		}
-		
+
 		//send channel topic
 		if (!channel->getTopic().empty())
 			server->sendClient(RPL_TOPIC(client->getNickName(), channel->getName(),
 				channel->getTopic()), client->getClientSocket());
 		
+		// send channel topic last time
+		
 		// send list of names in the current channel
-		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-			server->sendClient(RPL_NAMREPLY(it->second.client->getNickName(), channel->getSymbol(),
-						channel->getName(), channel->getPrefix(client)), client->getClientSocket());
-		}
+		server->sendClient(RPL_NAMREPLY(client->getNickName(), channel->getSymbol(),
+					channel->getName(), list_names), client->getClientSocket());
 		server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
 			client->getClientSocket());
 	}
@@ -120,7 +124,7 @@ void join(Client *client, const Message &message, Server *server)
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("JOIN")), 
 			client->getClientSocket());
 	}
-	if (message.getParameters()[0] == "0") {
+	else if (message.getParameters()[0] == "0") {
 		//PART all channels
 	}
 	else {
@@ -161,7 +165,8 @@ void join(Client *client, const Message &message, Server *server)
 					client->getInet(), std::string("JOIN"), channel->getName()), 
 					client->getClientSocket());
 				server->sendClient(RPL_NAMREPLY(client->getNickName(), channel->getSymbol(),
-					channel->getName(), channel->getPrefix(client)), client->getClientSocket());
+					channel->getName(), channel->getPrefix(client) + client->getNickName()),
+					client->getClientSocket());
 				server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
 					client->getClientSocket());
 				

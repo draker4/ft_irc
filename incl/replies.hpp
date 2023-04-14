@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 17:35:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 18:11:31 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@
 		+ " " + channel +" :" + topic + "\r\n")
 
 // 353 - JOIN
-# define RPL_NAMREPLY(nickName, symbol, channel, prefix) ( ":" + SERVERNAME + " 353 " + nickName \
-		+ " " + symbol + " " + channel + " :" + prefix + nickName + "\r\n")
+# define RPL_NAMREPLY(nickName, symbol, channel, names) ( ":" + SERVERNAME + " 353 " + nickName \
+		+ " " + symbol + " " + channel + " :" + names + "\r\n")
 
 // 366 - JOIN
 # define RPL_ENDOFNAMES(nickName, channel) ( ":" + SERVERNAME + " 366 " + nickName \
