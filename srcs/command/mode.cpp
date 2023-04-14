@@ -150,8 +150,15 @@ void channelMode (Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "MODE for channel" << RESET << std::endl;
-	server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(),
+	Channel *channelModed = server->getChannel(message.getParameters()[0]);
+	if (!channelModed) { // if channel doesn't exist : ERR_NOSUCHNICK
+		server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(),
 			message.getParameters()[0]), client->getClientSocket());
+	} else if (message.getParameters().size() == 1) { 
+		server->sendClient(RPL_CHANNELMODEIS(client->getNickName(),
+			channelModed->getName(), channelModed->getMode()),
+			client->getClientSocket());
+	}
 }
 
 void mode(Client *client, const Message &message, Server *server)

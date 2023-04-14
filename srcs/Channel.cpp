@@ -22,7 +22,7 @@ Channel::Channel(void)
 		std::cout << GREEN << "Channel Default Constructor called " << RESET << std::endl;
 }
 
-Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), _mode(""),
+Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), _mode("nt"),
 	_topic(""), _clientLimit(0)
 {
 	if (DEBUG_CHANNEL)
@@ -102,6 +102,11 @@ char	Channel::getPrefix(Client *client) const
 			return it->second.prefix;
 	}
 	return 0;
+}
+
+std::string	Channel::getMode(void) const
+{
+	return _mode;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

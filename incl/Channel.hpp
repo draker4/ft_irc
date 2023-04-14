@@ -52,6 +52,7 @@ class	Channel
 		std::string		getKey(void) const;
 		mapClients		getClients(void) const;
 		bool			getModeStatus(char c) const;
+		std::string		getMode(void) const;
 
 		// setter
 
