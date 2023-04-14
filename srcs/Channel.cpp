@@ -22,7 +22,8 @@ Channel::Channel(void)
 		std::cout << GREEN << "Channel Default Constructor called " << RESET << std::endl;
 }
 
-Channel::Channel(Client *client) : _mode(""), _topic(""), _clientLimit(0)
+Channel::Channel(std::string name, Client *client) : _name(name), _mode(""),
+	_topic(""), _clientLimit(0)
 {
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
