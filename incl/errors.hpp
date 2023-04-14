@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:29:32 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:46:45 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,17 @@
 # define ERR_PASSWDMISMATCH(client) ( ":" + SERVERNAME + " 464 " + client \
 		+ " :Password incorrect\r\n")
 
+// 471 - JOIN
+# define ERR_CHANNELISFULL(client, channel) ( ":" + SERVERNAME + " 471 " + client \
+		+ " " + channel + " :Cannot join channel (+l)\r\n")
+
+// 473 - JOIN
+# define ERR_INVITEONLYCHAN(client, channel) ( ":" + SERVERNAME + " 473 " + client \
+		+ " " + channel + " :Cannot join channel (+i)\r\n")
+
 // 474 - JOIN
-// # define ERR_BANNEDFROMCHAN
+# define ERR_BANNEDFROMCHAN(client, channel) ( ":" + SERVERNAME + " 474 " + client \
+		+ " " + channel + " :Cannot join channel (+b)\r\n")
 
 // 475 - JOIN
 # define ERR_BADCHANNELKEY(client, channel) ( ":" + SERVERNAME + " 475 " + client \
