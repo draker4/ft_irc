@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 16:28:39 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 17:33:14 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ char	Channel::getSymbol(void) const
 	return _symbol;
 }
 
-char	Channel::getPrefix(Client *client) const
+std::string	Channel::getPrefix(Client *client) const
 {
 	if (_clients.empty())
 		return 0;
@@ -102,6 +102,11 @@ char	Channel::getPrefix(Client *client) const
 			return it->second.prefix;
 	}
 	return 0;
+}
+
+std::string	Channel::getTopic(void) const
+{
+	return _topic;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
@@ -116,6 +121,7 @@ void Channel::addClient(Client *client)
 
 	newClient.client = client;
 	newClient.oper = '\0';
+	newClient.prefix = '\0';
 	_clients.insert(std::pair<std::string, t_connect>(client->getNickName(), newClient));
 }
 

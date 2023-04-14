@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 16:52:42 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 17:32:21 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,11 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 		}
 		
 		//send channel topic
+		if (!channel->getTopic().empty())
+			server->sendClient(RPL_TOPIC(client->getNickName(), channel->getName(),
+				channel->getTopic()), client->getClientSocket());
 		
+		// send list of names in the current channel
 		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 			server->sendClient(RPL_NAMREPLY(it->second.client->getNickName(), channel->getSymbol(),
 						channel->getName(), channel->getPrefix(client)), client->getClientSocket());
@@ -121,19 +125,11 @@ void join(Client *client, const Message &message, Server *server)
 	}
 	else {
 		vecString	channels = split(message.getParameters()[0], ",");
-		
-		// for (itVecString it = channels.begin(); it != channels.end(); it++) {
-		// 	std::cout << UNDERLINE << PURPLE << *it << RESET << std::endl;
-		// }
-		
+
 		vecString	keys;
 		if (message.getParameters().size() > 1)
 			keys = split(message.getParameters()[1], ",");
 		itVecString	itKeys = keys.begin();
-		
-		// for (itVecString it = keys.begin(); it != keys.end(); it++) {
-		// 	std::cout << UNDERLINE << GREEN << *it << RESET << std::endl;
-		// }
 		
 		for (itVecString it = channels.begin(); it != channels.end(); it++) {
 			
@@ -152,7 +148,6 @@ void join(Client *client, const Message &message, Server *server)
 			}
 			
 			// check if the channel exists
-			
 			Channel	*channel = server->getChannel(*it);
 			if (!channel) {
 				

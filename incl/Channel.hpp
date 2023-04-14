@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 16:28:36 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 17:32:55 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct	s_connect
 {
 	Client		*client;
 	char		oper;
-	char		prefix;
+	std::string	prefix;
 }				t_connect;
 
 class	Channel
@@ -47,9 +47,10 @@ class	Channel
 		
 		// getter
 		char			getSymbol(void) const;
-		char			getPrefix(Client *client) const;
+		std::string		getPrefix(Client *client) const;
 		std::string		getName(void) const;
 		std::string		getKey(void) const;
+		std::string		getTopic(void) const;
 		mapClients		getClients(void) const;
 		bool			getModeStatus(char c) const;
 
