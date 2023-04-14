@@ -30,7 +30,7 @@ class Client
 {
 	public:
 		// Types
-		typedef std::vector<Channel>			vecChannel;
+		typedef std::vector<Channel *>			vecChannel;
 		typedef std::string::const_iterator		itString;
 		typedef std::vector<Channel>::iterator	itVecChannel;
 

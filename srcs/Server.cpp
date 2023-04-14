@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 18:38:05 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 13:08:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,7 @@ void Server::_receiveData(itVecPollfd &it)
 			std::cout << "Client disconnected, fd = " << it->fd << std::endl;
 		}
 		it--;
-		deleteClient(it + 1);
+		_deleteClient(it + 1);
 	} else {
 		if (DEBUG_SERVER) {
 			std::cout << YELLOW << "Server got :" << buf << "from "
@@ -237,7 +237,7 @@ void Server::_receiveData(itVecPollfd &it)
 			_clients[it->fd]->clearBuffer();
 			if (_clients[it->fd]->getDeconnect()) {
 				it--;
-				deleteClient(it + 1);
+				_deleteClient(it + 1);
 			}
 		}
 	}
@@ -326,6 +326,14 @@ void Server::_initOperatorConfig(void)
 	}
 }
 
+void	Server::_deleteClient(itVecPollfd it)
+{
+	close(it->fd);
+	delete _getClient(it->fd);
+	_clients.erase(it->fd);
+	_fds.erase(it);
+}
+
 /* -----------------------  Public member functions  ------------------------ */
 
 void Server::launch(void)
@@ -395,10 +403,17 @@ void	Server::sendWelcome(Client *client) const
 	// add message 004 and 005
 }
 
-void	Server::deleteClient(itVecPollfd it)
+void	Server::deleteClient(Client *client)
 {
-	close(it->fd);
-	delete _getClient(it->fd);
-	_clients.erase(it->fd);
-	_fds.erase(it);
+	int	clientSocket = client->getClientSocket();
+
+	close(clientSocket);
+	_clients.erase(clientSocket);
+	for (itVecPollfd it = _fds.begin(); it != _fds.end(); it++) {
+		if (it->fd == clientSocket) {
+			_fds.erase(it);
+			break ;
+		}
+	}
+	delete client;
 }

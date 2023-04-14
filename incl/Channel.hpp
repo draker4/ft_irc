@@ -38,15 +38,10 @@ class	Channel
 		typedef std::vector<std::string>::iterator			itVecNickName;
 		
 		//Constructors
-		Channel(void);
 		Channel(Client *client);
-		Channel(const Channel &src);
 
 		//Destructor
 		~Channel(void);
-
-		//Assignement operator
-		Channel	&operator=(const Channel &rhs);
 		
 		// getter
 		mapClients	getClients(void) const;
@@ -69,14 +64,21 @@ class	Channel
 		};
 
 	private:
-		mapClients			_clients;
-		vecNickName			_banned;
-		vecNickName			_invited;
-		std::string			_mode;
-		std::string			_topic;
-		unsigned int		_clientLimit;
+		mapClients		_clients;
+		vecNickName		_banned;
+		vecNickName		_invited;
+		std::string		_mode;
+		std::string		_topic;
+		unsigned int	_clientLimit;
 		time_t			_t_create;
 		std::string		_t_create_str;
+
+		//constructor
+		Channel(void);
+		Channel(const Channel &src);
+
+		//Assignement operator
+		Channel	&operator=(const Channel &rhs);
 
 		// Private functions
 };

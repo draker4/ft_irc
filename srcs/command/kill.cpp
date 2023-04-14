@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 18:52:09 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 13:08:26 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,15 +61,15 @@ void kill(Client *client, const Message &message, Server *server)
 		std::string("KILL"), rpl_kill), to_kill->getClientSocket());
 		
 		// send quit message to all users in channel
-		std::string	rpl_quit = ":Killed by " + client->getUserName() + " because " + message.getParameters()[1];
-		Client::vecChannel	channels = to_kill->getChannels();
-		for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
-			Channel::mapClients	clients = it->getClients();
-			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
-				server->sendClient(RPL_CMD(to_kill->getNickName(), to_kill->getUserName(), to_kill->getInet(),
-					std::string("QUIT"), rpl_quit), it_client->second.client->getClientSocket());
-			}
-		}
+		// std::string	rpl_quit = ":Killed by " + client->getUserName() + " because " + message.getParameters()[1];
+		// Client::vecChannel	channels = to_kill->getChannels();
+		// for (Client::itVecChannel it = channels->begin(); it != channels.end(); it++) {
+		// 	Channel::mapClients	clients = it->getClients();
+		// 	for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+		// 		server->sendClient(RPL_CMD(to_kill->getNickName(), to_kill->getUserName(), to_kill->getInet(),
+		// 			std::string("QUIT"), rpl_quit), it_client->second.client->getClientSocket());
+		// 	}
+		// }
 		
 		// send error msg to client being killed
 		std::string	rpl_error = "Closing link: " + SERVERNAME + " Killed " + client->getUserName() + " because " +
@@ -77,8 +77,6 @@ void kill(Client *client, const Message &message, Server *server)
 		server->sendClient(ERROR_MESSAGE(rpl_error), client->getClientSocket());
 		
 		// deconnect client
-		to_kill->setDeconnect(true);
-		
-		//deconnecting after receiving data, see where to deconnect client !!
+		server->deleteClient(to_kill);
 	}
 }

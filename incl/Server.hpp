@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 18:38:21 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 13:09:04 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ class Server
 		typedef std::map<std::string, CmdFunction>::iterator	itMapCommand;
 		typedef std::vector<t_opeConfig>						vecOpeConfig;
 		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
+		typedef std::vector<Channel *>							vecChannel;
+		typedef std::vector<Channel *>::iterator				itVecChannel;
 
 		// Constructors
 		Server(std::string port, std::string password);
@@ -89,8 +91,8 @@ class Server
 		// Public member functions
 		void		launch(void);
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
-		void		deleteClient(itVecPollfd it);
 		void		sendWelcome(Client *client) const;
+		void		deleteClient(Client *client);
 	
 		// Exceptions
 		class ServerException : public std::exception
@@ -129,6 +131,7 @@ class Server
 		void	_handleCommand(std::string msg, int clientSocket);
 		void	_initCommands(void);
 		void	_initOperatorConfig(void);
+		void	_deleteClient(itVecPollfd it);
 		Client	*_getClient(int clientSocket);
 };
 
