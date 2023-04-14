@@ -30,9 +30,14 @@
 // 221 - MODE
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")
+
 // 324 - MODE
 # define RPL_CHANNELMODEIS(nickName, channel, channelModes) ( ":" + SERVERNAME + " 324 " + nickName \
 		+ " " + channel + " :+" + channelModes + "\r\n")
+
+// 329 - MODE
+# define RPL_CREATIONTIME(nickName, channel, creationTime) ( ":" + SERVERNAME + " 329 " + nickName \
+		+ " " + channel + " :" + creationTime + "\r\n")
 
 // 332 - JOIN
 # define RPL_TOPIC(nickName, channel, topic) ( ":" + SERVERNAME + " 332 " + nickName \

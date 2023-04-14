@@ -12,6 +12,7 @@
 
 #include "Channel.hpp"
 # include "Client.hpp"
+#include <sstream>
 
 
 /* -----------------------------  Constructors  ----------------------------- */
@@ -31,10 +32,11 @@ Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), 
 	_clients[client->getNickName()].oper = 'q'; // q = owner
 	_clients[client->getNickName()].prefix = '~'; // ~ = owner
 	
-	// Server created
-	_t_create = time(NULL);
-	_t_create_str = ctime(&_t_create);
-	_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
+	// Channel created
+	std::stringstream convert;
+	convert << static_cast< long long >( time(NULL) );
+	_timeCreated = convert.str();
+	//_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
 }
 
 Channel::Channel(const Channel &src)
@@ -112,6 +114,11 @@ std::string	Channel::getTopic(void) const
 std::string	Channel::getMode(void) const
 {
 	return _mode;
+}
+
+std::string	Channel::getTimeCreated(void)
+{
+	return _timeCreated;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
