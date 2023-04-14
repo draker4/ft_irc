@@ -54,6 +54,7 @@ class	Channel
 		mapClients		getClients(void) const;
 		bool			getModeStatus(char c) const;
 		std::string		getMode(void) const;
+		std::string		getTimeCreated(void);
 
 		// setter
 
@@ -85,8 +86,7 @@ class	Channel
 		std::string		_mode;
 		std::string		_topic;
 		unsigned int	_clientLimit;
-		time_t			_t_create;
-		std::string		_t_create_str;
+		std::string		_timeCreated;
 
 		//constructor
 		Channel(void);
