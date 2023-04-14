@@ -55,22 +55,22 @@
  * 
  */
 
-void userMode (Client *client, Message::vecString parameters, Server *server)
+void userMode (Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "MODE for user" << RESET << std::endl;
-	(void)parameters;
-	(void)server;
-	(void)client;
+	Client *clientModed = server->getClient(message.getParameters()[0]);
+	if (!clientModed)
+		server->sendClient(ERR_NOSUCHNICK(client->getNickName(),
+			message.getParameters()[0]), client->getClientSocket());
 }
 
-void channelMode (Client *client, Message::vecString parameters, Server *server)
+void channelMode (Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "MODE for channel" << RESET << std::endl;
-	(void)parameters;
-	(void)server;
-	(void)client;
+	server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(),
+			message.getParameters()[0]), client->getClientSocket());
 }
 
 void mode(Client *client, const Message &message, Server *server)
@@ -82,8 +82,8 @@ void mode(Client *client, const Message &message, Server *server)
 		client->getClientSocket());
 	} else if (message.getParameters()[0][0] == '#'
 		|| message.getParameters()[0][0] == '&') {
-		channelMode (client, message.getParameters(), server);
+		channelMode (client, message, server);
 	} else {
-		userMode (client, message.getParameters(), server);
+		userMode (client, message, server);
 	}
 }

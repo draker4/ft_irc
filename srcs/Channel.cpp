@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:17:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:20:16 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,14 @@ Channel	&Channel::operator=(const Channel &rhs)
 
 /* --------------------------------  Getter  -------------------------------- */
 
-Channel::mapClients	Channel::getClients(void) const
-{
-	return _clients;
-}
-
 std::string	Channel::getName(void) const
 {
 	return _name;
+}
+
+Channel::mapClients	Channel::getClients(void) const
+{
+	return _clients;
 }
 
 bool	Channel::getModeStatus(char c) const

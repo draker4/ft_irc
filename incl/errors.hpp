@@ -15,11 +15,11 @@
 
 # include "Server.hpp"
 
-// 401 - KILL
+// 401 - KILL - MODE
 # define ERR_NOSUCHNICK(client, nickname) ( ":" + SERVERNAME + " 401 " + client + " " \
-		+ nickname + " :No such nick\r\n")
+		+ nickname + " :No such nick/channel\r\n")
 
-// 403 - JOIN
+// 403 - JOIN - MODE
 # define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
 		+ channel + " :No such channel\r\n")
 

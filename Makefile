@@ -168,7 +168,7 @@ runl				:	all
 						${LEAKS} ./${NAME} 
 
 runs				:	debug
-						./${DEBUG}
+						./${DEBUG} 4242 6262
 
 rund				:	debug
 						${LLDB} ./${DEBUG}

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:17:57 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 15:19:45 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ class	Channel
 		~Channel(void);
 		
 		// getter
-		mapClients	getClients(void) const;
-		std::string	getName(void) const;
-		bool		getModeStatus(char c) const;
+		std::string		getName(void) const;
+		mapClients		getClients(void) const;
+		bool			getModeStatus(char c) const;
 
 		// setter
 
