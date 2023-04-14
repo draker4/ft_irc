@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:15 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 14:52:40 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,60 @@
  * 	[CLIENT]  JOIN #foo,#bar fubar,foobar
  * 	[SERVER]; join channel #foo using key "fubar" and channel #bar using key "foobar".
  */
+
+typedef std::vector<std::string>			vecString;
+typedef std::vector<std::string>::iterator	itVecString;
+typedef	std::string::iterator				itString;
+
+static vecString	split(std::string str, std::string c)
+{
+	vecString	vec;
+	size_t		prev = 0;
+	size_t		pos;
+
+	while ((pos = str.find_first_of(c, prev)) != std::string::npos) {
+		vec.push_back(str.substr(prev, pos - prev));
+		prev = pos + 1;
+	}
+	if (str[prev])
+		vec.push_back(str.substr(prev, str.length() - prev));
+	return vec;
+}
+
 void join(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "JOIN command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	
+	if (message.getParameters().empty()) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("JOIN")), 
+			client->getClientSocket());
+	}
+	if (message.getParameters()[0] == "0") {
+		//PART all channels
+	}
+	else {
+		vecString	channels = split(message.getParameters()[0], ",");
+		
+		for (itVecString it = channels.begin(); it != channels.end(); it++) {
+			std::cout << UNDERLINE << PURPLE << *it << RESET << std::endl;
+		}
+		
+		vecString	keys;
+		if (message.getParameters().size() > 1)
+			keys = split(message.getParameters()[1], ",");
+		
+		for (itVecString it = keys.begin(); it != keys.end(); it++) {
+			std::cout << UNDERLINE << GREEN << *it << RESET << std::endl;
+		}
+		
+		for (itVecString it = channels.begin(); it != channels.end(); it++) {
+			if ((*it)[0] == '#' || (*it)[0] == '&')
+				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
+					client->getClientSocket());
+			if (client->getChannels().size() >= CHANLIMIT)
+				server->sendClient(ERR_TOOMANYCHANNELS(client->getNickName(), *it), 
+					client->getClientSocket());
+		}
+	}
 }

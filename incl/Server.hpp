@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 13:09:04 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 13:43:39 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@
 # define DEBUG_SERVER true
 # define SERVERNAME std::string("localhost")
 # define VERSION std::string("1.0")
+
+// RPL_ISUPPORT
+# define CHANLIMIT	10
+
 # define MAX_CLIENTS 1000
 
 enum ErrorNum {

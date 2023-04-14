@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/13 18:25:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 14:52:04 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@
 // 401 - KILL
 # define ERR_NOSUCHNICK(client, nickname) ( ":" + SERVERNAME + " 401 " + client + " " \
 		+ nickname + " :No such nick\r\n")
+
+// 403 - JOIN
+# define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
+		+ channel + " :No such channel\r\n")
+
+// 405 - JOIN
+# define ERR_TOOMANYCHANNELS(client, channel) ( ":" + SERVERNAME + " 405 " + client + " " \
+		+ channel + " :You have joined too many channels\r\n")
 
 // 421 - Server::_handleCommand
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":" + SERVERNAME + " 421 " + client + " " \
