@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 17:33:14 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 17:36:15 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Channel::Channel(void)
 		std::cout << GREEN << "Channel Default Constructor called " << RESET << std::endl;
 }
 
-Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), _mode(""),
+Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), _mode("nt"),
 	_topic(""), _clientLimit(0)
 {
 	if (DEBUG_CHANNEL)
@@ -107,6 +107,11 @@ std::string	Channel::getPrefix(Client *client) const
 std::string	Channel::getTopic(void) const
 {
 	return _topic;
+}
+
+std::string	Channel::getMode(void) const
+{
+	return _mode;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

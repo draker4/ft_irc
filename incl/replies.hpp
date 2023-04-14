@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 17:15:01 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 17:35:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@
 // 221 - MODE
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")
+// 324 - MODE
+# define RPL_CHANNELMODEIS(nickName, channel, channelModes) ( ":" + SERVERNAME + " 324 " + nickName \
+		+ " " + channel + " :+" + channelModes + "\r\n")
 
 // 332 - JOIN
 # define RPL_TOPIC(nickName, channel, topic) ( ":" + SERVERNAME + " 332 " + nickName \
