@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 17:36:15 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:13:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,11 @@ std::string	Channel::getMode(void) const
 std::string	Channel::getTimeCreated(void)
 {
 	return _timeCreated;
+}
+
+std::string	Channel::getTimeTopic(void)
+{
+	return _timeLastTopic;
 }
 
 /* --------------------------------  Setter  -------------------------------- */

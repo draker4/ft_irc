@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:12:34 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:02:49 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,6 +312,7 @@ void Server::_initCommands(void)
 	_commands["QUIT"] = &quit;
 	_commands["TOPIC"] = &topic;
 	_commands["USER"] = &user;
+	_commands["WHO"] = &who;
 }
 
 void Server::_initOperatorConfig(void)

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 17:32:55 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:13:19 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ class	Channel
 		bool			getModeStatus(char c) const;
 		std::string		getMode(void) const;
 		std::string		getTimeCreated(void);
+		std::string		getTimeTopic(void);
 
 		// setter
 
@@ -87,6 +88,7 @@ class	Channel
 		std::string		_topic;
 		unsigned int	_clientLimit;
 		std::string		_timeCreated;
+		std::string		_timeLastTopic;
 
 		//constructor
 		Channel(void);

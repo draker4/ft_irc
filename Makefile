@@ -54,7 +54,8 @@ SRCS_C			=	cap.cpp		\
 					privmsg.cpp	\
 					quit.cpp	\
 					topic.cpp	\
-					user.cpp
+					user.cpp	\
+					who.cpp
 
 OBJS			=	${SRCS:%.cpp=${DIR_OBJS}%.o}
 OBJS_C			=	${SRCS_C:%.cpp=${DIR_OBJS_C}%.o}

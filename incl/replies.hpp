@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 18:11:31 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:17:55 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")
 
+// 315 - WHO
+# define RPL_ENDOFWHO(nickName, mask) ( ":" + SERVERNAME + " 315 " + nickName + " " \
+		+ mask + " :End of WHO list\r\n")
+
 // 324 - MODE
 # define RPL_CHANNELMODEIS(nickName, channel, channelModes) ( ":" + SERVERNAME + " 324 " + nickName \
 		+ " " + channel + " :+" + channelModes + "\r\n")
@@ -41,7 +45,16 @@
 
 // 332 - JOIN
 # define RPL_TOPIC(nickName, channel, topic) ( ":" + SERVERNAME + " 332 " + nickName \
-		+ " " + channel +" :" + topic + "\r\n")
+		+ " " + channel + " :" + topic + "\r\n")
+
+// 333 - JOIN
+# define RPL_TOPICWHOTIME(nickName, channel, setat) ( ":" + SERVERNAME + " 333 " + nickName \
+		+ " " + channel + " " + nickName + " " + setat + "\r\n")
+
+// 352 - WHO
+# define RPL_WHOREPLY(client, nickname, username, realname, host, channel, flags) ( ":" + SERVERNAME \
+	+ " 352 " + client + " " + channel + " " + username + " " + host + " " + SERVERNAME + " " \
+	+ nickname + " " + flags + " :0 " + realname + "\r\n")
 
 // 353 - JOIN
 # define RPL_NAMREPLY(nickName, symbol, channel, names) ( ":" + SERVERNAME + " 353 " + nickName \

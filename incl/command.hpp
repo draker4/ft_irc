@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 14:10:10 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:03:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,8 @@ void	topic(Client *client, const Message &message, Server *server);
 // The USER command is used at the beginning of a connection to specify the username
 // and realname of a new user.
 void	user(Client *client, const Message &message, Server *server);
+
+// This command is used to query a list of users who match the provided mask.
+void	who(Client *client, const Message &message, Server *server);
 
 #endif

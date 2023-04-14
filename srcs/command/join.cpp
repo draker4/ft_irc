@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 18:35:09 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/14 19:57:00 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,12 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 		}
 
 		//send channel topic
-		if (!channel->getTopic().empty())
+		if (!channel->getTopic().empty()) {
 			server->sendClient(RPL_TOPIC(client->getNickName(), channel->getName(),
 				channel->getTopic()), client->getClientSocket());
-		
-		// send channel topic last time
+			server->sendClient(RPL_TOPICWHOTIME(client->getNickName(), channel->getName(),
+				channel->getTimeTopic()), client->getClientSocket());
+		}
 		
 		// send list of names in the current channel
 		server->sendClient(RPL_NAMREPLY(client->getNickName(), channel->getSymbol(),
@@ -141,14 +142,14 @@ void join(Client *client, const Message &message, Server *server)
 			if ((*it)[0] != '#' && (*it)[0] != '&') {
 				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
 					client->getClientSocket());
-				return ;
+				continue ;
 			}
 			
 			// check how many channels the client already follows
 			if (client->getChannels().size() >= CHANLIMIT) {
 				server->sendClient(ERR_TOOMANYCHANNELS(client->getNickName(), *it), 
 					client->getClientSocket());
-				return ;
+				continue ;
 			}
 			
 			// check if the channel exists
