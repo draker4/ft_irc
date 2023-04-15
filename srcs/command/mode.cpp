@@ -75,20 +75,26 @@ void addModeClient(Client *client, Server *server, char mode)
 	}
 }
 
+
 void userAddMode(Client *client, const Message &message, Server *server, size_t *i)
 {
 	size_t j = *i;
 	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
-		if (message.getParameters()[1][j] == 'r') {
+		switch (message.getParameters()[1][j]) {
+		case 'r': // r : user is a registered user
 			addModeClient(client, server, 'r');
-		} else if (message.getParameters()[1][j] == 'w') {
+			break;
+		case 'w': // w : user receives wallops
 			addModeClient(client, server, 'w');
-		} else if (message.getParameters()[1][j] == 'i') {
+			break;
+		case 'i': // i : marks a users as invisible
 			addModeClient(client, server, 'i');
-		} else {
+			break;
+		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
 				client->getClientSocket());
+			break;
 		}
 		j++;
 	}
@@ -98,18 +104,22 @@ void userAddMode(Client *client, const Message &message, Server *server, size_t 
 void userRemoveMode(Client *client, const Message &message, Server *server, size_t *i)
 {
 	size_t j = *i + 1;
-	while(j < message.getParameters()[1].size()
-		&& message.getParameters()[1][j] != '-'
+	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
-		if (message.getParameters()[1][j] == 'r') {
+		switch (message.getParameters()[1][j]) {
+		case 'r': // r : user is a registered user
 			removeModeClient(client, server, 'r');
-		} else if (message.getParameters()[1][j] == 'w') {
+			break;
+		case 'w': // w : user receives wallops
 			removeModeClient(client, server, 'w');
-		} else if (message.getParameters()[1][j] == 'i') {
+			break;
+		case 'i': // i : marks a users as invisible
 			removeModeClient(client, server, 'i');
-		} else {
+			break;
+		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
 				client->getClientSocket());
+			break;
 		}
 		j++;
 	}
@@ -154,6 +164,171 @@ void userMode(Client *client, const Message &message, Server *server)
 
 /* ---------------------------  Mode on Channel  ---------------------------- */
 
+// void removeUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string paramModeName)
+// {
+// 	if (channel->getUserModeStatus(mode, paramModeName)) {				
+// 		channel->removeUserMode(mode, paramModeName);
+// 		//find message
+// 			// server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
+// 			// 	client->getInet(), "-", mode), client->getClientSocket());
+// 		//should send to all users in the channel
+// 	}
+// }
+
+// void addUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string paramModeName)
+// {
+// 	if (!channel->getUserModeStatus(mode, paramModeName)) {
+// 		channel->addUserMode(mode, paramModeName);
+// 		//find message
+// 			// server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
+// 			// 	client->getInet(), "+", mode), client->getClientSocket());
+// 		//should send to all users in the channel
+// 	}
+// }
+
+void removeModeChannel(Client *client, Server *server, Channel *channel, char mode)
+{
+	if (channel->getModeStatus(mode)) {				
+		channel->removeMode(mode);
+		server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
+			client->getInet(), "-", mode), client->getClientSocket());
+		//should send to all users in the channel
+	}
+}
+
+void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
+{
+	if (!channel->getModeStatus(mode)) {
+		channel->addMode(mode);
+		server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
+			client->getInet(), "+", mode), client->getClientSocket());
+		//should send to all users in the channel
+	}
+}
+
+void channelAddMode(Client *client, const Message &message, Server *server, Channel *channel, size_t *i, size_t *modeArg)
+{
+	size_t j = *i;
+	(void)modeArg;
+	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
+		&& message.getParameters()[1][j] != '+') {
+		switch (message.getParameters()[1][j]) {
+		
+		case 'i': // i : set the channel to invite only
+			addModeChannel(client, server, channel, 'i');
+			break;
+		case 'n': // n : set the channel to no external messages
+			addModeChannel(client, server, channel, 'n');
+			break;
+		case 't': // t : only ops can change the topic
+			addModeChannel(client, server, channel, 't');
+			break;
+		case 'm': // m : only ops can send messages to the channel
+			addModeChannel(client, server, channel, 'm');
+			break;
+		case 's': // s : set the channel to secret
+			addModeChannel(client, server, channel, 's');
+			break;
+		case 'p': // p : set the channel to private
+			addModeChannel(client, server, channel, 'p');
+			break;
+		case 'k': // k : set the channel key (required the password in argument)
+			addModeChannel(client, server, channel, 'k');
+			// TODO : add the password in the channel and do nothing if it is not
+			break;
+		case 'l': // l : set the limit of users in the channel (required the limit in argument)
+			addModeChannel(client, server, channel, 'l');
+			// TODO : add the limit in the channel and do nothing if it is not
+			break;
+		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
+		// 	addUserModeChannel(client, server, channel, 'b');
+		// 	// TODO : add the mask/user in the ban list if arguments with user connected to the channel
+		// 	// TODO : send the ban list to the client if no arguments
+		// 	// have to be on the user/channel mode
+		// 	break;
+		// case 'q': // q : give channel owner privileges to a user (required the user in argument)
+		// 	addUserModeChannel(client, server, channel, 'q');
+		// 	// have to be on the user/channel mode and must be grade 3
+		// 	break;
+		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
+		// 	addUserModeChannel(client, server, channel, 'o');
+		// 	// have to be on the user/channel mode
+		// 	break;
+		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument)
+		// 	addUserModeChannel(client, server, channel, 'h');
+		// 	// have to be on the user/channel mode
+		// 	break;
+		// case 'v': // v : give channel voice to a user (required the user in argument)
+		// 	addUserModeChannel(client, server, channel, 'v');
+		// 	// have to be on the user/channel mode
+		// 	break;
+		default:
+			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
+				client->getClientSocket());
+			break;
+	}
+		j++;
+	}
+	*i = j;
+}
+
+void channelRemoveMode(Client *client, const Message &message, Server *server, Channel *channel, size_t *i, size_t *modeArg)
+{
+	size_t j = *i + 1;
+	(void)modeArg;
+	while(j < message.getParameters()[1].size()
+		&& message.getParameters()[1][j] != '-'
+		&& message.getParameters()[1][j] != '+') {
+		switch (message.getParameters()[1][j]) {
+		case 'i': // i : set the channel to invite only
+			removeModeChannel(client, server, channel, 'i');
+			break;
+		case 'n': // n : set the channel to no external messages
+			removeModeChannel(client, server, channel, 'n');
+			break;
+		case 't': // t : only ops can change the topic
+			removeModeChannel(client, server, channel, 't');
+			break;
+		case 'm': // m : only ops can send messages to the channel
+			removeModeChannel(client, server, channel, 'm');
+			break;
+		case 's': // s : set the channel to secret
+			removeModeChannel(client, server, channel, 's');
+			break;
+		case 'p': // p : set the channel to private
+			removeModeChannel(client, server, channel, 'p');
+			break;
+		case 'k': // k : set the channel key (required the password in argument)
+			removeModeChannel(client, server, channel, 'k');
+			break;
+		case 'l': // l : set the limit of users in the channel (required the limit in argument)
+			removeModeChannel(client, server, channel, 'l');
+			break;
+		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
+		// 	removeUserModeChannel(client, server, channel, 'b');
+		// 	break;
+		// case 'q': // q : give channel owner privileges to a user (required the user in argument)
+		// 	removeUserModeChannel(client, server, channel, 'q');
+		// 	break;
+		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
+		// 	removeUserModeChannel(client, server, channel, 'o');
+		// 	break;
+		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument)
+		// 	removeUserModeChannel(client, server, channel, 'h');
+		// 	break;
+		// case 'v': // v : give channel voice to a user (required the user in argument)
+		// 	removeUserModeChannel(client, server, channel, 'v');
+		// 	break;
+		default:
+			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
+				client->getClientSocket());
+			break;
+	}
+		j++;
+	}
+	*i = j;
+}
+
 void channelMode (Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
@@ -165,11 +340,32 @@ void channelMode (Client *client, const Message &message, Server *server)
 			message.getParameters()[0]), client->getClientSocket());
 	}
 	// if no mode is given : send current mode for the channel
-	else if (message.getParameters().size() == 1) { 
+	else if (message.getParameters().size() == 1) { //ADD the arguments to give in the message in RPL_CHANNELMODEIS
 		server->sendClient(RPL_CHANNELMODEIS(client->getNickName(),
 			channelModed->getName(), channelModed->getMode()), client->getClientSocket());
 		server->sendClient(RPL_CREATIONTIME(client->getNickName(),
 			channelModed->getName(), channelModed->getTimeCreated()), client->getClientSocket());
+	}
+	// handle mode changment
+	else {
+		size_t i = 0;
+		// Must be an op to change the mode
+		if (!channelModed->getOperGrade(client->getNickName())) {
+			server->sendClient(ERR_CHANOPRIVSNEEDED(client->getNickName(),
+				channelModed->getName()), client->getClientSocket());
+			return;
+		}
+		size_t modeArg = 2;
+		while(i < message.getParameters()[1].size()) {
+			if (message.getParameters()[1][i] == '+') { // add mode
+				i++;
+				channelAddMode(client, message, server, channelModed, &i, &modeArg);
+			} else if (message.getParameters()[1][i] == '-') { // remove mode
+				channelRemoveMode(client, message, server, channelModed, &i, &modeArg);
+			} else {
+				channelAddMode(client, message, server, channelModed, &i, &modeArg);
+			}
+		}
 	}
 }
 

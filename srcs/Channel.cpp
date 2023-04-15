@@ -29,14 +29,13 @@ Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), 
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
 	addClient(client);
-	_clients[client->getNickName()].oper = 'q'; // q = owner
+	_clients[client->getNickName()].userMode.push_back('q'); // q = owner
 	_clients[client->getNickName()].prefix = '~'; // ~ = owner
 	
 	// Channel created
-	std::stringstream convert;
-	convert << static_cast< long long >( time(NULL) );
-	_timeCreated = convert.str();
-	//_t_create_str = _t_create_str.substr(0, _t_create_str.length() - 1);
+	std::stringstream timeChannel;
+	timeChannel << static_cast< long long >( time(NULL) );
+	_timeCreated = timeChannel.str();
 }
 
 Channel::Channel(const Channel &src)
@@ -78,7 +77,7 @@ Channel::mapClients	Channel::getClients(void) const
 
 bool	Channel::getModeStatus(char c) const
 {
-	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+	for (itConstString it = _mode.begin(); it != _mode.end(); it++) {
 		if (*it == c)
 			return true;
 	}
@@ -95,15 +94,12 @@ char	Channel::getSymbol(void) const
 	return _symbol;
 }
 
-std::string	Channel::getPrefix(Client *client) const
+std::string	Channel::getPrefix(std::string nickName)
 {
-	if (_clients.empty())
+	itMapClients	it = _clients.find(nickName);
+	if (it == _clients.end())
 		return 0;
-	for (itMapClients it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second.client == client)
-			return it->second.prefix;
-	}
-	return 0;
+	return it->second.prefix;
 }
 
 std::string	Channel::getTopic(void) const
@@ -126,6 +122,24 @@ std::string	Channel::getTimeTopic(void)
 	return _timeLastTopic;
 }
 
+int	Channel::getOperGrade(std::string nickName)
+{
+	itMapClients	it = _clients.find(nickName);
+	if (it == _clients.end())
+		return 0;
+	int	grade = 0;
+	for (itString itUserMode = it->second.userMode.begin();
+		itUserMode != it->second.userMode.end(); itUserMode++) {
+		if (*itUserMode == 'q') // q = owner
+			grade = 3;
+		else if (*itUserMode == 'o' && grade < 2) // o = operator
+			grade = 2;
+		else if (*itUserMode == 'h' && grade < 1) // h = half operator
+			grade = 1;
+	}
+	return grade;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* --------------------------  Private functions  --------------------------- */
@@ -137,20 +151,19 @@ void Channel::addClient(Client *client)
 	t_connect	newClient;
 
 	newClient.client = client;
-	newClient.oper = '\0';
 	newClient.prefix = '\0';
-	_clients.insert(std::pair<std::string, t_connect>(client->getNickName(), newClient));
+	std::stringstream timeJoined;
+	timeJoined << static_cast< long long >( time(NULL) );
+	newClient.joinTime = timeJoined.str();
+	_clients[client->getNickName()] = newClient;
 }
 
-bool	Channel::isBanned(std::string nickname) const
+bool	Channel::isBanned(std::string nickname)
 {
-	if (_banned.empty())
+	itMapMode	it = _banned.find(nickname);
+	if (it == _banned.end())
 		return false;
-	for (itVecNickName it = _banned.begin(); it != _banned.end(); it++) {
-		if (*it == nickname)
-			return true;
-	}
-	return false;
+	return true;
 }
 
 bool	Channel::isFull(void) const
@@ -158,13 +171,65 @@ bool	Channel::isFull(void) const
 	return _clients.size() >= _clientLimit;
 }
 
-bool	Channel::isInvited(std::string nickname) const
+bool	Channel::isInvited(std::string nickname)
 {
-	if (_invited.empty())
+	itMapMode	it = _invited.find(nickname);
+	if (it == _invited.end())
 		return false;
-	for (itVecNickName it = _invited.begin(); it != _invited.end(); it++) {
-		if (*it == nickname)
-			return true;
+	return true;
+}
+
+void	Channel::addBanned(std::string nickname)
+{
+	itMapClients	it = _clients.find(nickname);
+	if (it == _clients.end())
+		return ;
+	std::stringstream timeBanned;
+	timeBanned << static_cast< long long >( time(NULL) );
+	_banned[nickname] = timeBanned.str();
+}
+
+void	Channel::addInvited(std::string nickname)
+{
+	itMapClients	it = _clients.find(nickname);
+	if (it == _clients.end())
+		return ;
+	std::stringstream timeInvited;
+	timeInvited << static_cast< long long >( time(NULL) );
+	_invited[nickname] = timeInvited.str();
+}
+
+void	Channel::removeBanned(std::string nickname)
+{
+	itMapMode	it = _banned.find(nickname);
+	if (it == _banned.end())
+		return ;
+	_banned.erase(it);
+}
+
+void	Channel::removeInvited(std::string nickname)
+{
+	itMapMode	it = _invited.find(nickname);
+	if (it == _invited.end())
+		return ;
+	_invited.erase(it);
+}
+
+void	Channel::addMode(char c)
+{
+	if (_mode.find(c) == std::string::npos){
+		_mode.push_back(c);
 	}
-	return false;
+}
+
+void	Channel::removeMode(char c)
+{
+	int i = 0;
+	for (itString it = _mode.begin(); it != _mode.end(); it++) {
+		if (*it == c) {
+			_mode.erase(_mode.begin() + i);
+			return;
+		}
+		i++;
+	}
 }

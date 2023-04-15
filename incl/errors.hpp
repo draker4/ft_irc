@@ -74,6 +74,11 @@
 # define ERR_NOPRIVILEGES(client) ( ":" + SERVERNAME + " 481 " + client \
 		+ " :Permission Denied- You're not an IRC operator\r\n")
 
+// 482 - MODE
+# define ERR_CHANOPRIVSNEEDED(client, channel) ( ":" + SERVERNAME + " 482 " + client \
+		+ " " + channel + " :You're not channel operator\r\n")
+
+
 // 491 - OPER
 # define ERR_NOOPERHOST(client) ( ":" + SERVERNAME + " 491 " + client \
 		+ " :No O-lines for your host\r\n")

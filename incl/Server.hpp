@@ -76,7 +76,7 @@ class Server
 		typedef std::vector<t_opeConfig>						vecOpeConfig;
 		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
 		typedef std::vector<Channel *>							vecChannel;
-		typedef std::vector<Channel *>::iterator			itVecChannel;
+		typedef std::vector<Channel *>::iterator				itVecChannel;
 
 		// Constructors
 		Server(std::string port, std::string password);

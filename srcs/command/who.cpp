@@ -28,7 +28,7 @@ void who(Client *client, const Message &message, Server *server)
 			Channel::mapClients	clients = channel->getClients();
 			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 				std::string	flags = "H";
-				if (it->second.oper == 'q' || it->second.oper == 'o')
+				if (channel->getOperGrade(it->first) >= 1)
 					flags.append("*");
 				flags.append(it->second.prefix);
 				server->sendClient(RPL_WHOREPLY(client->getNickName(), it->second.client->getNickName(),

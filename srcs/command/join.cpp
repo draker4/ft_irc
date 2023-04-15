@@ -97,7 +97,7 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 				it->second.client->getClientSocket());
 			if (it != clients.begin())
 				list_names.append(" ");
-			list_names.append(channel->getPrefix(it->second.client) + it->second.client->getNickName());
+			list_names.append(channel->getPrefix(it->first) + it->second.client->getNickName());
 		}
 
 		//send channel topic
@@ -166,7 +166,7 @@ void join(Client *client, const Message &message, Server *server)
 					client->getInet(), std::string("JOIN"), channel->getName()), 
 					client->getClientSocket());
 				server->sendClient(RPL_NAMREPLY(client->getNickName(), channel->getSymbol(),
-					channel->getName(), channel->getPrefix(client) + client->getNickName()),
+					channel->getName(), channel->getPrefix(client->getNickName()) + client->getNickName()),
 					client->getClientSocket());
 				server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
 					client->getClientSocket());

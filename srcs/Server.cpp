@@ -112,13 +112,18 @@ Server::~Server(void)
 	close(_serverSocket);
 
 	// Close all client sockets
-	for (std::vector<pollfd>::iterator it = _fds.begin(); it != _fds.end(); it++) {
+	for (itVecPollfd it = _fds.begin(); it != _fds.end(); it++) {
 		close(it->fd);
 	}
 
 	// Delete all clients allocated by the server
-	for (std::map<int, Client *>::iterator it = _clients.begin(); it != _clients.end(); it++) {
+	for (itMapClient it = _clients.begin(); it != _clients.end(); it++) {
 		delete it->second;
+	}
+
+	// Delete all channels allocated by the server
+	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+		delete *it;
 	}
 	std::cout << std::endl << YELLOW << "Server is shutting down... " << RESET << std::endl;
 }

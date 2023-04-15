@@ -25,19 +25,21 @@ class Client;
 typedef struct	s_connect
 {
 	Client		*client;
-	char		oper;
+	std::string	userMode;
 	std::string	prefix;
+	std::string	joinTime;
 }				t_connect;
 
 class	Channel
 {
 	public:
 		// Types
-		typedef std::map<std::string, t_connect>					mapClients;
-		typedef std::map<std::string, t_connect>::const_iterator	itMapClients;
-		typedef std::vector<std::string>							vecNickName;
-		typedef std::vector<std::string>::const_iterator			itVecNickName;
-		typedef std::string::const_iterator							itString;
+		typedef std::map<std::string, t_connect>				mapClients;
+		typedef std::map<std::string, t_connect>::iterator		itMapClients;
+		typedef std::map<std::string, std::string>				mapMode;
+		typedef std::map<std::string, std::string>::iterator	itMapMode;
+		typedef std::string::const_iterator						itConstString;
+		typedef std::string::iterator							itString;
 		
 		//Constructors
 		Channel(std::string name, Client *client);
@@ -47,7 +49,7 @@ class	Channel
 		
 		// getter
 		char			getSymbol(void) const;
-		std::string		getPrefix(Client *client) const;
+		std::string		getPrefix(std::string nickName);
 		std::string		getName(void) const;
 		std::string		getKey(void) const;
 		std::string		getTopic(void) const;
@@ -56,14 +58,21 @@ class	Channel
 		std::string		getMode(void) const;
 		std::string		getTimeCreated(void);
 		std::string		getTimeTopic(void);
+		int				getOperGrade(std::string nickName);
 
 		// setter
 
 		// Public member functions
 		void	addClient(Client *client);
-		bool	isBanned(std::string nickname) const;
+		bool	isBanned(std::string nickname);
 		bool	isFull(void) const;
-		bool	isInvited(std::string nickname) const;
+		bool	isInvited(std::string nickname);
+		void	addBanned(std::string nickname);
+		void	addInvited(std::string nickname);
+		void	removeBanned(std::string nickname);
+		void	removeInvited(std::string nickname);
+		void	addMode(char c);
+		void	removeMode(char c);
 
 		//Exceptions
 		class ChannelException : public std::exception
@@ -82,10 +91,11 @@ class	Channel
 		std::string 	_name;
 		std::string		_key;
 		mapClients		_clients;
-		vecNickName		_banned;
-		vecNickName		_invited;
+		mapMode			_banned;
+		mapMode			_invited;
 		std::string		_mode;
 		std::string		_topic;
+		std::string		_topicTime;
 		unsigned int	_clientLimit;
 		std::string		_timeCreated;
 		std::string		_timeLastTopic;
