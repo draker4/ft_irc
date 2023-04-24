@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 16:14:32 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 18:16:44 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ class Server
 		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
 		typedef std::vector<Channel *>							vecChannel;
 		typedef std::vector<Channel *>::iterator				itVecChannel;
+		typedef	std::vector<Client *>							vecClient;
+		typedef	std::vector<Client *>::iterator					itVecClient;
 
 		// Constructors
 		Server(std::string port, std::string password);
@@ -91,6 +93,7 @@ class Server
 		Client			*getClient(std::string nickname) const;
 		vecOpeConfig	getOpeConf(void) const;
 		Channel			*getChannel(std::string name);
+		vecClient		getClientsHost(std::string username_host) const;
 
 		// Setter
 

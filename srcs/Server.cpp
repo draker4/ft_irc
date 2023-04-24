@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 19:02:49 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 17:53:55 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,25 @@ Channel	*Server::getChannel(std::string name)
 	return NULL;
 }
 
+Server::vecClient	Server::getClientsHost(std::string username_host) const
+{
+	vecClient	clients;
+	size_t		pos = username_host.find_first_of("@");
+
+	if (pos == std::string::npos)
+		return clients;
+	
+	std::string	username = username_host.substr(0, pos);
+	std::string	host = username_host.substr(pos + 1, username_host.length() - pos + 1);
+	
+	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
+		if (it->second->getUserName() == username && it->second->getInet() == host)
+			clients.push_back(it->second);
+	}
+	
+	return clients;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
@@ -279,11 +298,6 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 						<< RESET << std::endl;
 				}
 				sendClient(ERR_UNKNOWNCOMMAND(std::string("0"), message.getCommand()), clientSocket);
-				// try { 
-					
-				// } catch (Server::invalidFdException &e) {
-				// 	printError(e.what(), 1, false);
-				// }
 			}
 		}
 		catch (const Message::ErrorMsgFormat &e) {

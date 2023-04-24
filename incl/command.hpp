@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 19:03:30 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 19:12:23 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,14 @@
 # define COMMAND_HPP
 
 # include "Server.hpp"
+# include <set>
 
 # define DEBUG_COMMAND true
 
 class Server;
+
+// prototype of functions written in commands.cpp
+Message::vecString	split(std::string str, std::string c);
 
 // The CAP command is used to 
 void	cap(Client *client, const Message &message, Server *server);

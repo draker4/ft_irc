@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 19:17:55 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 14:13:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,17 @@
 # define RPL_CREATIONTIME(nickName, channel, creationTime) ( ":" + SERVERNAME + " 329 " + nickName \
 		+ " " + channel + " :" + creationTime + "\r\n")
 
-// 332 - JOIN
+// 331
+# define RPL_NOTOPIC(nickname, channel) ( ":" + SERVERNAME + " 331 " + nickname + " " \
+		+ channel + " :No topic is set\r\n")
+
+// 332 - JOIN - TOPIC
 # define RPL_TOPIC(nickName, channel, topic) ( ":" + SERVERNAME + " 332 " + nickName \
 		+ " " + channel + " :" + topic + "\r\n")
 
-// 333 - JOIN
-# define RPL_TOPICWHOTIME(nickName, channel, setat) ( ":" + SERVERNAME + " 333 " + nickName \
-		+ " " + channel + " " + nickName + " " + setat + "\r\n")
+// 333 - TOPIC
+# define RPL_TOPICWHOTIME(nickname, channel, nick_topic, setat) ( ":" + SERVERNAME + " 333 " + nickname + " " \
+		+ channel + " " + nick_topic + " " + setat + "\r\n")
 
 // 352 - WHO
 # define RPL_WHOREPLY(client, nickname, username, realname, host, channel, flags) ( ":" + SERVERNAME \
@@ -70,7 +74,7 @@
 
 // SPE_CODE - KILL - PING - JOIN
 # define RPL_CMD(nickname, user, host, cmd, reply) ( ":" + nickname + "!" + user + "@" + host + " " \
-	+ cmd + " " + reply + "\r\n") 
+	+ cmd + " " + reply + "\r\n")
 
 // SPE_CODE - NICK
 # define RPL_NICK(oldNickname, newNickname, user, host) ( ":" + oldNickname + "!" + user + "@" + host + " NICK " \

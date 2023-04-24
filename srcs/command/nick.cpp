@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 18:21:02 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 14:32:13 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ void nick(Client *client, const Message &message, Server *server)
 		client->getClientSocket());
 	}
 	else {
-		if (message.getParameters().empty()) {
-			server->sendClient(ERR_NONICKNAMEGIVEN, client->getClientSocket());
+		if (message.getParameters().empty() || message.getParameters()[0].empty()) {
+			server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), client->getClientSocket());
 			return;
 		} else if (invalidChar(message.getParameters()[0])) {
 			server->sendClient(ERR_ERRONEUSNICKNAME(message.getParameters()[0]), 

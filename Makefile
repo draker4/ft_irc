@@ -30,8 +30,9 @@ HEAD			=	Client.hpp	\
 					Message.hpp	\
 					Server.hpp
 
-SRCS			=	Client.cpp	\
-					Channel.cpp \
+SRCS			=	Channel.cpp	\
+					Client.cpp \
+					command.cpp \
 					ircserv.cpp	\
 					Message.cpp	\
 					Server.cpp

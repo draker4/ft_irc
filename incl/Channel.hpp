@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 12:27:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 13:35:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <map>
 # include <vector>
 # include "colors.hpp"
+# include <iterator>
 
 # define DEBUG_CHANNEL false
 
@@ -34,12 +35,13 @@ class	Channel
 {
 	public:
 		// Types
-		typedef std::map<std::string, t_connect>				mapClients;
-		typedef std::map<std::string, t_connect>::iterator		itMapClients;
-		typedef std::map<std::string, std::string>				mapMode;
-		typedef std::map<std::string, std::string>::iterator	itMapMode;
-		typedef std::string::const_iterator						itConstString;
-		typedef std::string::iterator							itString;
+		typedef std::map<std::string, t_connect>					mapClients;
+		typedef std::map<std::string, t_connect>::iterator			itMapClients;
+		typedef std::map<std::string, std::string>					mapMode;
+		typedef std::map<std::string, std::string>::iterator		itMapMode;
+		typedef std::map<std::string, std::string>::const_iterator	constItMapMode;
+		typedef std::string::const_iterator							itConstString;
+		typedef std::string::iterator								itString;
 		
 		//Constructors
 		Channel(std::string name, Client *client);
@@ -59,9 +61,10 @@ class	Channel
 		std::string		getTimeCreated(void);
 		std::string		getTimeTopic(void);
 		int				getOperGrade(std::string nickName);
+		std::string		getClientTopic(void) const;
 
 		// setter
-		void			setTopic(std::string topic);
+		void			setTopic(std::string nickname, std::string topic);
 		void			setKey(std::string key);
 		void			setClientLimit(std::string limit);
 
@@ -99,6 +102,7 @@ class	Channel
 		mapMode			_invited;
 		std::string		_mode;
 		std::string		_topic;
+		std::string		_client_topic;
 		std::string		_topicTime;
 		unsigned int	_clientLimit;
 		std::string		_timeCreated;

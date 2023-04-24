@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 12:30:46 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 13:41:49 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ Channel::Channel(void)
 }
 
 Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), _mode("nt"),
-	_topic(""), _clientLimit(0)
+	_topic(""), _client_topic(""),_clientLimit(0)
 {
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
@@ -140,11 +140,17 @@ int	Channel::getOperGrade(std::string nickName)
 	return grade;
 }
 
+std::string	Channel::getClientTopic(void) const
+{
+	return _client_topic;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
-void	Channel::setTopic(std::string topic)
+void	Channel::setTopic(std::string nickname, std::string topic)
 {
 	_topic = topic;
+	_client_topic = nickname;
 	std::stringstream timeTopic;
 	timeTopic << static_cast< long long >( time(NULL) );
 	_timeLastTopic = timeTopic.str();
@@ -178,7 +184,7 @@ void Channel::addClient(Client *client)
 
 bool	Channel::isBanned(std::string nickname) const
 {
-	itMapMode	it = _banned.find(nickname);
+	constItMapMode	it = _banned.find(nickname);
 	if (it == _banned.end())
 		return false;
 	return true;
@@ -191,7 +197,7 @@ bool	Channel::isFull(void) const
 
 bool	Channel::isInvited(std::string nickname) const
 {
-	itMapMode	it = _invited.find(nickname);
+	constItMapMode	it = _invited.find(nickname);
 	if (it == _invited.end())
 		return false;
 	return true;

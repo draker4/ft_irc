@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 16:22:07 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/11 16:13:29 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 14:43:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Message::Message(std::string message) : _source("")
 {
 	if (DEBUG_MESSAGE)
 		std::cout << GREEN << "Message Constructor called " << RESET << std::endl;
+
 	if (message.empty() || message[0] == ' ')
 		throw ErrorMsgFormat();
 

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 19:57:00 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 18:06:54 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,6 @@
  * 	[CLIENT]  JOIN #foo,#bar fubar,foobar
  * 	[SERVER]; join channel #foo using key "fubar" and channel #bar using key "foobar".
  */
-
-typedef std::vector<std::string>			vecString;
-typedef std::vector<std::string>::iterator	itVecString;
-typedef	std::string::iterator				itString;
-
-static vecString	split(std::string str, std::string c)
-{
-	vecString	vec;
-	size_t		prev = 0;
-	size_t		pos;
-
-	while ((pos = str.find_first_of(c, prev)) != std::string::npos) {
-		vec.push_back(str.substr(prev, pos - prev));
-		prev = pos + 1;
-	}
-	if (str[prev])
-		vec.push_back(str.substr(prev, str.length() - prev));
-	return vec;
-}
 
 static void	addClient(Server *server, Client *client, Channel *channel)
 {
@@ -105,7 +86,7 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 			server->sendClient(RPL_TOPIC(client->getNickName(), channel->getName(),
 				channel->getTopic()), client->getClientSocket());
 			server->sendClient(RPL_TOPICWHOTIME(client->getNickName(), channel->getName(),
-				channel->getTimeTopic()), client->getClientSocket());
+				channel->getClientTopic(), channel->getTimeTopic()), client->getClientSocket());
 		}
 		
 		// send list of names in the current channel
@@ -129,14 +110,14 @@ void join(Client *client, const Message &message, Server *server)
 		//PART all channels
 	}
 	else {
-		vecString	channels = split(message.getParameters()[0], ",");
+		Message::vecString	channels = split(message.getParameters()[0], ",");
 
-		vecString	keys;
+		Message::vecString	keys;
 		if (message.getParameters().size() > 1)
 			keys = split(message.getParameters()[1], ",");
-		itVecString	itKeys = keys.begin();
+		Message::itVecString	itKeys = keys.begin();
 		
-		for (itVecString it = channels.begin(); it != channels.end(); it++) {
+		for (Message::itVecString it = channels.begin(); it != channels.end(); it++) {
 			
 			// check first char of the channel name
 			if ((*it)[0] != '#' && (*it)[0] != '&') {

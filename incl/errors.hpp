@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 12:24:35 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 18:09:46 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,16 +23,32 @@
 # define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
 		+ channel + " :No such channel\r\n")
 
+// 404 - PRIVMSG
+# define ERR_CANNOTSENDTOCHAN(nickname, channel) ( ":" + SERVERNAME + " 404 " + nickname + " " \
+		+ channel + " :Cannot send to channel\r\n")
+
 // 405 - JOIN
 # define ERR_TOOMANYCHANNELS(client, channel) ( ":" + SERVERNAME + " 405 " + client + " " \
 		+ channel + " :You have joined too many channels\r\n")
+
+// 407 - PRIVMSG
+# define ERR_TOOMANYTARGETS(destination) ( ":" + SERVERNAME + " 407 " + destination \
+		+ " :Duplicate recipients. No message delivered\r\n")
+
+// 411 - PRIVMSG
+# define ERR_NORECIPIENT(client, command) ( ":" + SERVERNAME + " 411 " + client \
+		+ " :No recipient given (" + command + ")\r\n")
+
+// 412 - PRIVMSG
+# define ERR_NOTEXTTOSEND(client) ( ":" + SERVERNAME + " 412 " + client \
+		+ " :No text to send\r\n")
 
 // 421 - Server::_handleCommand
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":" + SERVERNAME + " 421 " + client + " " \
 		+ command + " :Unknown command\r\n")
 
 // 431 - NICK
-# define ERR_NONICKNAMEGIVEN ":" + SERVERNAME + " 431 :No nickname given\r\n"
+# define ERR_NONICKNAMEGIVEN(client) ":" + SERVERNAME + " 431 " + client + " :No nickname given\r\n"
 
 // 432 - NICK
 # define ERR_ERRONEUSNICKNAME(nickname) ( ":" + SERVERNAME + " 432 " + nickname \
