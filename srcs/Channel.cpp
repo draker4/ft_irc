@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 19:13:35 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 11:57:34 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), 
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
 	addClient(client);
-	_clients[client->getNickName()].userMode.push_back('q'); // q = owner
-	_clients[client->getNickName()].prefix = '~'; // ~ = owner
+	_clients[client->getNickName()].userMode.push_back('o'); // o = operator
+	_clients[client->getNickName()].prefix = "@"; // @ = operator
 	
 	// Channel created
 	std::stringstream timeChannel;
@@ -130,11 +130,11 @@ int	Channel::getOperGrade(std::string nickName)
 	int	grade = 0;
 	for (itString itUserMode = it->second.userMode.begin();
 		itUserMode != it->second.userMode.end(); itUserMode++) {
-		if (*itUserMode == 'q') // q = owner
+		if (*itUserMode == 'o') // o = operator
 			grade = 3;
-		else if (*itUserMode == 'o' && grade < 2) // o = operator
+		else if (*itUserMode == 'h' && grade < 2) // h = half operator
 			grade = 2;
-		else if (*itUserMode == 'h' && grade < 1) // h = half operator
+		else if (*itUserMode == 'v' && grade < 1) // v = voice 
 			grade = 1;
 	}
 	return grade;
@@ -151,7 +151,7 @@ void Channel::addClient(Client *client)
 	t_connect	newClient;
 
 	newClient.client = client;
-	newClient.prefix = '\0';
+	newClient.prefix = "";
 	std::stringstream timeJoined;
 	timeJoined << static_cast< long long >( time(NULL) );
 	newClient.joinTime = timeJoined.str();
