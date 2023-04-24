@@ -142,6 +142,24 @@ int	Channel::getOperGrade(std::string nickName)
 
 /* --------------------------------  Setter  -------------------------------- */
 
+void	Channel::setTopic(std::string topic)
+{
+	_topic = topic;
+	std::stringstream timeTopic;
+	timeTopic << static_cast< long long >( time(NULL) );
+	_timeLastTopic = timeTopic.str();
+}
+
+void	Channel::setKey(std::string key)
+{
+	_key = key;
+}
+
+void	Channel::setClientLimit(std::string limit)
+{
+	_clientLimit = atoi(limit.c_str());
+}
+
 /* --------------------------  Private functions  --------------------------- */
 
 /* -----------------------  Public member functions  ------------------------ */

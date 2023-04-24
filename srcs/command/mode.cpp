@@ -233,10 +233,23 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 			addModeChannel(client, server, channel, 'p');
 			break;
 		case 'k': // k : set the channel key (required the password in argument)
-			addModeChannel(client, server, channel, 'k');
-			// TODO : add the password in the channel and do nothing if it is not
+			if (message.getParameters().size() > *modeArg && channel->getKey().empty()) {
+				if (!channel->getModeStatus('k')) {				
+					channel->addMode('k');
+					server->sendClient(RPL_MODE_PARAM(client->getNickName(), channel->getName(),
+						client->getInet(), "+", 'k', message.getParameters()[*modeArg]), client->getClientSocket());
+					channel->setKey(message.getParameters()[*modeArg]);
+					//should send to all users in the channel
+				}
+				(*modeArg)++;
+			}
 			break;
 		case 'l': // l : set the limit of users in the channel (required the limit in argument)
+			if (message.getParameters().size() > *modeArg) {
+				addModeChannel(client, server, channel, 'l');
+				channel->setClientLimit(message.getParameters()[*modeArg]);
+				(*modeArg)++;
+			}
 			addModeChannel(client, server, channel, 'l');
 			// TODO : add the limit in the channel and do nothing if it is not
 			break;
@@ -245,10 +258,6 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		// 	// TODO : add the mask/user in the ban list if arguments with user connected to the channel
 		// 	// TODO : send the ban list to the client if no arguments
 		// 	// have to be on the user/channel mode
-		// 	break;
-		// case 'q': // q : give channel owner privileges to a user (required the user in argument)
-		// 	addUserModeChannel(client, server, channel, 'q');
-		// 	// have to be on the user/channel mode and must be grade 3
 		// 	break;
 		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
 		// 	addUserModeChannel(client, server, channel, 'o');
@@ -306,9 +315,6 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 			break;
 		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'b');
-		// 	break;
-		// case 'q': // q : give channel owner privileges to a user (required the user in argument)
-		// 	removeUserModeChannel(client, server, channel, 'q');
 		// 	break;
 		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'o');

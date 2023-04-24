@@ -80,4 +80,8 @@
 # define RPL_MODE(nickname, user, host, sign, mode) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
 	+ nickname + " " + sign + mode + "\r\n") 
 
+// SPE_CODE - MODE
+# define RPL_MODE_PARAM(nickname, user, host, sign, mode, param) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ nickname + " " + sign + mode + " " + param + "\r\n") 
+
 #endif

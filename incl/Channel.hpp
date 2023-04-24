@@ -61,6 +61,9 @@ class	Channel
 		int				getOperGrade(std::string nickName);
 
 		// setter
+		void			setTopic(std::string topic);
+		void			setKey(std::string key);
+		void			setClientLimit(std::string limit);
 
 		// Public member functions
 		void	addClient(Client *client);
