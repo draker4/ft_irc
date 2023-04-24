@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 15:46:45 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 12:24:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define ERR_NOSUCHNICK(client, nickname) ( ":" + SERVERNAME + " 401 " + client + " " \
 		+ nickname + " :No such nick/channel\r\n")
 
-// 403 - JOIN - MODE
+// 403 - JOIN - MODE - TOPIC
 # define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
 		+ channel + " :No such channel\r\n")
 
@@ -42,7 +42,11 @@
 # define ERR_NICKNAMEINUSE(nickname) ( ":" + SERVERNAME + " 433 " + nickname \
 		+ " :Nickname is already in use\r\n")
 
-// 461 - PASS - USER - OPER - MODE
+// 442 - TOPIC
+# define ERR_NOTONCHANNEL(nickname, channel) ( ":" + SERVERNAME + " 442 " + nickname + " " \
+		+ channel + " :You're not on that channel\r\n")
+
+// 461 - PASS - USER - OPER - MODE - TOPIC
 # define ERR_NEEDMOREPARAMS(client, command) (":" +  SERVERNAME + " 461 " + client + " " \
 		+ command + " :Not Enough parameters\r\n")
 

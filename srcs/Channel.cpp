@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 11:57:34 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 12:30:46 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void Channel::addClient(Client *client)
 	_clients[client->getNickName()] = newClient;
 }
 
-bool	Channel::isBanned(std::string nickname)
+bool	Channel::isBanned(std::string nickname) const
 {
 	itMapMode	it = _banned.find(nickname);
 	if (it == _banned.end())
@@ -171,12 +171,19 @@ bool	Channel::isFull(void) const
 	return _clients.size() >= _clientLimit;
 }
 
-bool	Channel::isInvited(std::string nickname)
+bool	Channel::isInvited(std::string nickname) const
 {
 	itMapMode	it = _invited.find(nickname);
 	if (it == _invited.end())
 		return false;
 	return true;
+}
+
+bool	Channel::isClientInChannel(std::string nickname) const
+{
+	if (_clients.find(nickname) != _clients.end())
+		return true;
+	return false;
 }
 
 void	Channel::addBanned(std::string nickname)

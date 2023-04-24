@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/14 19:13:19 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/24 12:27:12 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@ class	Channel
 
 		// Public member functions
 		void	addClient(Client *client);
-		bool	isBanned(std::string nickname);
+		bool	isBanned(std::string nickname) const;
 		bool	isFull(void) const;
-		bool	isInvited(std::string nickname);
+		bool	isInvited(std::string nickname) const;
+		bool	isClientInChannel(std::string nickname) const;
 		void	addBanned(std::string nickname);
 		void	addInvited(std::string nickname);
 		void	removeBanned(std::string nickname);
