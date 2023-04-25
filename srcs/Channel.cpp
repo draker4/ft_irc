@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/25 10:01:35 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 11:00:06 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@ void	Channel::setClientLimit(std::string limit)
 
 /* -----------------------  Public member functions  ------------------------ */
 
-void Channel::addClient(Client *client)
+void	Channel::addClient(Client *client)
 {
 	t_connect	newClient;
 
@@ -180,6 +180,14 @@ void Channel::addClient(Client *client)
 	timeJoined << static_cast< long long >( time(NULL) );
 	newClient.joinTime = timeJoined.str();
 	_clients[client->getNickName()] = newClient;
+}
+
+void	Channel::removeClient(Client *client)
+{
+	itMapClients	it = _clients.find(client->getNickName());
+	
+	if (it != _clients.end())
+		_clients.erase(it);
 }
 
 bool	Channel::isBanned(std::string nickname) const

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/25 10:26:43 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 10:47:12 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,8 @@ void nick(Client *client, const Message &message, Server *server)
 					for (Channel::itMapClients it2 = clients.begin(); it2 != clients.end(); it2++) {
 						if (it2->first != client->getNickName())
 							server->sendClient(RPL_NICK(client->getOldNickName(), client->getNickName(),
-								client->getUserName(), client->getInet()), it2->second.client->getClientSocket());					}
+								client->getUserName(), client->getInet()), it2->second.client->getClientSocket());
+					}
 				}
 			}
 		}

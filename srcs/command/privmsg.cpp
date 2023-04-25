@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/25 09:38:32 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 11:22:09 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,7 +225,6 @@ void privmsg(Client *client, const Message &message, Server *server)
 			
 			//send message to all targets
 			for (Server::itVecClient it_client = list_clients.begin(); it_client != list_clients.end(); it_client++) {
-				std::cout << PURPLE << "HERE2 send to" << (*it_client)->getNickName() << RESET << std::endl;
 				server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
 					client->getInet(), std::string("PRIVMSG"), *it + " :" + message.getParameters()[1]), 
 					(*it_client)->getClientSocket());
@@ -236,7 +235,7 @@ void privmsg(Client *client, const Message &message, Server *server)
 			if (to_add)
 				server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
 						client->getInet(), std::string("PRIVMSG"),
-						to_add->getUserName() + " :" + message.getParameters()[1]), 
+						to_add->getNickName() + " :" + message.getParameters()[1]), 
 						to_add->getClientSocket());
 		}
 	}

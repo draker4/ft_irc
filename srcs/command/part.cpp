@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:43 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 10:57:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,55 @@ void part(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "PART command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	
+	// if no channel
+	if (message.getParameters().empty()) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("PART")), 
+			client->getClientSocket());
+		return ;
+	}
+
+	// get reason of leaving
+	std::string	reason = "";
+	if (message.getParameters().size() >= 2)
+		reason.append(" " + message.getParameters()[1]);
+	
+	// get all channels this client wants to leave
+	Message::vecString	channels = split(message.getParameters()[0], ",");
+	
+	// leave each channel
+	for (Message::itVecString it = channels.begin(); it != channels.end(); it++) {
+
+		// to check if the channel exists
+		Channel	*channel = server->getChannel(*it);
+		if (!channel) {
+			server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
+			client->getClientSocket());
+			continue ;
+		}
+		
+		// to check if the user is in the channel
+		if (!channel->isClientInChannel(client->getNickName())) {
+			server->sendClient(ERR_NOTONCHANNEL(client->getNickName(), channel->getName()), 
+				client->getClientSocket());
+			continue ;
+		}
+		
+		// SUCCESS
+		
+		// send PART message to the client leaving
+		// server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+		// 	client->getInet(), std::string("PART"), 
+		// 		client->getClientSocket());
+		
+		// send PART message to all users of the channel
+		Channel::mapClients	clients = channel->getClients();
+		for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
+				std::string("PART"), *it + reason), it_client->second.client->getClientSocket());
+		}
+
+		// remove client from the channel clients' list
+		channel->removeClient(client);
+	}
 }
