@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 13:41:49 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 10:01:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,5 +262,16 @@ void	Channel::removeMode(char c)
 			return;
 		}
 		i++;
+	}
+}
+
+void	Channel::updateClient(std::string oldNickname, std::string nickname)
+{
+	itMapClients	it = _clients.find(oldNickname);
+	
+	if (it != _clients.end()) {
+		t_connect	tmp = it->second;
+		_clients.erase(it);
+		_clients[nickname] = tmp;
 	}
 }

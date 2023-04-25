@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 13:35:57 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 09:48:19 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ class	Channel
 		void	removeInvited(std::string nickname);
 		void	addMode(char c);
 		void	removeMode(char c);
+		void	updateClient(std::string oldNickname, std::string nickname);
 
 		//Exceptions
 		class ChannelException : public std::exception

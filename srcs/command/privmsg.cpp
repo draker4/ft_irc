@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/24 19:30:14 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/25 09:38:32 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@
 static bool	is_target_channel(char c, std::string str)
 {
 	size_t	pos = str.find_first_of(c);
-	if (pos != std::string::npos && pos == 0)
+	if (pos != std::string::npos)
 		return true;
 	return false;
 }
@@ -126,7 +126,7 @@ static Server::vecClient	clients_from_channel(Client *client, Server *server, st
 
 	// moderated channel mode
 	if (channel->getModeStatus('m')
-		&& channel->getOperGrade(client->getNickName()) > 0) {
+		&& channel->getOperGrade(client->getNickName()) == 0) {
 		server->sendClient(ERR_CANNOTSENDTOCHAN(client->getNickName(), channel->getName()), 
 			client->getClientSocket());
 		return clients_to_add;
@@ -135,7 +135,6 @@ static Server::vecClient	clients_from_channel(Client *client, Server *server, st
 	// find clients to add
 	Channel::mapClients	channel_clients = channel->getClients();
 	for (Channel::itMapClients it = channel_clients.begin(); it != channel_clients.end(); it++) {
-		std::cout << PURPLE << "HERE client =" << it->second.client->getNickName() << RESET << std::endl;
 		if (it->second.client == client)
 			continue;
 		else if (it->second.prefix.empty() && order < 1)
@@ -146,8 +145,6 @@ static Server::vecClient	clients_from_channel(Client *client, Server *server, st
 			clients_to_add.push_back(it->second.client);
 		else if (it->second.prefix == "@" && order <= 3)
 			clients_to_add.push_back(it->second.client);
-		else
-			std::cout << PURPLE << "SHIT " << it->second.client->getNickName() << " et order = " << order << " et prefix =" << it->second.prefix << "!" << RESET << std::endl;
 	}
 	
 	return clients_to_add;
