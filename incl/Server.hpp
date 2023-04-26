@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 18:16:44 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 15:38:40 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ class Server
 		void	_initCommands(void);
 		void	_initOperatorConfig(void);
 		void	_deleteClient(itVecPollfd it);
+		void	_handleClientDeconnection(itVecPollfd &it);
 		Client	*_getClient(int clientSocket);
 };
 
