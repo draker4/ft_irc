@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/14 13:32:38 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 15:07:54 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void kill(Client *client, const Message &message, Server *server)
 		server->sendClient(ERR_NOPRIVILEGES(client->getNickName()), client->getClientSocket());
 		return ;
 	}
-	// else if (!client.getMode('find mode'))
-	// 	server->sendClient(ERR_NOPRIVS);
 	else if (message.getParameters().size() < 2)
 	{
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("KILL")), 

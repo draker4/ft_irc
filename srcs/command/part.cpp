@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/25 10:57:30 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 14:47:53 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void part(Client *client, const Message &message, Server *server)
 		return ;
 	}
 
-	// get reason of leaving
+	// get reason for leaving
 	std::string	reason = "";
 	if (message.getParameters().size() >= 2)
 		reason.append(" " + message.getParameters()[1]);
@@ -70,11 +70,6 @@ void part(Client *client, const Message &message, Server *server)
 		}
 		
 		// SUCCESS
-		
-		// send PART message to the client leaving
-		// server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-		// 	client->getInet(), std::string("PART"), 
-		// 		client->getClientSocket());
 		
 		// send PART message to all users of the channel
 		Channel::mapClients	clients = channel->getClients();
