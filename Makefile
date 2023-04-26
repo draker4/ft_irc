@@ -164,7 +164,7 @@ debug				:
 # -----------  Run Commands  --------- #
 
 run					:	all
-						./${NAME} 4242 6262
+						./${NAME} 4245 6262
 
 runl				:	all
 						${LEAKS} ./${NAME} 

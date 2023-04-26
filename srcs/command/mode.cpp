@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 12:20:44 by bboisson         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:26:40 by bboisson         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,25 +213,28 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
 		
-		case 'i': // i : set the channel to invite only
-			addModeChannel(client, server, channel, 'i');
+		case 'i': // i : set the channel to invite only (operator only)
+			if (channel->getOperGrade(client->getNickName()) == 3)
+				addModeChannel(client, server, channel, 'i');
 			break;
-		case 'n': // n : set the channel to no external messages
+		case 'n': // n : set the channel to no external messages (half-operator and +)
 			addModeChannel(client, server, channel, 'n');
 			break;
-		case 't': // t : only ops can change the topic
+		case 't': // t : only ops can change the topic (half-operator and +)
 			addModeChannel(client, server, channel, 't');
 			break;
-		case 'm': // m : only ops can send messages to the channel
+		case 'm': // m : only ops can send messages to the channel (half-operator and +)
 			addModeChannel(client, server, channel, 'm');
 			break;
-		case 's': // s : set the channel to secret
-			addModeChannel(client, server, channel, 's');
+		case 's': // s : set the channel to secret (operator only)
+			if (channel->getOperGrade(client->getNickName()) == 3)
+				addModeChannel(client, server, channel, 's');
 			break;
-		case 'p': // p : set the channel to private
-			addModeChannel(client, server, channel, 'p');
+		case 'p': // p : set the channel to private (operator only)
+			if (channel->getOperGrade(client->getNickName()) == 3)
+				addModeChannel(client, server, channel, 'p');
 			break;
-		case 'k': // k : set the channel key (required the password in argument)
+		case 'k': // k : set the channel key (required the password in argument) (half-operator and +)
 			if (message.getParameters().size() > *modeArg && channel->getKey().empty()) {
 				if (!channel->getModeStatus('k')) {	
 					std::cout << message.getParameters()[*modeArg] << std::endl;
@@ -241,7 +244,7 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 				}
 			}
 			break;
-		case 'l': // l : set the limit of users in the channel (required the limit in argument)
+		case 'l': // l : set the limit of users in the channel (required the limit in argument) (operator only)
 			if (message.getParameters().size() > *modeArg) {
 				addModeChannel(client, server, channel, 'l');
 				channel->setClientLimit(message.getParameters()[*modeArg]);
@@ -254,15 +257,15 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		// 	// TODO : send the ban list to the client if no arguments
 		// 	// have to be on the user/channel mode
 		// 	break;
-		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
+		// case 'o': // o : give channel operator privileges to a user	(required the user in argument) (operator only)
 		// 	addUserModeChannel(client, server, channel, 'o');
 		// 	// have to be on the user/channel mode
 		// 	break;
-		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument)
+		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument) (half-operator and +)
 		// 	addUserModeChannel(client, server, channel, 'h');
 		// 	// have to be on the user/channel mode
 		// 	break;
-		// case 'v': // v : give channel voice to a user (required the user in argument)
+		// case 'v': // v : give channel voice to a user (required the user in argument) (half-operator and +)
 		// 	addUserModeChannel(client, server, channel, 'v');
 		// 	// have to be on the user/channel mode
 		// 	break;
@@ -284,25 +287,25 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 		&& message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		case 'i': // i : remove the channel mode invite only
+		case 'i': // i : remove the channel mode invite only (operator only)
 			removeModeChannel(client, server, channel, 'i');
 			break;
-		case 'n': // n : remove the channel mode no external messages
+		case 'n': // n : remove the channel mode no external messages (half-operator and +)
 			removeModeChannel(client, server, channel, 'n');
 			break;
-		case 't': // t : remove the channel mode that only ops can change the topic
+		case 't': // t : remove the channel mode that only ops can change the topic (half-operator and +)
 			removeModeChannel(client, server, channel, 't');
 			break;
-		case 'm': // m : remove the channel mode that only ops can send messages to the channel
+		case 'm': // m : remove the channel mode that only ops can send messages to the channel (half-operator and +)
 			removeModeChannel(client, server, channel, 'm');
 			break;
-		case 's': // s : remove the channel mode secret
+		case 's': // s : remove the channel mode secret (operator only)
 			removeModeChannel(client, server, channel, 's');
 			break;
-		case 'p': // p : remove the channel mode private
+		case 'p': // p : remove the channel mode private (operator only)
 			removeModeChannel(client, server, channel, 'p');
 			break;
-		case 'k': // k : remove the channel key (required the password defined in argument)
+		case 'k': // k : remove the channel key (required the password defined in argument) (half-operator and +)
 			if (message.getParameters().size() > *modeArg) {
 				if (channel->getKey() == message.getParameters()[*modeArg]) {
 					channel->setKey("");
@@ -311,19 +314,19 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 				(*modeArg)++;
 			}
 			break;
-		case 'l': // l : remove the channel mode limit of users in the channel (required the limit in argument)
+		case 'l': // l : remove the channel mode limit of users in the channel (required the limit in argument) (operator only)
 			removeModeChannel(client, server, channel, 'l');
 			break;
 		// case 'b': // b : remove the user banned from the channel (required the mask/user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'b');
 		// 	break;
-		// case 'o': // o : remove the channel operator privileges to a user	(required the user in argument)
+		// case 'o': // o : remove the channel operator privileges to a user	(required the user in argument) (operator only)
 		// 	removeUserModeChannel(client, server, channel, 'o');
 		// 	break;
-		// case 'h': // h : remove the channel half-operator privileges to a user (required the user in argument)
+		// case 'h': // h : remove the channel half-operator privileges to a user (required the user in argument) (half-operator and +)
 		// 	removeUserModeChannel(client, server, channel, 'h');
 		// 	break;
-		// case 'v': // v : remove the channel voice to a user (required the user in argument)
+		// case 'v': // v : remove the channel voice to a user (required the user in argument) (half-operator and +)
 		// 	removeUserModeChannel(client, server, channel, 'v');
 		// 	break;
 		default:
