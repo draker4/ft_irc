@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   replies.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bboisson <bboisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 13:04:29 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 14:13:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 12:09:17 by bboisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,15 @@
 	+ newNickname + "\r\n") 
 
 // SPE_CODE - MODE
-# define RPL_MODE(nickname, user, host, sign, mode) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
-	+ nickname + " " + sign + mode + "\r\n") 
+# define RPL_MODE_USER(nickname, user, host, sign, mode) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ nickname + " " + sign + mode + "\r\n")
 
 // SPE_CODE - MODE
-# define RPL_MODE_PARAM(nickname, user, host, sign, mode, param) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
-	+ nickname + " " + sign + mode + " " + param + "\r\n") 
+# define RPL_MODE_CHANNEL(nickname, user, host, channel, sign, mode) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ channel + " " + sign + mode + "\r\n")
+
+// SPE_CODE - MODE
+# define RPL_MODE_CHANNEL_KEY(nickname, user, host, channel, sign, key) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ channel + " " + sign + "k " + key + "\r\n")
 
 #endif

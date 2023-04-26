@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bboisson <bboisson@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:26 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 12:20:44 by bboisson         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,6 @@
  * unless it contains sensitive information the user is not allowed to access. 
  * When the server is done processing the modes, a MODE command is sent to all members of the channel containing the mode changes. 
  * Servers MAY choose to hide sensitive information when sending the mode changes.
- * 
- * Exemples :
- * - +o : /mode #cool +o MEAT (MEAT devient opérateur sur #cool)
- * Message à send aux users du channel : ':irc.example.com MODE #cool +o MEAT'; 
- * The irc.example.com server gave channel operator privileges to MEAT on #cool.
- * - +k : /mode #cool +k COOLKEY (protège le channel par le mot de passe COOLKEY)
- * - +s : /mode #cool +s (le channel devient secret)
- * - plusieur modes : /mode #cool +ts (le channel est en mode +t +s)
- * 
- * @param server
- * @param client_fd User sending a msg
- * @param cmd_infos Structure w/ prefix, command name and message
- * 
- * Useful link : https://modern.ircdocs.horse/#mode-message
- * https://www.techbull.com/techbull/guide/internet/irccommande.html
- * 
  */
 
 /* -----------------------------  Mode on User  ----------------------------- */
@@ -61,7 +45,7 @@ void removeModeClient(Client *client, Server *server, char mode)
 {
 	if (client->getModeStatus(mode)) {				
 		client->removeMode(mode);
-		server->sendClient(RPL_MODE(client->getNickName(), client->getUserName(),
+		server->sendClient(RPL_MODE_USER(client->getNickName(), client->getUserName(),
 			client->getInet(), "-", mode), client->getClientSocket());
 	}
 }
@@ -70,7 +54,7 @@ void addModeClient(Client *client, Server *server, char mode)
 {
 	if (!client->getModeStatus(mode)) {
 		client->addMode(mode);
-		server->sendClient(RPL_MODE(client->getNickName(), client->getUserName(),
+		server->sendClient(RPL_MODE_USER(client->getNickName(), client->getUserName(),
 			client->getInet(), "+", mode), client->getClientSocket());
 	}
 }
@@ -190,9 +174,12 @@ void removeModeChannel(Client *client, Server *server, Channel *channel, char mo
 {
 	if (channel->getModeStatus(mode)) {				
 		channel->removeMode(mode);
-		server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
-			client->getInet(), "-", mode), client->getClientSocket());
-		//should send to all users in the channel
+		Channel::mapClients	clients = channel->getClients();
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			server->sendClient(RPL_MODE_CHANNEL(client->getNickName(), client->getUserName(),
+				client->getInet(), channel->getName(), "-", mode),
+				it->second.client->getClientSocket());
+		}
 	}
 }
 
@@ -200,9 +187,21 @@ void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
 {
 	if (!channel->getModeStatus(mode)) {
 		channel->addMode(mode);
-		server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
-			client->getInet(), "+", mode), client->getClientSocket());
-		//should send to all users in the channel
+		Channel::mapClients	clients = channel->getClients();
+		
+		if (mode == 'k') {
+			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+				server->sendClient(RPL_MODE_CHANNEL_KEY(client->getNickName(), client->getUserName(),
+					client->getInet(), channel->getName(), "+", channel->getKey()),
+					it->second.client->getClientSocket());
+			}
+		} else {
+			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+				server->sendClient(RPL_MODE_CHANNEL(client->getNickName(), client->getUserName(),
+					client->getInet(), channel->getName(), "+", mode),
+					it->second.client->getClientSocket());
+			}
+		}
 	}
 }
 
@@ -234,14 +233,12 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 			break;
 		case 'k': // k : set the channel key (required the password in argument)
 			if (message.getParameters().size() > *modeArg && channel->getKey().empty()) {
-				if (!channel->getModeStatus('k')) {				
-					channel->addMode('k');
-					server->sendClient(RPL_MODE_PARAM(client->getNickName(), channel->getName(),
-						client->getInet(), "+", 'k', message.getParameters()[*modeArg]), client->getClientSocket());
-					channel->setKey(message.getParameters()[*modeArg]);
-					//should send to all users in the channel
+				if (!channel->getModeStatus('k')) {	
+					std::cout << message.getParameters()[*modeArg] << std::endl;
+					channel->setKey(message.getParameters()[*modeArg]);			
+					addModeChannel(client, server, channel, 'k');
+					(*modeArg)++;
 				}
-				(*modeArg)++;
 			}
 			break;
 		case 'l': // l : set the limit of users in the channel (required the limit in argument)
@@ -250,8 +247,6 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 				channel->setClientLimit(message.getParameters()[*modeArg]);
 				(*modeArg)++;
 			}
-			addModeChannel(client, server, channel, 'l');
-			// TODO : add the limit in the channel and do nothing if it is not
 			break;
 		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
 		// 	addUserModeChannel(client, server, channel, 'b');
@@ -289,40 +284,46 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 		&& message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		case 'i': // i : set the channel to invite only
+		case 'i': // i : remove the channel mode invite only
 			removeModeChannel(client, server, channel, 'i');
 			break;
-		case 'n': // n : set the channel to no external messages
+		case 'n': // n : remove the channel mode no external messages
 			removeModeChannel(client, server, channel, 'n');
 			break;
-		case 't': // t : only ops can change the topic
+		case 't': // t : remove the channel mode that only ops can change the topic
 			removeModeChannel(client, server, channel, 't');
 			break;
-		case 'm': // m : only ops can send messages to the channel
+		case 'm': // m : remove the channel mode that only ops can send messages to the channel
 			removeModeChannel(client, server, channel, 'm');
 			break;
-		case 's': // s : set the channel to secret
+		case 's': // s : remove the channel mode secret
 			removeModeChannel(client, server, channel, 's');
 			break;
-		case 'p': // p : set the channel to private
+		case 'p': // p : remove the channel mode private
 			removeModeChannel(client, server, channel, 'p');
 			break;
-		case 'k': // k : set the channel key (required the password in argument)
-			removeModeChannel(client, server, channel, 'k');
+		case 'k': // k : remove the channel key (required the password defined in argument)
+			if (message.getParameters().size() > *modeArg) {
+				if (channel->getKey() == message.getParameters()[*modeArg]) {
+					channel->setKey("");
+					removeModeChannel(client, server, channel, 'k');
+				}
+				(*modeArg)++;
+			}
 			break;
-		case 'l': // l : set the limit of users in the channel (required the limit in argument)
+		case 'l': // l : remove the channel mode limit of users in the channel (required the limit in argument)
 			removeModeChannel(client, server, channel, 'l');
 			break;
-		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
+		// case 'b': // b : remove the user banned from the channel (required the mask/user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'b');
 		// 	break;
-		// case 'o': // o : give channel operator privileges to a user	(required the user in argument)
+		// case 'o': // o : remove the channel operator privileges to a user	(required the user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'o');
 		// 	break;
-		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument)
+		// case 'h': // h : remove the channel half-operator privileges to a user (required the user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'h');
 		// 	break;
-		// case 'v': // v : give channel voice to a user (required the user in argument)
+		// case 'v': // v : remove the channel voice to a user (required the user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'v');
 		// 	break;
 		default:
