@@ -188,7 +188,6 @@ void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
 	if (!channel->getModeStatus(mode)) {
 		channel->addMode(mode);
 		Channel::mapClients	clients = channel->getClients();
-		
 		if (mode == 'k') {
 			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 				server->sendClient(RPL_MODE_CHANNEL_KEY(client->getNickName(), client->getUserName(),
