@@ -26,6 +26,7 @@
 
 # define DEBUG_CLIENT false
 
+class Channel;
 class Client
 {
 	public:

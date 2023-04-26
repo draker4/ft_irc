@@ -225,6 +225,19 @@ void notOperator(Client *client, Server *server, Channel *channel, bool half) {
 	}
 }
 
+
+void	printBannedList(Client *client, Server *server, Channel *channel)
+{
+	Channel::mapBan	banned = channel->getBanList();
+
+	for (Channel::itMapBan it = banned.begin(); it != banned.end(); it++) {
+		server->sendClient(RPL_BANLIST(client->getNickName(), channel->getName(), it->first,
+			it->second.banBy, it->second.time), client->getClientSocket());
+	}
+	server->sendClient(RPL_ENDOFBANLIST(client->getNickName(), channel->getName()),
+		client->getClientSocket());
+}
+
 void channelAddMode(Client *client, const Message &message, Server *server, Channel *channel, size_t *i, size_t *modeArg)
 {
 	size_t j = *i;
@@ -270,17 +283,28 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 			} else
 				notOperator(client, server, channel, false);
 			break;
-		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
-		// 	addUserModeChannel(client, server, channel, 'b');
-		// 	// TODO : add the mask/user in the ban list if arguments with user connected to the channel
-		// 	// TODO : send the ban list to the client if no arguments
-		// 	// have to be on the user/channel mode
-		// 	break;
+		case 'b': // b : user is banned from the channel (required the mask/user in argument)
+			if (message.getParameters().size() > *modeArg
+				&& channel->getOperGrade(client->getNickName()) >= 2) { 		
+				if (channel->addBanned(message.getParameters()[*modeArg], client->getNickName())) {
+					Channel::mapClients	clients = channel->getClients();
+					for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+						server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
+							client->getInet(), channel->getName(), "+", "b", message.getParameters()[*modeArg]),
+							it->second.client->getClientSocket());
+					}
+				}
+				(*modeArg)++;
+			} else if (message.getParameters().size() == *modeArg) { // if no argument, print the banned list
+				printBannedList(client, server, channel);
+			}
+			break;
 		case 'o': // o : give channel operator privileges to a user
 			if (channel->getOperGrade(client->getNickName()) == 3) { // operator only
 				if (message.getParameters().size() > *modeArg
 					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
-					addUserModeChannel(client, server, channel, message.getParameters()[1][j], message.getParameters()[*modeArg]);
+					addUserModeChannel(client, server, channel,
+						message.getParameters()[1][j], message.getParameters()[*modeArg]);
 					(*modeArg)++;
 				}
 			} else
@@ -291,7 +315,8 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 			if (channel->getOperGrade(client->getNickName()) >= 2) {// half-operator and +
 				if (message.getParameters().size() > *modeArg
 					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
-					addUserModeChannel(client, server, channel, message.getParameters()[1][j], message.getParameters()[*modeArg]);
+					addUserModeChannel(client, server, channel,
+						message.getParameters()[1][j], message.getParameters()[*modeArg]);
 					(*modeArg)++;
 				}
 			} else
@@ -344,9 +369,22 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 			} else
 				notOperator(client, server, channel, true);
 			break;
-		// case 'b': // b : remove the user banned from the channel (required the mask/user in argument)
-		// 	removeUserModeChannel(client, server, channel, 'b');
-		// 	break;
+		case 'b': // b : user is banned from the channel (required the mask/user in argument)
+			if (message.getParameters().size() > *modeArg
+				&& channel->getOperGrade(client->getNickName()) >= 2) { // required the user in argument		
+				if (channel->removeBanned(message.getParameters()[*modeArg])) {
+					Channel::mapClients	clients = channel->getClients();
+					for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+						server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
+							client->getInet(), channel->getName(), "-", "b", message.getParameters()[*modeArg]),
+							it->second.client->getClientSocket());
+					}
+				}
+				(*modeArg)++;
+			} else if (message.getParameters().size() == *modeArg) { // if no argument, print the banned list
+				printBannedList(client, server, channel);
+			}
+			break;
 		case 'o': // o : remove the channel operator privileges to a user
 			if (channel->getOperGrade(client->getNickName()) == 3) {// operator only
 				if (message.getParameters().size() > *modeArg

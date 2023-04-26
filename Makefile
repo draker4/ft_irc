@@ -170,10 +170,10 @@ runl				:	all
 						${LEAKS} ./${NAME} 
 
 runs				:	debug
-						./${DEBUG} 4242 6262
+						./${DEBUG} 4245 6262
 
 rund				:	debug
 						${LLDB} ./${DEBUG}
 
 runv				:	all
-						${VALGRIND} ./${NAME} 4242 6262
+						${VALGRIND} ./${NAME} 4245 6262
