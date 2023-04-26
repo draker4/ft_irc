@@ -246,14 +246,15 @@ void Server::_addUser(vecPollfd &new_fds)
 
 void	Server::_handleClientDeconnection(itVecPollfd &it)
 {
-	// get client
-	Client	client = _clients.find((*it);
-	// get all channels where the client was in
-	Client::vecChannel	channels = it-
+	(void)it;
+	// // get client
+	// Client	client = _clients.find((*it);
+	// // get all channels where the client was in
+	// Client::vecChannel	channels = it-
 	
-	// delete client 
-	it--; // because where in a for loop looping on it++
-	_deleteClient(it + 1);
+	// // delete client 
+	// it--; // because where in a for loop looping on it++
+	// _deleteClient(it + 1);
 }
 
 void Server::_receiveData(itVecPollfd &it)
