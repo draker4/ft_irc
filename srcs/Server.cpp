@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/26 15:32:36 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 15:52:05 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,6 +244,18 @@ void Server::_addUser(vecPollfd &new_fds)
 	}
 }
 
+void	Server::_handleClientDeconnection(itVecPollfd &it)
+{
+	// get client
+	Client	client = _clients.find((*it);
+	// get all channels where the client was in
+	Client::vecChannel	channels = it-
+	
+	// delete client 
+	it--; // because where in a for loop looping on it++
+	_deleteClient(it + 1);
+}
+
 void Server::_receiveData(itVecPollfd &it)
 {
 	char buf[4096];
@@ -252,13 +264,13 @@ void Server::_receiveData(itVecPollfd &it)
 	int bytesReceived = recv(it->fd, buf, sizeof(buf), 0);
 	if (bytesReceived == -1) {
 		std::cerr << "ERROR: Can't receive data from client!" << std::endl;
-	} else if (bytesReceived == 0) {
-		if (DEBUG_SERVER) {
+	}
+	else if (bytesReceived == 0) {
+		if (DEBUG_SERVER)
 			std::cout << "Client disconnected, fd = " << it->fd << std::endl;
-		}
-		it--;
-		_deleteClient(it + 1);
-	} else {
+		_handleClientDeconnection(it);
+	}
+	else {
 		if (DEBUG_SERVER) {
 			std::cout << YELLOW << "Server got :" << buf << "from "
 				<< it->fd << RESET << std::endl;

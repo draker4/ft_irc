@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 14:26:40 by bboisson         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 15:55:53 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,9 @@ void userAddMode(Client *client, const Message &message, Server *server, size_t 
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
 		case 'r': // r : user is a registered user
-			addModeClient(client, server, 'r');
-			break;
 		case 'w': // w : user receives wallops
-			addModeClient(client, server, 'w');
-			break;
 		case 'i': // i : marks a users as invisible
-			addModeClient(client, server, 'i');
+			addModeClient(client, server, message.getParameters()[1][j]);
 			break;
 		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
@@ -91,13 +87,9 @@ void userRemoveMode(Client *client, const Message &message, Server *server, size
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
 		case 'r': // r : user is a registered user
-			removeModeClient(client, server, 'r');
-			break;
 		case 'w': // w : user receives wallops
-			removeModeClient(client, server, 'w');
-			break;
 		case 'i': // i : marks a users as invisible
-			removeModeClient(client, server, 'i');
+			removeModeClient(client, server, message.getParameters()[1][j]);
 			break;
 		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
