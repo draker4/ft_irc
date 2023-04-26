@@ -98,6 +98,8 @@
 # define ERR_CHANOPRIVSNEEDED(client, channel) ( ":" + SERVERNAME + " 482 " + client \
 		+ " " + channel + " :You're not channel operator\r\n")
 
+# define ERR_HALF_CHANOPRIVSNEEDED(client, channel) ( ":" + SERVERNAME + " 482 " + client \
+		+ " " + channel + " :You're not (half)channel operator\r\n")
 
 // 491 - OPER
 # define ERR_NOOPERHOST(client) ( ":" + SERVERNAME + " 491 " + client \

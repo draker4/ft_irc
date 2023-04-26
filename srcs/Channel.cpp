@@ -84,6 +84,19 @@ bool	Channel::getModeStatus(char c) const
 	return false;
 }
 
+bool	Channel::getUserModeStatus(std::string nickName, char c)
+{
+	itMapClients	it = _clients.find(nickName);
+	if (it == _clients.end())
+		return false;
+	for (itConstString itUserMode = it->second.userMode.begin();
+		itUserMode != it->second.userMode.end(); itUserMode++) {
+		if (*itUserMode == c)
+			return true;
+	}
+	return false;
+}
+
 std::string	Channel::getKey(void) const
 {
 	return _key;
@@ -143,6 +156,11 @@ int	Channel::getOperGrade(std::string nickName)
 std::string	Channel::getClientTopic(void) const
 {
 	return _client_topic;
+}
+
+unsigned int	Channel::getClientLimit(void) const
+{
+	return _clientLimit;
 }
 
 /* --------------------------------  Setter  -------------------------------- */
@@ -281,5 +299,30 @@ void	Channel::updateClient(std::string oldNickname, std::string nickname)
 		t_connect	tmp = it->second;
 		_clients.erase(it);
 		_clients[nickname] = tmp;
+	}
+}
+
+void	Channel::addUserMode(std::string nickname, char c)
+{
+	itMapClients	it = _clients.find(nickname);
+	if (it == _clients.end())
+		return ;
+	if (it->second.userMode.find(c) == std::string::npos)
+		it->second.userMode.push_back(c);
+}
+
+void	Channel::removeUserMode(std::string nickname, char c)
+{
+	itMapClients	it = _clients.find(nickname);
+	if (it == _clients.end())
+		return ;
+	int i = 0;
+	for (itString itUserMode = it->second.userMode.begin();
+		itUserMode != it->second.userMode.end(); itUserMode++) {
+		if (*itUserMode == c) {
+			it->second.userMode.erase(it->second.userMode.begin() + i);
+			return;
+		}
+		i++;
 	}
 }

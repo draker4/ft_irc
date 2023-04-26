@@ -57,11 +57,13 @@ class	Channel
 		std::string		getTopic(void) const;
 		mapClients		getClients(void) const;
 		bool			getModeStatus(char c) const;
+		bool			getUserModeStatus(std::string nickName, char c);
 		std::string		getMode(void) const;
 		std::string		getTimeCreated(void);
 		std::string		getTimeTopic(void);
 		int				getOperGrade(std::string nickName);
 		std::string		getClientTopic(void) const;
+		unsigned int	getClientLimit(void) const;
 
 		// setter
 		void			setTopic(std::string nickname, std::string topic);
@@ -82,6 +84,8 @@ class	Channel
 		void	addMode(char c);
 		void	removeMode(char c);
 		void	updateClient(std::string oldNickname, std::string nickname);
+		void	addUserMode(std::string nickname, char c);
+		void	removeUserMode(std::string nickname, char c);
 
 		//Exceptions
 		class ChannelException : public std::exception

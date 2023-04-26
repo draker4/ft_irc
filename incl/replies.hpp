@@ -89,7 +89,7 @@
 	+ channel + " " + sign + mode + "\r\n")
 
 // SPE_CODE - MODE
-# define RPL_MODE_CHANNEL_KEY(nickname, user, host, channel, sign, key) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
-	+ channel + " " + sign + "k " + key + "\r\n")
+# define RPL_MODE_CHANNEL_PARAM(nickname, user, host, channel, sign, mode, arg) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
+	+ channel + " " + sign + mode + " " + arg + "\r\n")
 
 #endif

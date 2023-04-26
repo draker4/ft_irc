@@ -41,15 +41,6 @@
 
 /* -----------------------------  Mode on User  ----------------------------- */
 
-void removeModeClient(Client *client, Server *server, char mode)
-{
-	if (client->getModeStatus(mode)) {				
-		client->removeMode(mode);
-		server->sendClient(RPL_MODE_USER(client->getNickName(), client->getUserName(),
-			client->getInet(), "-", mode), client->getClientSocket());
-	}
-}
-
 void addModeClient(Client *client, Server *server, char mode)
 {
 	if (!client->getModeStatus(mode)) {
@@ -59,6 +50,14 @@ void addModeClient(Client *client, Server *server, char mode)
 	}
 }
 
+void removeModeClient(Client *client, Server *server, char mode)
+{
+	if (client->getModeStatus(mode)) {				
+		client->removeMode(mode);
+		server->sendClient(RPL_MODE_USER(client->getNickName(), client->getUserName(),
+			client->getInet(), "-", mode), client->getClientSocket());
+	}
+}
 
 void userAddMode(Client *client, const Message &message, Server *server, size_t *i)
 {
@@ -148,27 +147,60 @@ void userMode(Client *client, const Message &message, Server *server)
 
 /* ---------------------------  Mode on Channel  ---------------------------- */
 
-// void removeUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string paramModeName)
-// {
-// 	if (channel->getUserModeStatus(mode, paramModeName)) {				
-// 		channel->removeUserMode(mode, paramModeName);
-// 		//find message
-// 			// server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
-// 			// 	client->getInet(), "-", mode), client->getClientSocket());
-// 		//should send to all users in the channel
-// 	}
-// }
+void addUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string nickName)
+{
+	if (channel->isClientInChannel(nickName) && !channel->getUserModeStatus(nickName, mode)) {
+		channel->addUserMode(nickName, mode);
+		Channel::mapClients	clients = channel->getClients();
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
+				client->getInet(), channel->getName(), "+", mode, nickName),
+				it->second.client->getClientSocket());
+		}
+	}
+}
 
-// void addUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string paramModeName)
-// {
-// 	if (!channel->getUserModeStatus(mode, paramModeName)) {
-// 		channel->addUserMode(mode, paramModeName);
-// 		//find message
-// 			// server->sendClient(RPL_MODE(client->getNickName(), channel->getName(),
-// 			// 	client->getInet(), "+", mode), client->getClientSocket());
-// 		//should send to all users in the channel
-// 	}
-// }
+void removeUserModeChannel(Client *client, Server *server, Channel *channel, char mode, std::string nickName)
+{
+	if (channel->isClientInChannel(nickName) && channel->getUserModeStatus(nickName, mode)) {				
+		channel->removeUserMode(nickName, mode);
+		Channel::mapClients	clients = channel->getClients();
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
+				client->getInet(), channel->getName(), "-", mode, nickName),
+				it->second.client->getClientSocket());
+		}
+	}
+}
+
+void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
+{
+	if (!channel->getModeStatus(mode)) {
+		channel->addMode(mode);
+		Channel::mapClients	clients = channel->getClients();
+		if (mode == 'k' || mode == 'l') {
+			std::string arg;
+			if (mode == 'l') {
+				std::stringstream limit;
+				limit << channel->getClientLimit();
+				arg = limit.str();
+			}	
+			else
+				arg = channel->getKey();
+			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+				server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
+					client->getInet(), channel->getName(), "+", mode, arg),
+					it->second.client->getClientSocket());
+			}
+		} else {
+			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+				server->sendClient(RPL_MODE_CHANNEL(client->getNickName(), client->getUserName(),
+					client->getInet(), channel->getName(), "+", mode),
+					it->second.client->getClientSocket());
+			}
+		}
+	}
+}
 
 void removeModeChannel(Client *client, Server *server, Channel *channel, char mode)
 {
@@ -183,24 +215,13 @@ void removeModeChannel(Client *client, Server *server, Channel *channel, char mo
 	}
 }
 
-void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
-{
-	if (!channel->getModeStatus(mode)) {
-		channel->addMode(mode);
-		Channel::mapClients	clients = channel->getClients();
-		if (mode == 'k') {
-			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-				server->sendClient(RPL_MODE_CHANNEL_KEY(client->getNickName(), client->getUserName(),
-					client->getInet(), channel->getName(), "+", channel->getKey()),
-					it->second.client->getClientSocket());
-			}
-		} else {
-			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-				server->sendClient(RPL_MODE_CHANNEL(client->getNickName(), client->getUserName(),
-					client->getInet(), channel->getName(), "+", mode),
-					it->second.client->getClientSocket());
-			}
-		}
+void notOperator(Client *client, Server *server, Channel *channel, bool half) {
+	if (half) {
+		server->sendClient(ERR_HALF_CHANOPRIVSNEEDED(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
+	} else {
+		server->sendClient(ERR_CHANOPRIVSNEEDED(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
 	}
 }
 
@@ -211,44 +232,43 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		
-		case 'i': // i : set the channel to invite only (operator only)
-			if (channel->getOperGrade(client->getNickName()) == 3)
-				addModeChannel(client, server, channel, 'i');
+		case 'i': // i : set the channel to invite only
+		case 's': // s : set the channel to secret
+		case 'p': // p : set the channel to private
+			if (channel->getOperGrade(client->getNickName()) == 3) // operator only
+				addModeChannel(client, server, channel, message.getParameters()[1][j]);
+			else
+				notOperator(client, server, channel, false);
 			break;
-		case 'n': // n : set the channel to no external messages (half-operator and +)
-			addModeChannel(client, server, channel, 'n');
+		case 'n': // n : set the channel to no external messages
+		case 't': // t : only ops can change the topic
+		case 'm': // m : only ops can send messages to the channel
+			if (channel->getOperGrade(client->getNickName()) >= 2) // half-operator and +
+				addModeChannel(client, server, channel, message.getParameters()[1][j]);
+			else
+				notOperator(client, server, channel, true);
 			break;
-		case 't': // t : only ops can change the topic (half-operator and +)
-			addModeChannel(client, server, channel, 't');
-			break;
-		case 'm': // m : only ops can send messages to the channel (half-operator and +)
-			addModeChannel(client, server, channel, 'm');
-			break;
-		case 's': // s : set the channel to secret (operator only)
-			if (channel->getOperGrade(client->getNickName()) == 3)
-				addModeChannel(client, server, channel, 's');
-			break;
-		case 'p': // p : set the channel to private (operator only)
-			if (channel->getOperGrade(client->getNickName()) == 3)
-				addModeChannel(client, server, channel, 'p');
-			break;
-		case 'k': // k : set the channel key (required the password in argument) (half-operator and +)
-			if (message.getParameters().size() > *modeArg && channel->getKey().empty()) {
-				if (!channel->getModeStatus('k')) {	
-					std::cout << message.getParameters()[*modeArg] << std::endl;
+		case 'k': // k : set the channel key
+			if (channel->getOperGrade(client->getNickName()) >= 2) { // half-operator and +
+				if (message.getParameters().size() > *modeArg && channel->getKey().empty()) { // required the password in argument
 					channel->setKey(message.getParameters()[*modeArg]);			
-					addModeChannel(client, server, channel, 'k');
+					addModeChannel(client, server, channel, message.getParameters()[1][j]);
+					(*modeArg)++;
+				} 
+			} else
+				notOperator(client, server, channel, true);
+			break;
+		case 'l': // l : set the limit of users in the channel 
+			if (channel->getOperGrade(client->getNickName()) == 3) { // operator only
+				if (message.getParameters().size() > *modeArg
+					&& message.getParameters()[*modeArg].find_first_not_of("0123456789")
+					== std::string::npos) { // required the limit in argument
+					channel->setClientLimit(message.getParameters()[*modeArg]);
+					addModeChannel(client, server, channel, message.getParameters()[1][j]);
 					(*modeArg)++;
 				}
-			}
-			break;
-		case 'l': // l : set the limit of users in the channel (required the limit in argument) (operator only)
-			if (message.getParameters().size() > *modeArg) {
-				addModeChannel(client, server, channel, 'l');
-				channel->setClientLimit(message.getParameters()[*modeArg]);
-				(*modeArg)++;
-			}
+			} else
+				notOperator(client, server, channel, false);
 			break;
 		// case 'b': // b : user is banned from the channel (required the mask/user in argument)
 		// 	addUserModeChannel(client, server, channel, 'b');
@@ -256,18 +276,27 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		// 	// TODO : send the ban list to the client if no arguments
 		// 	// have to be on the user/channel mode
 		// 	break;
-		// case 'o': // o : give channel operator privileges to a user	(required the user in argument) (operator only)
-		// 	addUserModeChannel(client, server, channel, 'o');
-		// 	// have to be on the user/channel mode
-		// 	break;
-		// case 'h': // h : give channel half-operator privileges to a user (required the user in argument) (half-operator and +)
-		// 	addUserModeChannel(client, server, channel, 'h');
-		// 	// have to be on the user/channel mode
-		// 	break;
-		// case 'v': // v : give channel voice to a user (required the user in argument) (half-operator and +)
-		// 	addUserModeChannel(client, server, channel, 'v');
-		// 	// have to be on the user/channel mode
-		// 	break;
+		case 'o': // o : give channel operator privileges to a user
+			if (channel->getOperGrade(client->getNickName()) == 3) { // operator only
+				if (message.getParameters().size() > *modeArg
+					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
+					addUserModeChannel(client, server, channel, message.getParameters()[1][j], message.getParameters()[*modeArg]);
+					(*modeArg)++;
+				}
+			} else
+				notOperator(client, server, channel, false);
+			break;
+		case 'h': // h : give channel half-operator privileges to a user
+		case 'v': // v : give channel voice to a user
+			if (channel->getOperGrade(client->getNickName()) >= 2) {// half-operator and +
+				if (message.getParameters().size() > *modeArg
+					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
+					addUserModeChannel(client, server, channel, message.getParameters()[1][j], message.getParameters()[*modeArg]);
+					(*modeArg)++;
+				}
+			} else
+				notOperator(client, server, channel, false);
+			break;
 		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
 				client->getClientSocket());
@@ -286,48 +315,62 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 		&& message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		case 'i': // i : remove the channel mode invite only (operator only)
-			removeModeChannel(client, server, channel, 'i');
+		case 'i': // i : remove the channel mode invite only 
+		case 's': // s : remove the channel mode secret
+		case 'p': // p : remove the channel mode private
+		case 'l': // l : remove the channel mode limit of users in the channel
+			if (channel->getOperGrade(client->getNickName()) == 3) // operator only
+				removeModeChannel(client, server, channel, message.getParameters()[1][j]);
+			else
+				notOperator(client, server, channel, false);
 			break;
-		case 'n': // n : remove the channel mode no external messages (half-operator and +)
-			removeModeChannel(client, server, channel, 'n');
+		case 'n': // n : remove the channel mode no external messages
+		case 't': // t : remove the channel mode that only ops can change the topic
+		case 'm': // m : remove the channel mode that only ops can send messages to the channel
+			if (channel->getOperGrade(client->getNickName()) >= 2) // half-operator and +
+				removeModeChannel(client, server, channel, message.getParameters()[1][j]);
+			else
+				notOperator(client, server, channel, true);
 			break;
-		case 't': // t : remove the channel mode that only ops can change the topic (half-operator and +)
-			removeModeChannel(client, server, channel, 't');
-			break;
-		case 'm': // m : remove the channel mode that only ops can send messages to the channel (half-operator and +)
-			removeModeChannel(client, server, channel, 'm');
-			break;
-		case 's': // s : remove the channel mode secret (operator only)
-			removeModeChannel(client, server, channel, 's');
-			break;
-		case 'p': // p : remove the channel mode private (operator only)
-			removeModeChannel(client, server, channel, 'p');
-			break;
-		case 'k': // k : remove the channel key (required the password defined in argument) (half-operator and +)
-			if (message.getParameters().size() > *modeArg) {
-				if (channel->getKey() == message.getParameters()[*modeArg]) {
-					channel->setKey("");
-					removeModeChannel(client, server, channel, 'k');
+		case 'k': // k : remove the channel key 
+			if (channel->getOperGrade(client->getNickName()) >= 2) { // half-operator and +
+				if (message.getParameters().size() > *modeArg) { // required the password defined in argument
+					if (channel->getKey() == message.getParameters()[*modeArg]) {
+						channel->setKey("");
+						removeModeChannel(client, server, channel, message.getParameters()[1][j]);
+					}
+					(*modeArg)++;
 				}
-				(*modeArg)++;
-			}
-			break;
-		case 'l': // l : remove the channel mode limit of users in the channel (required the limit in argument) (operator only)
-			removeModeChannel(client, server, channel, 'l');
+			} else
+				notOperator(client, server, channel, true);
 			break;
 		// case 'b': // b : remove the user banned from the channel (required the mask/user in argument)
 		// 	removeUserModeChannel(client, server, channel, 'b');
 		// 	break;
-		// case 'o': // o : remove the channel operator privileges to a user	(required the user in argument) (operator only)
-		// 	removeUserModeChannel(client, server, channel, 'o');
-		// 	break;
-		// case 'h': // h : remove the channel half-operator privileges to a user (required the user in argument) (half-operator and +)
-		// 	removeUserModeChannel(client, server, channel, 'h');
-		// 	break;
-		// case 'v': // v : remove the channel voice to a user (required the user in argument) (half-operator and +)
-		// 	removeUserModeChannel(client, server, channel, 'v');
-		// 	break;
+		case 'o': // o : remove the channel operator privileges to a user
+			if (channel->getOperGrade(client->getNickName()) == 3) {// operator only
+				if (message.getParameters().size() > *modeArg
+					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
+					removeUserModeChannel(client, server, channel, message.getParameters()[1][j],
+						message.getParameters()[*modeArg]);
+					(*modeArg)++;
+				}
+			} else
+				notOperator(client, server, channel, false);
+			break;
+		case 'h': // h : remove the channel half-operator privileges to a user
+		case 'v': // v : remove the channel voice to a user
+			if (channel->getOperGrade(client->getNickName()) >= 2) {// half-operator and +
+				if (message.getParameters().size() > *modeArg
+					&& channel->isClientInChannel(message.getParameters()[*modeArg])) { // required the user in argument		
+					removeUserModeChannel(client, server, channel, message.getParameters()[1][j],
+						message.getParameters()[*modeArg]);
+					(*modeArg)++;
+				}
+			} else
+				notOperator(client, server, channel, false);
+			break;
+			break;
 		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),
 				client->getClientSocket());
@@ -359,11 +402,6 @@ void channelMode (Client *client, const Message &message, Server *server)
 	else {
 		size_t i = 0;
 		// Must be an op to change the mode
-		if (!channelModed->getOperGrade(client->getNickName())) {
-			server->sendClient(ERR_CHANOPRIVSNEEDED(client->getNickName(),
-				channelModed->getName()), client->getClientSocket());
-			return;
-		}
 		size_t modeArg = 2;
 		while(i < message.getParameters()[1].size()) {
 			if (message.getParameters()[1][i] == '+') { // add mode
