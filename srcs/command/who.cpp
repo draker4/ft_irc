@@ -12,6 +12,20 @@
 
 # include "command.hpp"
 
+/**
+ * @brief The WHO command is used to query a list of users who match the provided mask.
+ * The server will answer this command with zero, one or more RPL_WHOREPLY, and end the list with RPL_ENDOFWHO.
+ * The mask can be one of the following:
+ * 		A channel name, in which case the channel members are listed.
+ * 		An exact nickname, in which case a single user is returned.
+ * Numeric Replies:
+ * 	RPL_WHOREPLY (352)
+ * 	RPL_ENDOFWHO (315)
+ * 	ERR_NOSUCHSERVER (402)
+ * 
+ * 	Syntax : WHO <mask>
+ */
+
 void who(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
