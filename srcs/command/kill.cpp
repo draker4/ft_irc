@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 18:10:22 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:04:33 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,9 @@ void kill(Client *client, const Message &message, Server *server)
 		server->sendClient(ERROR_MESSAGE(rpl_error), client->getClientSocket());
 		
 		// deconnect client
-		// if (client->getNickName() == to_kill->getNickName())
-		// 	client->setDeconnect(true);
-		// else
-			// server->deleteClient(to_kill);
-			to_kill->setDeconnect(true);
+		if (client->getNickName() == to_kill->getNickName())
+			client->setDeconnect(true);
+		else
+			server->deleteClient(to_kill->getClientSocket());
 	}
 }

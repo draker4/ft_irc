@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/26 16:12:27 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:29:41 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ class Server
 		void		launch(void);
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
 		void		sendWelcome(Client *client) const;
-		void		deleteClient(Client *client);
+		void		deleteClient(int clientSocket);
 		void		addChannel(Channel *channel);
 	
 		// Exceptions
@@ -142,8 +142,7 @@ class Server
 		void	_handleCommand(std::string msg, int clientSocket);
 		void	_initCommands(void);
 		void	_initOperatorConfig(void);
-		void	_deleteClient(itVecPollfd it);
-		void	_sendQUIT(Client *client, std::string reason);
+		void	_sendQUIT(Client *client);
 		Client	*_getClient(int clientSocket);
 };
 

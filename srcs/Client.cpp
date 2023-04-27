@@ -22,7 +22,7 @@ Client::Client(void)
 }
 
 Client::Client(int serverSocket) : _serverSocket(serverSocket), _nickName(""),
-_oldNickName(""), _realName(""), _userName(""), _buffer(""), _mode(""),
+_oldNickName(""), _realName(""), _userName(""), _buffer(""), _mode(""), _reason_leaving(""),
 _client_addr_size(sizeof(_client_addr)), _registered(false),
 _passwordSet(false), _deconnect(false)
 {
@@ -59,6 +59,7 @@ Client &Client::operator=(const Client &rhs)
 	_userName = rhs._userName;
 	_buffer = rhs._buffer;
 	_mode = rhs._mode;
+	_reason_leaving = rhs._reason_leaving;
 	_client_addr = rhs._client_addr;
 	_client_addr_size = rhs._client_addr_size;
 	inet_ntop(_client_addr.ss_family, _get_addr((sockaddr *)&_client_addr), _inet, sizeof(_inet));
@@ -182,7 +183,6 @@ void	Client::setRealName(std::string realName)
 	_realName = realName;
 }
 
-
 void	Client::setOldNickName(std::string oldNickName)
 {
 	_oldNickName = oldNickName;
@@ -191,6 +191,11 @@ void	Client::setOldNickName(std::string oldNickName)
 void	Client::setRegistered(bool boolean)
 {
 	_registered = boolean;
+}
+
+void	Client::setReasonLeaving(std::string reason)
+{
+	_reason_leaving = reason;
 }
 
 /* --------------------------  Private functions  --------------------------- */
@@ -236,5 +241,16 @@ void	Client::removeMode(char c)
 
 void	Client::addChannel(Channel *channel)
 {
-	_channels.push_back(channel);
+	if (channel)
+		_channels.push_back(channel);
+}
+
+void	Client::removeChannel(Channel *channel)
+{
+	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+		if (*it == channel) {
+			_channels.erase(it);
+			break ;
+		}
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 14:47:53 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:06:44 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,5 +80,8 @@ void part(Client *client, const Message &message, Server *server)
 
 		// remove client from the channel clients' list
 		channel->removeClient(client);
+		
+		// remove channel from client
+		client->removeChannel(channel);
 	}
 }

@@ -68,6 +68,7 @@ class Client
 		void		setRealName(std::string realName);
 		void 		setOldNickName(std::string oldNickName);
 		void		setRegistered(bool boolean);
+		void		setReasonLeaving(std::string reason);
 
 		// Public member functions
 		void		addBuffer(std::string to_add);
@@ -75,6 +76,7 @@ class Client
 		void		addMode(char c);
 		void		removeMode(char c);
 		void		addChannel(Channel *channel);
+		void		removeChannel(Channel *chanel);
 	
 	private:
 		int 					_serverSocket;
@@ -86,6 +88,7 @@ class Client
 		std::string 			_userName;
 		std::string				_buffer;
 		std::string				_mode;
+		std::string				_reason_leaving;
 		sockaddr_storage		_client_addr;
 		socklen_t 				_client_addr_size;
 		bool 					_registered;

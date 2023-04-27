@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 10:44:25 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:37:13 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ void Server::_addUser(vecPollfd &new_fds)
 	}
 }
 
-void	Server::_sendQUIT(Client *client, std::string reason)
+void	Server::_sendQUIT(Client *client)
 {
 	if (!client)
 		return ;
@@ -261,12 +261,14 @@ void	Server::_sendQUIT(Client *client, std::string reason)
 		// find all clients in the channel
 		Channel::mapClients	clients = (*it)->getClients();
 
+		// if ()
+
 		// send QUIT message to all clients in the channel
-		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-			sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("QUIT"), reason),
-				it->second.client->getClientSocket());
-		}
+		// for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+		// 	sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+		// 		client->getInet(), std::string("QUIT"), reason),
+		// 		it->second.client->getClientSocket());
+		// }
 	}
 }
 
@@ -285,7 +287,7 @@ void Server::_receiveData(itVecPollfd &it)
 		
 		// delete client 
 		it--; // because where in a for loop looping on it++
-		_deleteClient(it + 1);
+		deleteClient((it + 1)->fd);
 	}
 	else {
 		if (DEBUG_SERVER) {
@@ -302,7 +304,7 @@ void Server::_receiveData(itVecPollfd &it)
 			_clients[it->fd]->clearBuffer();
 			if (_clients[it->fd]->getDeconnect()) {
 				it--;
-				_deleteClient(it + 1);
+				deleteClient((it + 1)->fd);
 			}
 		}
 	}
@@ -387,18 +389,6 @@ void Server::_initOperatorConfig(void)
 	}
 }
 
-void	Server::_deleteClient(itVecPollfd it)
-{
-	// handle client deconnection in all channels
-	_sendQUIT(_clients[it->fd], "Left the server"); 
-
-	// close socket and delete client
-	close(it->fd);
-	delete _getClient(it->fd);
-	_clients.erase(it->fd);
-	_fds.erase(it);
-}
-
 /* -----------------------  Public member functions  ------------------------ */
 
 void Server::launch(void)
@@ -475,12 +465,27 @@ void	Server::sendWelcome(Client *client) const
 	// add message 004 and 005
 }
 
-void	Server::deleteClient(Client *client)
+// void	Server::_deleteClient(itVecPollfd it)
+// {
+// 	// handle client deconnection in all channels
+// 	_sendQUIT(_clients[it->fd], "Left the server"); 
+
+// 	// close socket and delete client
+// 	close(it->fd);
+// 	delete _getClient(it->fd);
+// 	_clients.erase(it->fd);
+// 	_fds.erase(it);
+// }
+
+void	Server::deleteClient(int clientSocket)
 {
-	int	clientSocket = client->getClientSocket();
+	itMapClient	it_client = _clients.find(clientSocket);
+	
+	// send quit message to all users in the same channel than client
+	_sendQUIT(it_client->second);
 
 	close(clientSocket);
-	delete client;
+	delete it_client->second;
 	_clients.erase(clientSocket);
 	for (itVecPollfd it = _fds.begin(); it != _fds.end(); it++) {
 		if (it->fd == clientSocket) {

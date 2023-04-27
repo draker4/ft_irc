@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 15:31:08 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:14:38 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,8 @@ void quit(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "QUIT command called" << RESET << std::endl;
 	
 	// get reason
-	std::string	reason = " ";
 	if (message.getParameters().size() > 0)
-		reason.append(message.getParameters()[0]);
+		client->setReasonLeaving(message.getParameters()[0]);
 	
 	// send ERROR message to client
 	server->sendClient(ERROR_MESSAGE(reason), client->getClientSocket());
@@ -46,20 +45,20 @@ void quit(Client *client, const Message &message, Server *server)
 	// get all channels this client was in
 	Client::vecChannel	channels = client->getChannels();
 	
+	// remove client from each channel
 	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
 		
-		// remove client from the channel
 		(*it)->removeClient(client);
 		
 		// find all clients in the channel
-		Channel::mapClients	clients = (*it)->getClients();
+		// Channel::mapClients	clients = (*it)->getClients();
 
 		// send QUIT message to all clients in the channel
-		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("QUIT"), reason),
-				it->second.client->getClientSocket());
-		}
+		// for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+		// 	server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+		// 		client->getInet(), std::string("QUIT"), reason),
+		// 		it->second.client->getClientSocket());
+		// }
 	}
 	
 	// delete client from server
