@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/25 11:00:06 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 16:23:19 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,12 +212,35 @@ void	Channel::removeClient(Client *client)
 		_clients.erase(it);
 }
 
-bool	Channel::isBanned(std::string nickname) const
+bool	Channel::isBanned(Client *client) const
 {
-	constItMapBan	it = _banned.find(nickname);
-	if (it == _banned.end())
-		return false;
-	return true;
+	// all posibilities :
+	
+	// nickname!*@*
+	// *!*@host
+	// *!user@* -> ya pas
+	// nickname!user*
+	// nickname!*@host
+	// *user@host
+	// nickname!user@host
+
+	vecString	can_be_banned;
+	
+	can_be_banned.push_back(client->getNickName() + "!*@*");
+	can_be_banned.push_back("*!*@" + std::string(client->getInet()));
+	can_be_banned.push_back("*!" + client->getUserName() + "@*");
+	can_be_banned.push_back(client->getNickName() + "!" + client->getUserName() + "*");
+	can_be_banned.push_back(client->getNickName() + "!*@" + client->getInet());
+	can_be_banned.push_back("*" + client->getUserName() + "@" + client->getInet());
+	can_be_banned.push_back(client->getNickName() + "!" + client->getUserName() + "@" + client->getInet());
+	
+	for (constItMapBan it = _banned.begin(); it != _banned.end(); it++) {
+		for (itVecString it_string = can_be_banned.begin(); it_string != can_be_banned.end(); it_string++) {
+			if (*it_string == it->first)
+				return true;
+		}
+	}
+	return false;
 }
 
 bool	Channel::isFull(void) const

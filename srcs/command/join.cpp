@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/24 18:06:54 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 16:00:07 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,12 @@
 
 static void	addClient(Server *server, Client *client, Channel *channel)
 {
+	Channel::mapBan banned = channel->getBanList();
+	for (Channel::itMapBan it = banned.begin(); it != banned.end(); it++) {
+		std::cout << PURPLE << "HERE ban:" << it->first << RESET << std::endl;
+	}
 	// check if user is not banned from channel
-	if (channel->isBanned(client->getNickName()))
+	if (channel->isBanned(client))
 		server->sendClient(ERR_BANNEDFROMCHAN(client->getNickName(), channel->getName()), 
 			client->getClientSocket());
 	
@@ -119,6 +123,8 @@ void join(Client *client, const Message &message, Server *server)
 		
 		for (Message::itVecString it = channels.begin(); it != channels.end(); it++) {
 			
+			// BANCHANMASK
+
 			// check first char of the channel name
 			if ((*it)[0] != '#' && (*it)[0] != '&') {
 				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
