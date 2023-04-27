@@ -80,5 +80,12 @@ void part(Client *client, const Message &message, Server *server)
 
 		// remove client from the channel clients' list
 		channel->removeClient(client);
+
+		// remove channel from the client channels' list
+		client->removeChannel(channel);
+
+		// if the channel is empty, delete it
+		if (channel->getClients().empty())
+			server->removeChannel(channel);
 	}
 }

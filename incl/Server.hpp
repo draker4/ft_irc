@@ -103,6 +103,7 @@ class Server
 		void		sendWelcome(Client *client) const;
 		void		deleteClient(Client *client);
 		void		addChannel(Channel *channel);
+		void		removeChannel(Channel *channel);
 	
 		// Exceptions
 		class ServerException : public std::exception

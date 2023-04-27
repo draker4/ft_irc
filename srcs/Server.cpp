@@ -204,6 +204,12 @@ Server::vecClient	Server::getClientsHost(std::string username_host) const
 	return clients;
 }
 
+void	Server::removeChannel(Channel *channel)
+{
+	_channels.erase(std::find(_channels.begin(), _channels.end(), channel));
+	delete channel;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
@@ -250,10 +256,10 @@ void	Server::_sendQUIT(Client *client, std::string reason)
 		return ;
 
 	// get all channels where the client was in
-	Client::vecChannel	channels = client->getChannels();
+	Client::vecChannel	clientChannels = client->getChannels();
 	
 	// send QUIT message to all clients
-	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+	for (Client::itVecChannel it = clientChannels.begin(); it != clientChannels.end(); it++) {
 		
 		// remove client from the channel
 		(*it)->removeClient(client);
@@ -261,11 +267,16 @@ void	Server::_sendQUIT(Client *client, std::string reason)
 		// find all clients in the channel
 		Channel::mapClients	clients = (*it)->getClients();
 
-		// send QUIT message to all clients in the channel
-		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-			sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("QUIT"), reason),
-				it->second.client->getClientSocket());
+		// if no more client in channel delete channel
+		if (clients.empty()) {
+			removeChannel(*it);
+		} else {
+			// send QUIT message to all clients in the channel
+			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+				sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+					client->getInet(), std::string("QUIT"), reason),
+					it->second.client->getClientSocket());
+			}
 		}
 	}
 }

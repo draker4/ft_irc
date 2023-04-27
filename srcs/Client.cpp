@@ -238,3 +238,13 @@ void	Client::addChannel(Channel *channel)
 {
 	_channels.push_back(channel);
 }
+
+void	Client::removeChannel(Channel *channel)
+{
+	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+		if (*it == channel) {
+			_channels.erase(it);
+			return;
+		}
+	}
+}
