@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 12:04:43 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 15:31:49 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,6 @@ void	Server::_sendQUIT(Client *client)
 		
 		// find all clients in the channel
 		Channel::mapClients	clients = (*it)->getClients();
-		std::cerr << RED << " :" << clients.size() << " clients in channel " << (*it)->getName() << RESET << std::endl;
 
 		// if no more client in channel delete channel
 		if (clients.empty()) {

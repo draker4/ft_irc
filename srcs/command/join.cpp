@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/24 18:06:54 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 14:08:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,8 @@ void join(Client *client, const Message &message, Server *server)
 		
 		for (Message::itVecString it = channels.begin(); it != channels.end(); it++) {
 			
+			// BANCHANMASK
+
 			// check first char of the channel name
 			if ((*it)[0] != '#' && (*it)[0] != '&') {
 				server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), *it), 
