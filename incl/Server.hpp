@@ -104,6 +104,7 @@ class Server
 		void		deleteClient(int clientSocket);
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);
+		bool		channelExist(std::string name);
 	
 		// Exceptions
 		class ServerException : public std::exception

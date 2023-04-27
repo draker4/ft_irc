@@ -58,11 +58,15 @@
 # define ERR_NICKNAMEINUSE(nickname) ( ":" + SERVERNAME + " 433 " + nickname \
 		+ " :Nickname is already in use\r\n")
 
-// 442 - TOPIC - PART
+// 442 - TOPIC - PART - INVITE
 # define ERR_NOTONCHANNEL(nickname, channel) ( ":" + SERVERNAME + " 442 " + nickname + " " \
 		+ channel + " :You're not on that channel\r\n")
 
-// 461 - PASS - USER - OPER - MODE - TOPIC - PART
+// 443 - INVITE
+# define ERR_USERONCHANNEL(nickname, invited, channel) ( ":" + SERVERNAME + " 443 " + nickname + " " \
+		+ invited + " " + channel + " :is already on channel\r\n")
+
+// 461 - PASS - USER - OPER - MODE - TOPIC - PART - INVITE
 # define ERR_NEEDMOREPARAMS(client, command) (":" +  SERVERNAME + " 461 " + client + " " \
 		+ command + " :Not Enough parameters\r\n")
 

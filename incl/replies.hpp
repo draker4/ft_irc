@@ -43,7 +43,7 @@
 # define RPL_CREATIONTIME(nickName, channel, creationTime) ( ":" + SERVERNAME + " 329 " + nickName \
 		+ " " + channel + " :" + creationTime + "\r\n")
 
-// 331
+// 331 - TOPIC
 # define RPL_NOTOPIC(nickname, channel) ( ":" + SERVERNAME + " 331 " + nickname + " " \
 		+ channel + " :No topic is set\r\n")
 
@@ -54,6 +54,10 @@
 // 333 - TOPIC
 # define RPL_TOPICWHOTIME(nickname, channel, nick_topic, setat) ( ":" + SERVERNAME + " 333 " + nickname + " " \
 		+ channel + " " + nick_topic + " " + setat + "\r\n")
+
+// 341 - INVITE
+# define RPL_INVITING(nickName, invited, channel) ( ":" + SERVERNAME + " 341 " + nickName \
+		+ " " + invited + " " + channel + "\r\n")
 
 // 352 - WHO
 # define RPL_WHOREPLY(client, nickname, username, realname, host, channel, flags) ( ":" + SERVERNAME \
@@ -99,5 +103,9 @@
 // SPE_CODE - MODE
 # define RPL_MODE_CHANNEL_PARAM(nickname, user, host, channel, sign, mode, arg) ( ":" + nickname + "!" + user + "@" + host + " MODE " \
 	+ channel + " " + sign + mode + " " + arg + "\r\n")
+
+// SPE_CODE - INVITE
+# define RPL_INVITE(nickname, user, host, channel) ( ":" + nickname + "!" + user + "@" + host + " INVITE " \
+	+ nickname + " " + channel + "\r\n")
 
 #endif

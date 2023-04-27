@@ -59,8 +59,8 @@ static void	addClient(Server *server, Client *client, Channel *channel)
 			client->getClientSocket());
 	
 	// check if user has to be invited and is invited
-	else if (channel->getModeStatus('i') && channel->isInvited(client->getNickName()))
-		server->sendClient(ERR_CHANNELISFULL(client->getNickName(), channel->getName()), 
+	else if (channel->getModeStatus('i') && !channel->isInvited(client->getNickName()))
+		server->sendClient(ERR_INVITEONLYCHAN(client->getNickName(), channel->getName()), 
 			client->getClientSocket());
 	
 	// SUCCESS

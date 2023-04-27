@@ -86,7 +86,7 @@ class	Channel
 		void	removeClient(Client *client);
 		bool	isBanned(std::string ban) const;
 		bool	isFull(void) const;
-		bool	isInvited(std::string nickname) const;
+		bool	isInvited(std::string nickname);
 		bool	isClientInChannel(std::string nickname) const;
 		bool	addBanned(std::string ban, std::string banBy);
 		void	addInvited(std::string nickname);
