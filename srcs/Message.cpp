@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 16:22:07 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/24 14:43:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 16:59:33 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,12 +47,13 @@ Message::Message(std::string message) : _source("")
 		vec.erase(vec.begin());
 	}
 	
-	// parse command
+	// parse command in UPPERCASE
 	_command = vec[0];
 	vec.erase(vec.begin());
 	for (itString it = _command.begin(); it != _command.end(); it++) {
 		if (!isalnum(*it))
 			throw ErrorMsgFormat();
+		*it = toupper(*it);
 	}
 	
 	// parse parameters

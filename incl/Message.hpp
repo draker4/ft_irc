@@ -3,19 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Message.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bboisson <bboisson@student.42.fr>          +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 16:21:27 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/26 11:47:45 by bboisson         ###   ########.fr       */
+/*   Updated: 2023/04/27 16:56:00 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MESSAGE_HPP
 # define MESSAGE_HPP
 
-// # include "ircserv.hpp"
-
 # include <algorithm>
+# include <iostream>
 # include <vector>
 # include <iostream>
 # include "colors.hpp"

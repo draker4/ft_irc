@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 15:31:49 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 17:01:55 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -481,18 +481,6 @@ void	Server::sendWelcome(Client *client) const
 	// add message 004 and 005
 }
 
-// void	Server::_deleteClient(itVecPollfd it)
-// {
-// 	// handle client deconnection in all channels
-// 	_sendQUIT(_clients[it->fd], "Left the server"); 
-
-// 	// close socket and delete client
-// 	close(it->fd);
-// 	delete _getClient(it->fd);
-// 	_clients.erase(it->fd);
-// 	_fds.erase(it);
-// }
-
 void	Server::deleteClient(int clientSocket)
 {
 	itMapClient	it_client = _clients.find(clientSocket);
@@ -524,3 +512,4 @@ bool	Server::channelExist(std::string name)
 	}
 	return false;
 }
+
