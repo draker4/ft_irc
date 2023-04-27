@@ -103,7 +103,7 @@ class Server
 		// Public member functions
 		void		launch(void);
 		void		sendClient(const std::string &msg, const int &clientSocket) const;
-		void		sendWelcome(Client *client) const;
+		void		sendWelcome(Client *client);
 		void		deleteClient(int clientSocket);
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);

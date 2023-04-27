@@ -477,13 +477,15 @@ void	Server::sendClient(const std::string &msg, const int &clientSocket) const
 	}
 }
 
-void	Server::sendWelcome(Client *client) const
+void	Server::sendWelcome(Client *client)
 {
 	sendClient(RPL_WELCOME(client->getNickName(), client->getUserName(), client->getInet()), client->getClientSocket());
 	sendClient(RPL_YOURHOST(client->getNickName()), client->getClientSocket());
 	sendClient(RPL_CREATED(client->getNickName(), _t_create_str), client->getClientSocket());
 
 	// add message 004 and 005
+
+	motd(client, Message(), this);
 }
 
 void	Server::deleteClient(int clientSocket)

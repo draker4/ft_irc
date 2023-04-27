@@ -87,6 +87,18 @@
 # define RPL_ENDOFBANLIST(nickName, channel) ( ":" + SERVERNAME + " 368 " + nickName \
 		+ " " + channel + " :End of channel ban list\r\n")
 
+// 372 - MOTD
+# define RPL_MOTD(nickName, message) ( ":" + SERVERNAME + " 372 " + nickName \
+		+ " : " + message + "\r\n")
+
+// 375 - MOTD
+# define RPL_MOTDSTART(nickName) ( ":" + SERVERNAME + " 375 " + nickName \
+		+ " :- " + SERVERNAME + " Message of the day - \r\n")
+
+// 376 - MOTD
+# define RPL_ENDOFMOTD(nickName) ( ":" + SERVERNAME + " 376 " + nickName \
+		+ " :End of MOTD\r\n")
+
 // 381 - OPER
 # define RPL_YOUREOPER(nickName) ( ":" + SERVERNAME + " 381 " + nickName \
 		+ " :You are now an IRC operator\r\n")

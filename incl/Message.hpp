@@ -30,6 +30,7 @@ class	Message
 		typedef	std::string::iterator				itString;
 
 		//Constructors
+		Message(void);
 		Message(std::string message);
 		Message(const Message &src);
 
@@ -61,9 +62,6 @@ class	Message
 		std::string	_source;
 		std::string	_command;
 		vecString	_parameters;
-
-		//Constructors
-		Message(void);
 
 		//Private functions
 		void		_printReceive(void);

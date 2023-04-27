@@ -47,6 +47,9 @@
 # define ERR_UNKNOWNCOMMAND(client, command) ( ":" + SERVERNAME + " 421 " + client + " " \
 		+ command + " :Unknown command\r\n")
 
+// 422 - MOTD
+# define ERR_NOMOTD(client) ( ":" + SERVERNAME + " 422 " + client + " :MOTD File is missing\r\n")
+
 // 431 - NICK
 # define ERR_NONICKNAMEGIVEN(client) ":" + SERVERNAME + " 431 " + client + " :No nickname given\r\n"
 
