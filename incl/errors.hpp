@@ -19,7 +19,7 @@
 # define ERR_NOSUCHNICK(client, nickname) ( ":" + SERVERNAME + " 401 " + client + " " \
 		+ nickname + " :No such nick/channel\r\n")
 
-// 403 - JOIN - MODE - TOPIC - PART
+// 403 - JOIN - MODE - TOPIC - PART - INVITE - KICK
 # define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
 		+ channel + " :No such channel\r\n")
 
@@ -58,15 +58,19 @@
 # define ERR_NICKNAMEINUSE(nickname) ( ":" + SERVERNAME + " 433 " + nickname \
 		+ " :Nickname is already in use\r\n")
 
-// 442 - TOPIC - PART - INVITE
+// 441 - KICK
+# define ERR_USERNOTINCHANNEL(nickname, otherNick, channel) ( ":" + SERVERNAME + " 441 " + nickname + " " \
+		+ otherNick + " " + channel + " :They aren't on that channel\r\n")
+
+// 442 - TOPIC - PART - INVITE - MODE - KICK
 # define ERR_NOTONCHANNEL(nickname, channel) ( ":" + SERVERNAME + " 442 " + nickname + " " \
 		+ channel + " :You're not on that channel\r\n")
 
 // 443 - INVITE
-# define ERR_USERONCHANNEL(nickname, invited, channel) ( ":" + SERVERNAME + " 443 " + nickname + " " \
-		+ invited + " " + channel + " :is already on channel\r\n")
+# define ERR_USERONCHANNEL(nickname, otherNick, channel) ( ":" + SERVERNAME + " 443 " + nickname + " " \
+		+ otherNick + " " + channel + " :is already on channel\r\n")
 
-// 461 - PASS - USER - OPER - MODE - TOPIC - PART - INVITE
+// 461 - PASS - USER - OPER - MODE - TOPIC - PART - INVITE - KICK
 # define ERR_NEEDMOREPARAMS(client, command) (":" +  SERVERNAME + " 461 " + client + " " \
 		+ command + " :Not Enough parameters\r\n")
 
@@ -98,7 +102,7 @@
 # define ERR_NOPRIVILEGES(client) ( ":" + SERVERNAME + " 481 " + client \
 		+ " :Permission Denied- You're not an IRC operator\r\n")
 
-// 482 - MODE
+// 482 - MODE - TOPIC - KICK
 # define ERR_CHANOPRIVSNEEDED(client, channel) ( ":" + SERVERNAME + " 482 " + client \
 		+ " " + channel + " :You're not channel operator\r\n")
 

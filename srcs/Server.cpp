@@ -525,3 +525,12 @@ bool	Server::channelExist(std::string name)
 	}
 	return false;
 }
+
+bool	Server::isClientInServer(std::string nickName)
+{
+	for (itMapClient it = _clients.begin(); it != _clients.end(); it++) {
+		if (it->second->getNickName() == nickName)
+			return true;
+	}
+	return false;
+}

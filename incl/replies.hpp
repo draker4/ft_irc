@@ -108,4 +108,8 @@
 # define RPL_INVITE(nickname, user, host, channel) ( ":" + nickname + "!" + user + "@" + host + " INVITE " \
 	+ nickname + " " + channel + "\r\n")
 
+// SPE_CODE - KICK
+# define RPL_KICK(nickname, user, host, channel, kicked, reason) ( ":" + nickname + "!" + user + "@" + host + " KICK " \
+	+ channel + " " + kicked + " " + reason + "\r\n")
+
 #endif

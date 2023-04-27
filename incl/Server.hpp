@@ -105,6 +105,7 @@ class Server
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);
 		bool		channelExist(std::string name);
+		bool		isClientInServer(std::string nickname);
 	
 		// Exceptions
 		class ServerException : public std::exception
