@@ -76,7 +76,7 @@ class Client
 		void		addMode(char c);
 		void		removeMode(char c);
 		void		addChannel(Channel *channel);
-		void		removeChannel(Channel *chanel);
+		void		removeChannel(Channel *channel);
 	
 	private:
 		int 					_serverSocket;

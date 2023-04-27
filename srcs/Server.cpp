@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 11:37:13 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:39:16 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,12 @@ Server::vecClient	Server::getClientsHost(std::string username_host) const
 	return clients;
 }
 
+void	Server::removeChannel(Channel *channel)
+{
+	_channels.erase(std::find(_channels.begin(), _channels.end(), channel));
+	delete channel;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
@@ -250,10 +256,10 @@ void	Server::_sendQUIT(Client *client)
 		return ;
 
 	// get all channels where the client was in
-	Client::vecChannel	channels = client->getChannels();
+	Client::vecChannel	clientChannels = client->getChannels();
 	
 	// send QUIT message to all clients
-	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+	for (Client::itVecChannel it = clientChannels.begin(); it != clientChannels.end(); it++) {
 		
 		// remove client from the channel
 		(*it)->removeClient(client);
@@ -261,14 +267,17 @@ void	Server::_sendQUIT(Client *client)
 		// find all clients in the channel
 		Channel::mapClients	clients = (*it)->getClients();
 
-		// if ()
-
-		// send QUIT message to all clients in the channel
-		// for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
-		// 	sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-		// 		client->getInet(), std::string("QUIT"), reason),
-		// 		it->second.client->getClientSocket());
-		// }
+		// if no more client in channel delete channel
+		if (clients.empty()) {
+			removeChannel(*it);
+		} else {
+			// send QUIT message to all clients in the channel
+			// for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			// 	sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+			// 		client->getInet(), std::string("QUIT"), reason),
+			// 		it->second.client->getClientSocket());
+			// }
+		}
 	}
 }
 

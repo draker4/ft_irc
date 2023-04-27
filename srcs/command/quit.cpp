@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 11:14:38 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 11:40:20 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,11 @@ void quit(Client *client, const Message &message, Server *server)
 		std::cout << BLUE << "QUIT command called" << RESET << std::endl;
 	
 	// get reason
-	if (message.getParameters().size() > 0)
-		client->setReasonLeaving(message.getParameters()[0]);
+	std::string	reason = " ";
+	if (message.getParameters().size() > 0) {
+		reason.append(message.getParameters()[0]);
+		client->setReasonLeaving(reason);
+	}
 	
 	// send ERROR message to client
 	server->sendClient(ERROR_MESSAGE(reason), client->getClientSocket());
