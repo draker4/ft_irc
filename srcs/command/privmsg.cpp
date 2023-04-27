@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 16:27:33 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 17:47:00 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ static std::string	is_target_host(Server *server, std::string str)
 	std::string	host = str.substr(pos + 1, host.length() - pos - 1);
 	Server::mapClient	clients = server->getClients();
 	for (Server::itMapClient it = clients.begin(); it != clients.end(); it++) {
-		if (it->second->getInet() == host)
+		if (toUpper(it->second->getInet()) == toUpper(host))
 			return host;
 	}
 	return "";
@@ -118,7 +118,7 @@ static void	clients_from_host(Client *client, Server *server, std::string target
 			return ;
 		}
 		
-		if (to_send->getInet() != host) {
+		if (toUpper(to_send->getInet()) != toUpper(host)) {
 			server->sendClient(ERR_NOSUCHNICK(client->getNickName(), target),
 			client->getClientSocket());
 			return ;
@@ -130,11 +130,11 @@ static void	clients_from_host(Client *client, Server *server, std::string target
 		return ;
 	}
 
-	// if #host fromat
+	// if #host format
 	Server::mapClient	clients = server->getClients();
 
 	for (Server::itMapClient it = clients.begin(); it != clients.end(); it++) {
-		if (it->second->getInet() == host) {
+		if (toUpper(it->second->getInet()) == toUpper(host)) {
 			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
 			client->getInet(), std::string("PRIVMSG"),
 			it->second->getNickName() + " :" + message), 
@@ -251,14 +251,14 @@ static void	client_from_nick(Client *client, Server *server, std::string target,
 		
 		std::string	username = target.substr(first_pos + 1, second_pos - first_pos - 1);
 		
-		if (destination->getUserName() != username) {
+		if (toUpper(destination->getUserName()) != toUpper(username)) {
 			server->sendClient(ERR_NOSUCHNICK(client->getNickName(), target), client->getClientSocket());
 				return ;
 		}
 				
 		std::string	host = target.substr(second_pos + 1, target.length() - second_pos);
 		
-		if (destination->getInet() != host) {
+		if (toUpper(destination->getInet()) != toUpper(host)) {
 			server->sendClient(ERR_NOSUCHNICK(client->getNickName(), target), client->getClientSocket());
 				return ;
 		}
