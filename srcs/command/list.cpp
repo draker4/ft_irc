@@ -34,7 +34,16 @@ void list(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "LIST command called" << RESET << std::endl;
-	(void)client;
 	(void)message;
-	(void)server;
+	Server::vecChannel channels = server->getChannels();
+	for (Server::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+		size_t size = (*it)->getClients().size();
+		if (size > 0 && !(*it)->getModeStatus('s')) {
+			std::stringstream ss;
+			ss << size;
+			server->sendClient(RPL_LIST(client->getNickName(), (*it)->getName(), ss.str(),
+				(*it)->getTopic()), client->getClientSocket());
+		}
+	}
+	server->sendClient(RPL_LISTEND(client->getNickName()), client->getClientSocket());
 }

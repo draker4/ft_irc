@@ -35,6 +35,13 @@
 # define RPL_ENDOFWHO(nickName, mask) ( ":" + SERVERNAME + " 315 " + nickName + " " \
 		+ mask + " :End of WHO list\r\n")
 
+// 322 - LIST
+# define RPL_LIST(nickName, channel, nbClient, topic) ( ":" + SERVERNAME + " 322 " + nickName + " " \
+		+ channel + " "+ nbClient + " :" + topic + "\r\n")
+
+// 323 - LIST
+# define RPL_LISTEND(nickName) ( ":" + SERVERNAME + " 323 " + nickName + " : End of List\r\n")
+
 // 324 - MODE
 # define RPL_CHANNELMODEIS(nickName, channel, channelModes) ( ":" + SERVERNAME + " 324 " + nickName \
 		+ " " + channel + " :+" + channelModes + "\r\n")

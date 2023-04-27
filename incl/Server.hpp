@@ -96,6 +96,7 @@ class Server
 		vecOpeConfig	getOpeConf(void) const;
 		Channel			*getChannel(std::string name);
 		vecClient		getClientsHost(std::string username_host) const;
+		vecChannel		getChannels(void) const;
 
 		// Setter
 
