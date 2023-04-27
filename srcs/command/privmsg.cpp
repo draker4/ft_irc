@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 15:27:06 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 16:27:33 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,17 @@ static void	clients_from_channel(Client *client, Server *server, std::string tar
 		return ;
 	}
 
-	// check if voiced or banned
+	// if user is banned, the command is silently failed
+	if (channel->isBanned(client))
+		return ;
+	
+	// if channel is moderated and user is not voiced or operator
+	if (channel->getModeStatus('m')
+		&& channel->getOperGrade(client->getNickName()) < 1) {
+		server->sendClient(ERR_CANNOTSENDTOCHAN(client->getNickName(), channel->getName()), 
+			client->getClientSocket());
+		return ;
+	}
 	
 	// find clients to add
 	Channel::mapClients	channel_clients = channel->getClients();

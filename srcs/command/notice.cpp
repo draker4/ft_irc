@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 15:36:02 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 16:28:06 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,13 @@ static void	clients_from_channel(Client *client, Server *server, std::string tar
 		&& channel->getOperGrade(client->getNickName()) == 0)
 		return ;
 
-	// check if voiced or banned
+	// if user is banned, the command is silently failed
+	if (channel->isBanned(client))
+		return ;
+	
+	// if channel is moderated and user is not voiced or operator
+	if (channel->getModeStatus('m') && channel->getOperGrade(client->getNickName()) < 1)
+		return ;
 	
 	// find clients to add
 	Channel::mapClients	channel_clients = channel->getClients();
@@ -222,10 +228,10 @@ static void	client_from_nick(Client *client, Server *server, std::string target,
 				to_send->getClientSocket());
 }
 
-void privmsg(Client *client, const Message &message, Server *server)
+void notice(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
-		std::cout << BLUE << "PRIVMSG command called" << RESET << std::endl;
+		std::cout << BLUE << "NOTICE command called" << RESET << std::endl;
 
 	// if no target
 	if (message.getParameters().empty())

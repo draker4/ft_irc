@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:32 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/25 10:57:27 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 15:44:21 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ class	Channel
 		typedef std::map<std::string, t_ban>::const_iterator		constItMapBan;
 		typedef std::string::const_iterator							itConstString;
 		typedef std::string::iterator								itString;
+		typedef	std::vector<std::string>							vecString;
+		typedef	std::vector<std::string>::iterator					itVecString;
 		
 		//Constructors
 		Channel(std::string name, Client *client);
@@ -84,7 +86,7 @@ class	Channel
 		// Public member functions
 		void	addClient(Client *client);
 		void	removeClient(Client *client);
-		bool	isBanned(std::string ban) const;
+		bool	isBanned(Client *client) const;
 		bool	isFull(void) const;
 		bool	isInvited(std::string nickname);
 		bool	isClientInChannel(std::string nickname) const;
