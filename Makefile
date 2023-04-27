@@ -37,8 +37,7 @@ SRCS			=	Channel.cpp	\
 					Message.cpp	\
 					Server.cpp
 
-SRCS_C			=	cap.cpp		\
-					invite.cpp	\
+SRCS_C			=	invite.cpp	\
 					join.cpp	\
 					kick.cpp	\
 					kill.cpp	\
@@ -56,7 +55,9 @@ SRCS_C			=	cap.cpp		\
 					quit.cpp	\
 					topic.cpp	\
 					user.cpp	\
-					who.cpp
+					wallops.cpp	\
+					who.cpp		\
+					whois.cpp
 
 OBJS			=	${SRCS:%.cpp=${DIR_OBJS}%.o}
 OBJS_C			=	${SRCS_C:%.cpp=${DIR_OBJS_C}%.o}

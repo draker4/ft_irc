@@ -353,7 +353,6 @@ void Server::_handleCommand(std::string msg, int clientSocket)
 
 void Server::_initCommands(void)
 {
-	_commands["CAP"] = &cap;
 	_commands["INVITE"] = &invite;
 	_commands["JOIN"] = &join;
 	_commands["KICK"] = &kick;
@@ -372,7 +371,9 @@ void Server::_initCommands(void)
 	_commands["QUIT"] = &quit;
 	_commands["TOPIC"] = &topic;
 	_commands["USER"] = &user;
+	_commands["WALLOPS"] = &wallops;
 	_commands["WHO"] = &who;
+	_commands["WHOIS"] = &whois;
 }
 
 void Server::_initOperatorConfig(void)

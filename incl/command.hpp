@@ -23,9 +23,6 @@ class Server;
 // prototype of functions written in commands.cpp
 Message::vecString	split(std::string str, std::string c);
 
-// The CAP command is used to 
-void	cap(Client *client, const Message &message, Server *server);
-
 // The INVITE command is used to invite a user to a channel.
 void	invite(Client *client, const Message &message, Server *server);
 
@@ -93,7 +90,13 @@ void	topic(Client *client, const Message &message, Server *server);
 // and realname of a new user.
 void	user(Client *client, const Message &message, Server *server);
 
-// This command is used to query a list of users who match the provided mask.
+// The WALLOPS command is used to send a message to all currently connected users
+void	wallops(Client *client, const Message &message, Server *server);
+
+// The WHO command is used to query a list of users who match the provided mask.
 void	who(Client *client, const Message &message, Server *server);
+
+// The WHOIS command is used to query information about particular users.
+void	whois(Client *client, const Message &message, Server *server);
 
 #endif
