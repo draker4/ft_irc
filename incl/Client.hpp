@@ -56,6 +56,7 @@ class Client
 		std::string	getUserName(void) const;
 		std::string	getRealName(void) const;
 		std::string	getMode(void) const;
+		std::string	getReasonLeaving() const;
 		bool		getModeStatus(char c) const;
 		vecChannel	getChannels(void) const;
 
