@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 13:00:19 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 17:47:48 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,6 @@ void quit(Client *client, const Message &message, Server *server)
 	
 	// send ERROR message to client
 	server->sendClient(ERROR_MESSAGE(reason), client->getClientSocket());
-	
-	// get all channels this client was in
-	Client::vecChannel	channels = client->getChannels();
 	
 	// delete client from server
 	client->setDeconnect(true);

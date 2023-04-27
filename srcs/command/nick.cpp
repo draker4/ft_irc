@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 17:00:14 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:41:53 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,13 @@ bool invalidChar(std::string nickname)
 
 bool	isAlreadyUsed(Server *server, Client *client, std::string nickname)
 {
+	nickname = toUpper(nickname);
+
 	Server::mapClient	clientList = server->getClients();
 	for (Server::itMapClient itClient = clientList.begin();
 		itClient != clientList.end(); itClient++) {
 		if (itClient->second->getClientSocket() != client->getClientSocket()
-			&& itClient->second->getNickName() == nickname)
+			&& toUpper(itClient->second->getNickName()) == nickname)
 			return (true);
 	}
 	return (false);
@@ -116,9 +118,10 @@ void nick(Client *client, const Message &message, Server *server)
 					// alert all users in the channel that the nickname of this client changed
 					Channel::mapClients	clients = (*it)->getClients();
 					for (Channel::itMapClients it2 = clients.begin(); it2 != clients.end(); it2++) {
-						if (it2->first != client->getNickName())
+						if (it2->first != toUpper(client->getNickName())) {
 							server->sendClient(RPL_NICK(client->getOldNickName(), client->getNickName(),
 								client->getUserName(), client->getInet()), it2->second.client->getClientSocket());
+						}
 					}
 				}
 			}

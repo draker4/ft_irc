@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 17:02:32 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:12:01 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@ Server::vecOpeConfig Server::getOpeConf(void) const
 Client	*Server::getClient(std::string nickname) const
 {
 	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second->getNickName() == nickname)
+		if (toUpper(it->second->getNickName()) == toUpper(nickname))
 			return it->second;
 	}
 	return NULL;
@@ -179,7 +179,7 @@ Channel	*Server::getChannel(std::string name)
 	if (_channels.empty())
 		return NULL;
 	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
-		if ((*it)->getName() == name)
+		if (toUpper((*it)->getName()) == toUpper(name))
 			return *it;
 	}
 	return NULL;
@@ -193,11 +193,12 @@ Server::vecClient	Server::getClientsHost(std::string username_host) const
 	if (pos == std::string::npos)
 		return clients;
 	
-	std::string	username = username_host.substr(0, pos);
-	std::string	host = username_host.substr(pos + 1, username_host.length() - pos + 1);
+	std::string	username = toUpper(username_host.substr(0, pos));
+	std::string	host = toUpper(username_host.substr(pos + 1, username_host.length() - pos + 1));
 	
 	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second->getUserName() == username && it->second->getInet() == host)
+		if (toUpper(it->second->getUserName()) == username
+			&& toUpper(it->second->getInet()) == host)
 			clients.push_back(it->second);
 	}
 	
@@ -501,13 +502,14 @@ void	Server::deleteClient(int clientSocket)
 
 void	Server::addChannel(Channel *channel)
 {
-	_channels.push_back(channel);
+	if (channel)
+		_channels.push_back(channel);
 }
 
 bool	Server::channelExist(std::string name)
 {
 	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
-		if ((*it)->getName() == name)
+		if (toUpper((*it)->getName()) == toUpper(name))
 			return true;
 	}
 	return false;
@@ -520,4 +522,12 @@ bool	Server::isClientInServer(std::string nickName)
 			return true;
 	}
 	return false;
+}
+
+/* -----------------------  NON member functions  ------------------------ */
+
+std::string	toUpper(std::string str) {
+	for (std::string::iterator it = str.begin(); it != str.end(); it++)
+		*it = toupper(*it);
+	return str;
 }

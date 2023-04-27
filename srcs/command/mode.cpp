@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 15:55:53 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:45:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void userMode(Client *client, const Message &message, Server *server)
 			message.getParameters()[0]), client->getClientSocket());
 	}
 	// if client is not the sender : ERR_USERSDONTMATCH
-	else if (client->getNickName() != message.getParameters()[0]) {
+	else if (toUpper(client->getNickName()) != toUpper(message.getParameters()[0])) {
 		server->sendClient(ERR_USERSDONTMATCH(client->getNickName()),
 			client->getClientSocket());
 	}
@@ -278,7 +278,7 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		case 'b': // b : user is banned from the channel (required the mask/user in argument)
 			if (message.getParameters().size() > *modeArg
 				&& channel->getOperGrade(client->getNickName()) >= 2) { 		
-				if (channel->addBanned(message.getParameters()[*modeArg], client->getNickName())) {
+				if (channel->addBanned(toUpper(message.getParameters()[*modeArg]), client->getNickName())) {
 					Channel::mapClients	clients = channel->getClients();
 					for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 						server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),
@@ -364,7 +364,7 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 		case 'b': // b : user is banned from the channel (required the mask/user in argument)
 			if (message.getParameters().size() > *modeArg
 				&& channel->getOperGrade(client->getNickName()) >= 2) { // required the user in argument		
-				if (channel->removeBanned(message.getParameters()[*modeArg])) {
+				if (channel->removeBanned(toUpper(message.getParameters()[*modeArg]))) {
 					Channel::mapClients	clients = channel->getClients();
 					for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
 						server->sendClient(RPL_MODE_CHANNEL_PARAM(client->getNickName(), client->getUserName(),

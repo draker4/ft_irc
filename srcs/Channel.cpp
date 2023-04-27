@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 16:23:19 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:41:44 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ Channel::Channel(std::string name, Client *client) : _symbol('='), _name(name), 
 	if (DEBUG_CHANNEL)
 		std::cout << GREEN << "Channel Constructor called with first client" << RESET << std::endl;
 	addClient(client);
-	_clients[client->getNickName()].userMode.push_back('o'); // o = operator
-	_clients[client->getNickName()].prefix = "@"; // @ = operator
+	_clients[toUpper(client->getNickName())].userMode.push_back('o'); // o = operator
+	_clients[toUpper(client->getNickName())].prefix = "@"; // @ = operator
 	
 	// Channel created
 	std::stringstream timeChannel;
@@ -108,9 +108,9 @@ char	Channel::getSymbol(void) const
 
 std::string	Channel::getPrefix(std::string nickName)
 {
-	itMapClients	it = _clients.find(nickName);
+	itMapClients	it = _clients.find(toUpper(nickName));
 	if (it == _clients.end())
-		return 0;
+		return "";
 	return it->second.prefix;
 }
 
@@ -136,7 +136,7 @@ std::string	Channel::getTimeTopic(void)
 
 int	Channel::getOperGrade(std::string nickName)
 {
-	itMapClients	it = _clients.find(nickName);
+	itMapClients	it = _clients.find(toUpper(nickName));
 	if (it == _clients.end())
 		return 0;
 	int	grade = 0;
@@ -201,12 +201,12 @@ void	Channel::addClient(Client *client)
 	std::stringstream timeJoined;
 	timeJoined << static_cast< long long >( time(NULL) );
 	newClient.joinTime = timeJoined.str();
-	_clients[client->getNickName()] = newClient;
+	_clients[toUpper(client->getNickName())] = newClient;
 }
 
 void	Channel::removeClient(Client *client)
 {
-	itMapClients	it = _clients.find(client->getNickName());
+	itMapClients	it = _clients.find(toUpper(client->getNickName()));
 	
 	if (it != _clients.end())
 		_clients.erase(it);
@@ -226,13 +226,13 @@ bool	Channel::isBanned(Client *client) const
 
 	vecString	can_be_banned;
 	
-	can_be_banned.push_back(client->getNickName() + "!*@*");
-	can_be_banned.push_back("*!*@" + std::string(client->getInet()));
-	can_be_banned.push_back("*!" + client->getUserName() + "@*");
-	can_be_banned.push_back(client->getNickName() + "!" + client->getUserName() + "*");
-	can_be_banned.push_back(client->getNickName() + "!*@" + client->getInet());
-	can_be_banned.push_back("*" + client->getUserName() + "@" + client->getInet());
-	can_be_banned.push_back(client->getNickName() + "!" + client->getUserName() + "@" + client->getInet());
+	can_be_banned.push_back(toUpper(client->getNickName()) + "!*@*");
+	can_be_banned.push_back("*!*@" + toUpper(client->getInet()));
+	can_be_banned.push_back("*!" + toUpper(client->getUserName()) + "@*");
+	can_be_banned.push_back(toUpper(client->getNickName()) + "!" + toUpper(client->getUserName()) + "*");
+	can_be_banned.push_back(toUpper(client->getNickName()) + "!*@" + toUpper(client->getInet()));
+	can_be_banned.push_back("*" + toUpper(client->getUserName()) + "@" + toUpper(client->getInet()));
+	can_be_banned.push_back(toUpper(client->getNickName()) + "!" + toUpper(client->getUserName()) + "@" + toUpper(client->getInet()));
 	
 	for (constItMapBan it = _banned.begin(); it != _banned.end(); it++) {
 		for (itVecString it_string = can_be_banned.begin(); it_string != can_be_banned.end(); it_string++) {
@@ -250,7 +250,7 @@ bool	Channel::isFull(void) const
 
 bool	Channel::isClientInChannel(std::string nickname) const
 {
-	if (_clients.find(nickname) != _clients.end())
+	if (_clients.find(toUpper(nickname)) != _clients.end())
 		return true;
 	return false;
 }
@@ -330,13 +330,10 @@ void	Channel::removeInvited(std::string nickname)
 
 bool	Channel::isInvited(std::string nickname)
 {
-	constItMapInv	it = _invited.find(nickname);
-	if (it == _invited.end()) {
-		std::cout << "not invited" << std::endl;
+	constItMapInv	it = _invited.find(toUpper(nickname));
+	if (it == _invited.end())
 		return false;
-	}
-	this->removeInvited(nickname);
-	std::cout << "invited" << std::endl;
+	this->removeInvited(toUpper(nickname));
 	return true;
 }
 
@@ -361,12 +358,12 @@ void	Channel::removeMode(char c)
 
 void	Channel::updateClient(std::string oldNickname, std::string nickname)
 {
-	itMapClients	it = _clients.find(oldNickname);
+	itMapClients	it = _clients.find(toUpper(oldNickname));
 	
 	if (it != _clients.end()) {
 		t_connect	tmp = it->second;
 		_clients.erase(it);
-		_clients[nickname] = tmp;
+		_clients[toUpper(nickname)] = tmp;
 	}
 }
 

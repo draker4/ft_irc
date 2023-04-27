@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 16:00:07 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:19:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,6 @@
 
 static void	addClient(Server *server, Client *client, Channel *channel)
 {
-	Channel::mapBan banned = channel->getBanList();
-	for (Channel::itMapBan it = banned.begin(); it != banned.end(); it++) {
-		std::cout << PURPLE << "HERE ban:" << it->first << RESET << std::endl;
-	}
 	// check if user is not banned from channel
 	if (channel->isBanned(client))
 		server->sendClient(ERR_BANNEDFROMCHAN(client->getNickName(), channel->getName()), 
@@ -145,6 +141,10 @@ void join(Client *client, const Message &message, Server *server)
 				
 				// create channel
 				channel = new Channel(*it, client);
+				// Channel::mapClients cli = channel->getClients();
+				// std::cout << "HERE begin=" << cli.size() << std::endl;
+				// std::cout << "here begin=" << cli.begin()->first << std::endl;
+				// std::cout << "here begin=" << (++cli.begin())->first << std::endl;
 				
 				// add channel to server and to client's channel list
 				server->addChannel(channel);
@@ -157,9 +157,9 @@ void join(Client *client, const Message &message, Server *server)
 					client->getClientSocket());
 				server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
 					client->getClientSocket());
-				
-			} else {
-				
+			}
+			else if (!channel->isClientInChannel(client->getNickName())) {
+
 				// check if channel need a key
 				if (channel->getModeStatus('k')) {
 					if (itKeys != keys.end() && channel->getKey() == *itKeys)

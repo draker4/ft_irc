@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 17:01:59 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 17:21:10 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,8 +151,8 @@ class Server
 		Client	*_getClient(int clientSocket);
 };
 
-// non member funtions
-// std::string	toUpper(std::string);
+// non member functions
+std::string	toUpper(std::string str);
 
 #endif
 
