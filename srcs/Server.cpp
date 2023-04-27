@@ -525,7 +525,7 @@ bool	Server::channelExist(std::string name)
 bool	Server::isClientInServer(std::string nickName)
 {
 	for (itMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (toUpper(it->second->getNickName()) == tpUpper(nickName))
+		if (toUpper(it->second->getNickName()) == toUpper(nickName))
 			return true;
 	}
 	return false;
