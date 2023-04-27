@@ -225,14 +225,6 @@ bool	Channel::isFull(void) const
 	return _clients.size() >= _clientLimit;
 }
 
-bool	Channel::isInvited(std::string nickname) const
-{
-	constItMapInv	it = _invited.find(nickname);
-	if (it == _invited.end())
-		return false;
-	return true;
-}
-
 bool	Channel::isClientInChannel(std::string nickname) const
 {
 	if (_clients.find(nickname) != _clients.end())
@@ -268,16 +260,6 @@ bool	Channel::addBanned(std::string ban, std::string banBy)
 	return true;
 }
 
-void	Channel::addInvited(std::string nickname)
-{
-	itMapClients	it = _clients.find(nickname);
-	if (it == _clients.end())
-		return ;
-	std::stringstream timeInvited;
-	timeInvited << static_cast< long long >( time(NULL) );
-	_invited[nickname] = timeInvited.str();
-}
-
 bool	Channel::removeBanned(std::string ban)
 {
 	if (ban.find_first_of("!") == std::string::npos && ban.find_first_of("@") == std::string::npos) {
@@ -304,12 +286,35 @@ bool	Channel::removeBanned(std::string ban)
 	return (true);
 }
 
+void	Channel::addInvited(std::string nickname)
+{
+	itMapInv	it = _invited.find(nickname);
+	if (it != _invited.end())
+		return ;
+	std::cout << "add invited" << std::endl;
+	std::stringstream timeInvited;
+	timeInvited << static_cast< long long >( time(NULL) );
+	_invited[nickname] = timeInvited.str();
+}
+
 void	Channel::removeInvited(std::string nickname)
 {
 	itMapInv	it = _invited.find(nickname);
 	if (it == _invited.end())
 		return ;
 	_invited.erase(it);
+}
+
+bool	Channel::isInvited(std::string nickname)
+{
+	constItMapInv	it = _invited.find(nickname);
+	if (it == _invited.end()) {
+		std::cout << "not invited" << std::endl;
+		return false;
+	}
+	this->removeInvited(nickname);
+	std::cout << "invited" << std::endl;
+	return true;
 }
 
 void	Channel::addMode(char c)

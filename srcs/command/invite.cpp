@@ -16,7 +16,13 @@
  * @brief The INVITE command is used to invite a user to a channel. 
  * 	The parameter <nickname> is the nickname of the person to be invited to the 
  * 	target channel <channel>.
- * 
+ * 	Numeric Replies:
+ * 		RPL_INVITING (341)
+ * 		ERR_NEEDMOREPARAMS (461)
+ * 		ERR_NOSUCHCHANNEL (403)
+ * 		ERR_NOTONCHANNEL (442)
+ * 		ERR_CHANOPRIVSNEEDED (482)
+ * 		RR_USERONCHANNEL (443)
  * 	Syntax : INVITE <nickname> <channel>
  * 
  */
@@ -24,7 +30,36 @@ void invite(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "INVITE command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	// check if enough parameters
+	if (message.getParameters().size() < 2)
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), "INVITE"),
+			client->getClientSocket());
+	else if (server->channelExist(message.getParameters()[1]))
+	{
+		Channel *channel = server->getChannel(message.getParameters()[1]);
+		// check if user is on channel
+		if (!channel->isClientInChannel(client->getNickName()))
+			server->sendClient(ERR_NOTONCHANNEL(client->getNickName(), channel->getName()),
+				client->getClientSocket());	
+		// check if already in the channel
+		else if (channel->isClientInChannel(message.getParameters()[0]))
+			server->sendClient(ERR_USERONCHANNEL(client->getNickName(), message.getParameters()[0],
+				channel->getName()), client->getClientSocket());
+		// check if user is an half-operator
+		else if (channel->getOperGrade(client->getNickName()) < 2)
+			server->sendClient(ERR_HALF_CHANOPRIVSNEEDED(client->getNickName(), channel->getName()),
+				client->getClientSocket());
+		else
+		{
+			server->sendClient(RPL_INVITING(client->getNickName(), message.getParameters()[0], 
+				channel->getName()), client->getClientSocket());
+			server->sendClient(RPL_INVITE(client->getNickName(), client->getUserName(), client->getInet(),
+				 message.getParameters()[1]),
+				 server->getClient(message.getParameters()[0])->getClientSocket());
+			channel->addInvited(message.getParameters()[0]);
+		}
+	}
+	else
+		server->sendClient(ERR_NOSUCHCHANNEL(client->getNickName(), message.getParameters()[1]),
+			client->getClientSocket());
 }

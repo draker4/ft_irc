@@ -515,3 +515,12 @@ void	Server::addChannel(Channel *channel)
 {
 	_channels.push_back(channel);
 }
+
+bool	Server::channelExist(std::string name)
+{
+	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+		if ((*it)->getName() == name)
+			return true;
+	}
+	return false;
+}
