@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 18:41:44 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:51:30 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,18 +311,18 @@ bool	Channel::removeBanned(std::string ban)
 
 void	Channel::addInvited(std::string nickname)
 {
-	itMapInv	it = _invited.find(nickname);
+	itMapInv	it = _invited.find(toUpper(nickname));
 	if (it != _invited.end())
 		return ;
 	std::cout << "add invited" << std::endl;
 	std::stringstream timeInvited;
 	timeInvited << static_cast< long long >( time(NULL) );
-	_invited[nickname] = timeInvited.str();
+	_invited[toUpper(nickname)] = timeInvited.str();
 }
 
 void	Channel::removeInvited(std::string nickname)
 {
-	itMapInv	it = _invited.find(nickname);
+	itMapInv	it = _invited.find(toUpper(nickname));
 	if (it == _invited.end())
 		return ;
 	_invited.erase(it);
@@ -378,7 +378,7 @@ void	Channel::addUserMode(std::string nickname, char c)
 
 void	Channel::removeUserMode(std::string nickname, char c)
 {
-	itMapClients	it = _clients.find(nickname);
+	itMapClients	it = _clients.find(toUpper(nickname));
 	if (it == _clients.end())
 		return ;
 	int i = 0;

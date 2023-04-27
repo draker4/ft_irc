@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 18:12:01 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 18:50:19 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -523,7 +523,7 @@ bool	Server::channelExist(std::string name)
 bool	Server::isClientInServer(std::string nickName)
 {
 	for (itMapClient it = _clients.begin(); it != _clients.end(); it++) {
-		if (it->second->getNickName() == nickName)
+		if (toUpper(it->second->getNickName()) == tpUpper(nickName))
 			return true;
 	}
 	return false;
