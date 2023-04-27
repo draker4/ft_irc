@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   names.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baptiste <baptiste@student.42lyon.fr>      +#+  +:+       +#+        */
+/*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/11 16:30:31 by baptiste         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 19:32:22 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,59 @@
  * 	[SERVER] <client> <symbol> #test :<nick1> <nick2>
  * 	
  */
+
+static void	list_all(Client *client, Server *server) {
+	Server::vecChannel	channels = server->getChannels();
+	
+	for (Server::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+		
+		// list only users in channel not secrets
+		if (!(*it)->getModeStatus('s')) {
+
+			// get all clients in the channel
+			Channel::mapClients	clients = (*it)->getClients();
+			
+			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+
+				// Invisible users (mode +i) are only shown if the client who did the request
+				// is also in the same channel
+				if (!(it_client->second.client->getModeStatus('i')
+					&& !(*it)->isClientInChannel(client->getNickName())))
+					server->sendClient(RPL_NAMREPLY(client->getNickName(),
+					(*it)->getSymbol(), (*it)->getName(), 
+					it_client->second.prefix + it_client->second.client->getNickName()),
+					client->getClientSocket());
+			}
+		}
+		
+		server->sendClient(RPL_ENDOFNAMES(client->getNickName(), (*it)->getName()),
+			client->getClientSocket());
+	}
+	
+	// add all users that are not in any channel (and visible)
+	Server::mapClient	clients = server->getClients();
+
+	for (Server::itMapClient it = clients.begin(); it != clients.end(); it++) {
+		if (!it->second->getModeStatus('i') && it->second->getChannels().empty()) {
+			server->sendClient(RPL_NAMREPLY(client->getNickName(), "*", "channel", 
+				it->second->getNickName()),
+				client->getClientSocket());
+		}
+	}
+	
+	server->sendClient(RPL_ENDOFNAMES(client->getNickName(), "channel"),
+		client->getClientSocket());
+}
+
 void names(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "NAMES command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	
+	// if no channel
+	if (message.getParameters().empty()) {
+		list_all(client, server);
+		return ;
+	}
+	
 }
