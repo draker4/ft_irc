@@ -13,15 +13,12 @@
 # include "command.hpp"
 
 /**
- * @brief The WALLOPS command is used to send a message to all currently connected users who have set the ‘w’ user mode for themselves. The <text> SHOULD be non-empty.
- * 	Servers MAY echo WALLOPS messages to their sender even if they don’t have the ‘w’ user mode.
- * 	Servers MAY send WALLOPS only to operators.
- * 	Servers may generate it themselves, and MAY allow operators to send them.
+ * @brief The WALLOPS command is used to send a message to all currently connected users
+ * 	who have set the ‘w’ user mode for themselves. The <text> SHOULD be non-empty.
  * 	
  * 	Numeric replies:
  * 	ERR_NEEDMOREPARAMS (461)
  * 	ERR_NOPRIVILEGES (481)
- * 	ERR_NOPRIVS (723)
  * 
  * 	Syntax : WALLOPS <text>
  */
@@ -29,7 +26,20 @@ void wallops(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "INVITE command called" << RESET << std::endl;
-	(void)client;
-	(void)message;
-	(void)server;
+	if (message.getParameters().empty()) {
+		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), "WALLOPS"),
+			client->getClientSocket());
+	} else if (!client->getModeStatus('o')) {
+		server->sendClient(ERR_NOPRIVILEGES(client->getNickName()),
+			client->getClientSocket());
+	} else {
+		std::string text = message.getParameters()[0];
+		Server::mapClient clients = server->getClients();
+		for (Server::itMapClient it = clients.begin(); it != clients.end(); it++) {
+			if (it->second->getModeStatus('w')) {
+				server->sendClient(RPL_WALLOPS(client->getNickName(), client->getUserName(),
+					client->getInet(), text), it->second->getClientSocket());
+			}
+		}
+	}
 }
