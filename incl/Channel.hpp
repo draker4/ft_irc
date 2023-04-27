@@ -18,6 +18,7 @@
 # include <vector>
 # include "colors.hpp"
 # include <iterator>
+# include "replies.hpp"
 
 # define DEBUG_CHANNEL false
 
@@ -31,15 +32,24 @@ typedef struct	s_connect
 	std::string	joinTime;
 }				t_connect;
 
+typedef struct	s_ban
+{
+	std::string	banBy;
+	std::string	time;
+}				t_ban;
+
 class	Channel
 {
 	public:
 		// Types
 		typedef std::map<std::string, t_connect>					mapClients;
 		typedef std::map<std::string, t_connect>::iterator			itMapClients;
-		typedef std::map<std::string, std::string>					mapMode;
-		typedef std::map<std::string, std::string>::iterator		itMapMode;
-		typedef std::map<std::string, std::string>::const_iterator	constItMapMode;
+		typedef std::map<std::string, std::string>					mapInv;
+		typedef std::map<std::string, std::string>::iterator		itMapInv;
+		typedef std::map<std::string, std::string>::const_iterator	constItMapInv;
+		typedef std::map<std::string, t_ban>						mapBan;
+		typedef std::map<std::string, t_ban>::iterator				itMapBan;
+		typedef std::map<std::string, t_ban>::const_iterator		constItMapBan;
 		typedef std::string::const_iterator							itConstString;
 		typedef std::string::iterator								itString;
 		
@@ -64,6 +74,7 @@ class	Channel
 		int				getOperGrade(std::string nickName);
 		std::string		getClientTopic(void) const;
 		unsigned int	getClientLimit(void) const;
+		mapBan			getBanList(void) const;
 
 		// setter
 		void			setTopic(std::string nickname, std::string topic);
@@ -73,13 +84,13 @@ class	Channel
 		// Public member functions
 		void	addClient(Client *client);
 		void	removeClient(Client *client);
-		bool	isBanned(std::string nickname) const;
+		bool	isBanned(std::string ban) const;
 		bool	isFull(void) const;
 		bool	isInvited(std::string nickname) const;
 		bool	isClientInChannel(std::string nickname) const;
-		void	addBanned(std::string nickname);
+		bool	addBanned(std::string ban, std::string banBy);
 		void	addInvited(std::string nickname);
-		void	removeBanned(std::string nickname);
+		bool	removeBanned(std::string nickname);
 		void	removeInvited(std::string nickname);
 		void	addMode(char c);
 		void	removeMode(char c);
@@ -104,8 +115,8 @@ class	Channel
 		std::string 	_name;
 		std::string		_key;
 		mapClients		_clients;
-		mapMode			_banned;
-		mapMode			_invited;
+		mapBan			_banned;
+		mapInv			_invited;
 		std::string		_mode;
 		std::string		_topic;
 		std::string		_client_topic;

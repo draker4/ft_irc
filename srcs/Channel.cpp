@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "Channel.hpp"
-# include "Client.hpp"
 #include <sstream>
 
 
@@ -163,6 +162,11 @@ unsigned int	Channel::getClientLimit(void) const
 	return _clientLimit;
 }
 
+Channel::mapBan	Channel::getBanList(void) const
+{
+	return _banned;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 void	Channel::setTopic(std::string nickname, std::string topic)
@@ -210,7 +214,7 @@ void	Channel::removeClient(Client *client)
 
 bool	Channel::isBanned(std::string nickname) const
 {
-	constItMapMode	it = _banned.find(nickname);
+	constItMapBan	it = _banned.find(nickname);
 	if (it == _banned.end())
 		return false;
 	return true;
@@ -223,7 +227,7 @@ bool	Channel::isFull(void) const
 
 bool	Channel::isInvited(std::string nickname) const
 {
-	constItMapMode	it = _invited.find(nickname);
+	constItMapInv	it = _invited.find(nickname);
 	if (it == _invited.end())
 		return false;
 	return true;
@@ -236,14 +240,32 @@ bool	Channel::isClientInChannel(std::string nickname) const
 	return false;
 }
 
-void	Channel::addBanned(std::string nickname)
+bool	Channel::addBanned(std::string ban, std::string banBy)
 {
-	itMapClients	it = _clients.find(nickname);
-	if (it == _clients.end())
-		return ;
+	if (ban.find_first_of("!") == std::string::npos && ban.find_first_of("@") == std::string::npos) {
+		if (ban.find_first_of(".") == std::string::npos)
+			ban += "!*@*";
+		else {
+			std::stringstream ss;
+			ss << "*!*@" << ban ;
+			ban = ss.str();
+		}
+	} else if (ban.find_first_of("@") == std::string::npos) {
+		std::stringstream ss;
+		ss << ban << "*";
+		ban = ss.str();
+	} else if (ban.find_first_of("!") == std::string::npos) {
+		std::stringstream ss;
+		ss << "*" << ban;
+		ban = ss.str();
+	}
+	if (_banned.find(ban) != _banned.end())
+		return false;
 	std::stringstream timeBanned;
 	timeBanned << static_cast< long long >( time(NULL) );
-	_banned[nickname] = timeBanned.str();
+	_banned[ban].time = timeBanned.str();
+	_banned[ban].banBy = banBy;
+	return true;
 }
 
 void	Channel::addInvited(std::string nickname)
@@ -256,17 +278,35 @@ void	Channel::addInvited(std::string nickname)
 	_invited[nickname] = timeInvited.str();
 }
 
-void	Channel::removeBanned(std::string nickname)
+bool	Channel::removeBanned(std::string ban)
 {
-	itMapMode	it = _banned.find(nickname);
+	if (ban.find_first_of("!") == std::string::npos && ban.find_first_of("@") == std::string::npos) {
+		if (ban.find_first_of(".") == std::string::npos)
+			ban += "!*@*";
+		else {
+			std::stringstream ss;
+			ss << "*!*@" << ban ;
+			ban = ss.str();
+		}
+	} else if (ban.find_first_of("@") == std::string::npos) {
+		std::stringstream ss;
+		ss << ban << "*";
+		ban = ss.str();
+	} else if (ban.find_first_of("!") == std::string::npos) {
+		std::stringstream ss;
+		ss << "*" << ban;
+		ban = ss.str();
+	}
+	itMapBan	it = _banned.find(ban);
 	if (it == _banned.end())
-		return ;
+		return (false);
 	_banned.erase(it);
+	return (true);
 }
 
 void	Channel::removeInvited(std::string nickname)
 {
-	itMapMode	it = _invited.find(nickname);
+	itMapInv	it = _invited.find(nickname);
 	if (it == _invited.end())
 		return ;
 	_invited.erase(it);

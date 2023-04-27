@@ -68,6 +68,14 @@
 # define RPL_ENDOFNAMES(nickName, channel) ( ":" + SERVERNAME + " 366 " + nickName \
 		+ " " + channel + " :End of /NAMES list\r\n")
 
+// 367 - MODE
+# define RPL_BANLIST(nickName, channel, mask, who, time) ( ":" + SERVERNAME + " 367 " + nickName \
+		+ " " + channel + " " + mask + " " + who + " " + time + "\r\n")
+
+// 368 - MODE
+# define RPL_ENDOFBANLIST(nickName, channel) ( ":" + SERVERNAME + " 368 " + nickName \
+		+ " " + channel + " :End of channel ban list\r\n")
+
 // 381 - OPER
 # define RPL_YOUREOPER(nickName) ( ":" + SERVERNAME + " 381 " + nickName \
 		+ " :You are now an IRC operator\r\n")
