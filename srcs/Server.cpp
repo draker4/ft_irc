@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/26 15:52:05 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 18:06:00 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,16 +244,30 @@ void Server::_addUser(vecPollfd &new_fds)
 	}
 }
 
-void	Server::_handleClientDeconnection(itVecPollfd &it)
+void	Server::_sendQUIT(Client *client, std::string reason)
 {
-	// get client
-	Client	client = _clients.find((*it);
+	if (!client)
+		return ;
+
 	// get all channels where the client was in
-	Client::vecChannel	channels = it-
+	Client::vecChannel	channels = client->getChannels();
 	
-	// delete client 
-	it--; // because where in a for loop looping on it++
-	_deleteClient(it + 1);
+	// send QUIT message to all clients
+	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+		
+		// remove client from the channel
+		(*it)->removeClient(client);
+		
+		// find all clients in the channel
+		Channel::mapClients	clients = (*it)->getClients();
+
+		// send QUIT message to all clients in the channel
+		for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {
+			sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
+				client->getInet(), std::string("QUIT"), reason),
+				it->second.client->getClientSocket());
+		}
+	}
 }
 
 void Server::_receiveData(itVecPollfd &it)
@@ -268,7 +282,10 @@ void Server::_receiveData(itVecPollfd &it)
 	else if (bytesReceived == 0) {
 		if (DEBUG_SERVER)
 			std::cout << "Client disconnected, fd = " << it->fd << std::endl;
-		_handleClientDeconnection(it);
+		
+		// delete client 
+		it--; // because where in a for loop looping on it++
+		_deleteClient(it + 1);
 	}
 	else {
 		if (DEBUG_SERVER) {
@@ -281,6 +298,7 @@ void Server::_receiveData(itVecPollfd &it)
 			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r')
 		{
 			_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
+			
 			_clients[it->fd]->clearBuffer();
 			if (_clients[it->fd]->getDeconnect()) {
 				it--;
@@ -371,6 +389,10 @@ void Server::_initOperatorConfig(void)
 
 void	Server::_deleteClient(itVecPollfd it)
 {
+	// handle client deconnection in all channels
+	_sendQUIT(_clients[it->fd], "Left the server"); 
+
+	// close socket and delete client
 	close(it->fd);
 	delete _getClient(it->fd);
 	_clients.erase(it->fd);
@@ -388,9 +410,7 @@ void Server::launch(void)
 	server_fd.events = POLLIN;
 	_fds.push_back(server_fd);
 
-	// int	test = 0;
-
-	while (serverOpen)// && test++ < 10)
+	while (serverOpen)
 	{
 		// Call poll()
 		std::vector<pollfd> new_fds;
@@ -403,20 +423,29 @@ void Server::launch(void)
 		// Check for incoming data on the client sockets
 		itVecPollfd it = _fds.begin();
 		for (it = _fds.begin(); it != _fds.end(); it++) {
+			
+			// if no event on this socket
 			if (!it->revents)
 				continue;
+			
+			// if event POLLIN
 			else if (it->revents & POLLIN) {
-				if (it == _fds.begin()) { //client to be added
+				
+				// add new client
+				if (it == _fds.begin()) {
 					try {
 						_addUser(new_fds);
 					} catch (const std::exception &e) {
 						std::cerr << RED << e.what() << RESET << std::endl;
 					}
-				} else { //client to be read to check if he sent a message
-					_receiveData(it);
 				}
+				
+				// read data sent by client
+				else
+					_receiveData(it);
 			}
 		}
+		
 		//add new clients to the list to be polled
 		_fds.insert(_fds.end(), new_fds.begin(), new_fds.end());
 	}
@@ -451,6 +480,7 @@ void	Server::deleteClient(Client *client)
 	int	clientSocket = client->getClientSocket();
 
 	close(clientSocket);
+	delete client;
 	_clients.erase(clientSocket);
 	for (itVecPollfd it = _fds.begin(); it != _fds.end(); it++) {
 		if (it->fd == clientSocket) {
@@ -458,7 +488,6 @@ void	Server::deleteClient(Client *client)
 			break ;
 		}
 	}
-	delete client;
 }
 
 void	Server::addChannel(Channel *channel)

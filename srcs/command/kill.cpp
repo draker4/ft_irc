@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/26 15:07:54 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/26 18:10:22 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,29 @@ void kill(Client *client, const Message &message, Server *server)
 	if (!to_kill)
 		server->sendClient(ERR_NOSUCHNICK(client->getNickName(), message.getParameters()[0]),
 			client->getClientSocket());
+	
+	// SUCCESS
 	else {
+		
 		// send kill reply to client being killed
 		std::string	rpl_kill = to_kill->getNickName() + " " + message.getParameters()[1];
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
 		std::string("KILL"), rpl_kill), to_kill->getClientSocket());
 		
-		// send quit message to all users in channel
+		// reason of the QUIT message to send
 		std::string	rpl_quit = ":Killed by " + client->getUserName() + " because " + message.getParameters()[1];
+		
+		// find all channels the client was in
 		Client::vecChannel	channels = to_kill->getChannels();
 		for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+			
+			// remove client from the channel
+			(*it)->removeClient(client);
+			
+			// get all clients from channel
 			Channel::mapClients	clients = (*it)->getClients();
+			
+			// send QUIT message
 			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
 				server->sendClient(RPL_CMD(to_kill->getNickName(), to_kill->getUserName(), to_kill->getInet(),
 					std::string("QUIT"), rpl_quit), it_client->second.client->getClientSocket());
@@ -75,6 +87,10 @@ void kill(Client *client, const Message &message, Server *server)
 		server->sendClient(ERROR_MESSAGE(rpl_error), client->getClientSocket());
 		
 		// deconnect client
-		server->deleteClient(to_kill);
+		// if (client->getNickName() == to_kill->getNickName())
+		// 	client->setDeconnect(true);
+		// else
+			// server->deleteClient(to_kill);
+			to_kill->setDeconnect(true);
 	}
 }
