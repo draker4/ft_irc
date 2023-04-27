@@ -131,4 +131,8 @@
 # define RPL_KICK(nickname, user, host, channel, kicked, reason) ( ":" + nickname + "!" + user + "@" + host + " KICK " \
 	+ channel + " " + kicked + " " + reason + "\r\n")
 
+// SPE_CODE - WALLOPS
+# define RPL_WALLOPS(nickname, user, host, text) ( ":" + nickname + "!" + user + "@" + host + " WALLOPS " \
+	+ text + "\r\n")
+
 #endif

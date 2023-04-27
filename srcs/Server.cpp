@@ -487,6 +487,7 @@ void	Server::sendWelcome(Client *client)
 	// add message 004 and 005
 
 	motd(client, Message(), this);
+	mode(client, Message("MODE " + client->getNickName() + " +w"), this);
 }
 
 void	Server::deleteClient(int clientSocket)
