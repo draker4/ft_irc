@@ -141,6 +141,11 @@ Client::vecChannel	Client::getChannels() const
 	return _channels;
 }
 
+std::string	Client::getReasonLeaving(void) const
+{
+	return _reason_leaving;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 int Client::setClientSocket(void)

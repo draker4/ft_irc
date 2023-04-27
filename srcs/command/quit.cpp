@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 11:40:20 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/27 12:28:01 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,13 @@ void quit(Client *client, const Message &message, Server *server)
 	Client::vecChannel	channels = client->getChannels();
 	
 	// remove client from each channel
-	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+	// for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
 		
-		(*it)->removeClient(client);
+		// (*it)->removeClient(client);
+
+		// if the channel is empty, delete it
+		// if ((*it)->getClients().empty())
+		// 	server->removeChannel(*it);
 		
 		// find all clients in the channel
 		// Channel::mapClients	clients = (*it)->getClients();
@@ -62,7 +66,7 @@ void quit(Client *client, const Message &message, Server *server)
 		// 		client->getInet(), std::string("QUIT"), reason),
 		// 		it->second.client->getClientSocket());
 		// }
-	}
+	// }
 	
 	// delete client from server
 	client->setDeconnect(true);
