@@ -210,6 +210,11 @@ void	Server::removeChannel(Channel *channel)
 	delete channel;
 }
 
+Server::vecChannel	Server::getChannels(void) const
+{
+	return _channels;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 /* ----------------------  Private member functions  ------------------------ */
