@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 12:13:40 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:55:39 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@
 // RPL_ISUPPORT
 # define ACCEPT std::string("20") // Indicates the maximum number of online nicknames a user may have in their accept list.
 # define BOT std::string("B") // Indicates the character to be used as a user mode to let clients mark themselves as bots by setting it
-// # define ACCEPT //
-// # define ACCEPT //
-// # define ACCEPT //
-// # define ACCEPT //
-// # define ACCEPT //
+# define CHANLIMIT_TOKEN std::string("&#:10") // Indicates the maximum number of channels a client may join
+# define CHANTYPES std::string("&#") // Indicates the types of channels supported on this server
+# define KEYLEN_TOKEN std::string("10") // Indicates the maximum length of a channel key.
+# define PREFIX_TOKEN std::string("@%+") // Indicates the channel membership prefixes available on this server and their order in terms of channel privileges they represent, from highest to lowest.
+# define USERLEN_TOKEN std::string("10") // Indicates the maximum length of an username in octets. If "number" is not specified, there is no limit.
 // # define ACCEPT //
 // # define ACCEPT //
 // # define ACCEPT //
@@ -63,6 +63,7 @@
 
 # define CHANLIMIT	10
 # define TARGMAX_NAMES 3
+# define KEYLEN 10
 // PREFIX
 // TARGMAX=NAMES:3,...
 

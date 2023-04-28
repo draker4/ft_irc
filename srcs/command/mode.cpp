@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 18:45:35 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:50:21 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,7 +183,7 @@ void addModeChannel(Client *client, Server *server, Channel *channel, char mode)
 				std::stringstream limit;
 				limit << channel->getClientLimit();
 				arg = limit.str();
-			}	
+			}
 			else
 				arg = channel->getKey();
 			for (Channel::itMapClients it = clients.begin(); it != clients.end(); it++) {

@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 15:31:15 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 12:40:16 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:57:00 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,8 @@ void	Channel::setTopic(std::string nickname, std::string topic)
 
 void	Channel::setKey(std::string key)
 {
+	if (key.length() >= KEYLEN)
+		key = key.substr(0, KEYLEN);
 	_key = key;
 }
 

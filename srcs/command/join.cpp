@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 13:10:28 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:49:18 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void join(Client *client, const Message &message, Server *server)
 
 				// check if channel need a key
 				if (channel->getModeStatus('k')) {
-					if (itKeys != keys.end() && channel->getKey() == *itKeys)
+					if (itKeys != keys.end() && channel->getKey() == (*itKeys).substr(0, 10))
 						addClient(server, client, channel);
 					else
 						server->sendClient(ERR_BADCHANNELKEY(client->getNickName(), *it), 

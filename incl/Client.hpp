@@ -22,6 +22,7 @@
 # include "Channel.hpp"
 # include <vector>
 
+// RPL_ISUPPORT
 # define USERLEN 10
 
 # define DEBUG_CLIENT false

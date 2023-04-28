@@ -179,7 +179,7 @@ void Client::setNickName(std::string nickName)
 void	Client::setUserName(std::string userName)
 {
 	if (userName.length() > USERLEN)
-		userName = userName.substr(0, 10);
+		userName = userName.substr(0, USERLEN);
 	_userName = userName;
 }
 
