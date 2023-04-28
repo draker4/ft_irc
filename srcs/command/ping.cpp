@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/13 13:09:41 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 15:53:22 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,17 +40,8 @@ void ping(Client *client, const Message &message, Server *server)
 			client->getClientSocket());
 	else
 	{
-		// regler with real timestamp !!
-		timeval	tm;
-		gettimeofday(&tm, NULL);
-		double	time = (tm.tv_sec - 50000) * 1000 + tm.tv_usec / 1000 - strtod(message.getParameters()[0].c_str(), NULL);
-		// std::cout << BLUE << std::fixed << time << std::endl;
-		std::stringstream	ss;
-		ss << std::fixed << strtod(message.getParameters()[0].c_str(), NULL) - time;
-		std::cout << RED << std::string(ss.str()) << std::endl;
-
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
-		std::string("PONG"), SERVERNAME +std::string(" ") + std::string(ss.str())),
+		std::string("PONG"), SERVERNAME +std::string(" ") + message.getParameters()[0]),
 			client->getClientSocket());
 	}
 }
