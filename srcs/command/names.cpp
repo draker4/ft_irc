@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 11:12:04 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 11:40:32 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void names(Client *client, const Message &message, Server *server)
 		return ;
 	}
 	
-	// gte all channels entered by the user iun the command
+	// get all channels entered by the user iun the command
 	Message::vecString	parameters = split(message.getParameters()[0], ",");
 
 	for (Message::itVecString it = parameters.begin(); it != parameters.end(); it++) {

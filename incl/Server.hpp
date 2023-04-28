@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 17:21:10 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 12:13:40 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ class Server
 		typedef std::vector<t_opeConfig>::iterator				itVecOpeConfig;
 		typedef std::vector<Channel *>							vecChannel;
 		typedef std::vector<Channel *>::iterator				itVecChannel;
+		typedef std::vector<Channel *>::const_iterator			constItVecChannel;
 		typedef	std::vector<Client *>							vecClient;
 		typedef	std::vector<Client *>::iterator					itVecClient;
 
@@ -108,8 +109,8 @@ class Server
 		void		deleteClient(int clientSocket);
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);
-		bool		channelExist(std::string name);
-		bool		isClientInServer(std::string nickname);
+		bool		channelExist(std::string name) const;
+		bool		isClientInServer(std::string nickname) const;
 	
 		// Exceptions
 		class ServerException : public std::exception
