@@ -258,13 +258,13 @@ runv				:	all
 						${VALGRIND} ./${NAME} 4245 6262
 
 runb				:	bonus
-						./${BOTCALC}
+						./${BOTCALC} 4245 6262
 
 runbs				:	debug_bonus
-						./${BOTCALC_DEBUG}
+						./${BOTCALC_DEBUG} 4245 6262
 
 runbd				:	debug
-						${LLDB} ./${DEBUG}
+						${LLDB} ./${DEBUG} 4245 6262
 
 runbv				:	bonus
 						${VALGRIND} ./${BOTCALC} 4245 6262

@@ -14,9 +14,18 @@
 # define CALCULATOR_HPP
 
 # include <iostream>
+# include <csignal>
+# include <unistd.h>
+# include <stdlib.h>
+# include <cstring>
+# include <netdb.h>
+# include <arpa/inet.h>
+# include <sys/socket.h>
 # include "colors.hpp"
 
-# define DEBUG_CALCULATOR false
+# define DEBUG_CALCULATOR true
+# define BOTNAME std::string("Calculator")
+# define BUFFER 4096
 
 class	Calculator
 {
@@ -24,7 +33,7 @@ class	Calculator
 		// Types
 		
 		//Constructors
-		Calculator(void);
+		Calculator(std::string port, std::string password);
 
 		//Destructor
 		~Calculator(void);
@@ -36,6 +45,8 @@ class	Calculator
 		//Setter
 
 		//Public functions
+		void		launch(void);
+		void		sendServer(const std::string &msg, const int &clientSocket) const;
 
 		//Exceptions
 		class CalculatorException : public std::exception
@@ -50,14 +61,19 @@ class	Calculator
 		};
 
 	private:
+		int			_sockfd;
+		double		_port;
+		std::string	_password;
 
 		//Private Constructor
+		Calculator(void);
 		Calculator(const Calculator &src);
 
 		//Private Operator
 		Calculator	&operator=(const Calculator &rhs);
 
 		// Private functions
+		void	_connexion(void);
 };
 
 #endif
