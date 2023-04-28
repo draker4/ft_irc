@@ -43,22 +43,22 @@
 # define VERSION std::string("1.0")
 # define SERVERINFO std::string("This an IRC server built by bperriol and bboisson")
 # define USERMODE std::string("iorw")
-# define CHANNELMODE std::string("bhiklmnostvstd::string("
+# define CHANNELMODE std::string("bhiklmnostvstd::string(")
 
 // RPL_ISUPPORT
 # define ACCEPT std::string("20") // Indicates the maximum number of online nicknames a user may have in their accept list.
 # define BOT std::string("B") // Indicates the character to be used as a user mode to let clients mark themselves as bots by setting it
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
-# define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
+// # define ACCEPT //
 # define TOKEN1 std::string(ACCEPT + " " + BOT)
 
 # define CHANLIMIT	10
