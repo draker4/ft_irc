@@ -29,7 +29,7 @@
 
 // 004 - Server::sendWelcome
 # define RPL_MYINFO(nickName) ( ":" + SERVERNAME + " 004 " + nickName \
-		+ SERVERNAME + " " + VERSION + " " + USERMODE + " " + CHANNELMODE + "\r\n")
+		+ " " + SERVERNAME + " " + VERSION + " " + USERMODE + " " + CHANMODE + "\r\n")
 
 // 005 - Server::sendWelcome
 # define RPL_ISUPPORT(nickName, tokens) ( ":" + SERVERNAME + " 005 " + nickName \
