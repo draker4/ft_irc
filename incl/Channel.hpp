@@ -77,6 +77,7 @@ class	Channel
 		std::string		getClientTopic(void) const;
 		unsigned int	getClientLimit(void) const;
 		mapBan			getBanList(void) const;
+		std::string		getUserPrefix(std::string nickname);
 
 		// setter
 		void			setTopic(std::string nickname, std::string topic);

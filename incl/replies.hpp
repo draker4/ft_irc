@@ -53,17 +53,17 @@
 # define RPL_ENDOFWHOIS(nickName, userSearched) ( ":" + SERVERNAME + " 318 " + nickName \
 		+ " " + userSearched + " :End of /WHOIS list\r\n")
 
-// 319 - WHOIS - TO_FINISH
-# define RPL_WHOISCHANNELS(nickName, userSearched) ( ":" + SERVERNAME + " 319 " + nickName \
-		+ " " + userSearched + " :has identified for this nick\r\n")
+// 319 - WHOIS
+# define RPL_WHOISCHANNELS(nickName, userSearched, channels) ( ":" + SERVERNAME + " 319 " + nickName \
+		+ " " + userSearched + " :" + channels + "\r\n")
 
-// 378 - WHOIS - TO_FINISH
-# define RPL_WHOISHOST(nickName, userSearched) ( ":" + SERVERNAME + " 378 " + nickName \
-		+ " " + userSearched + " :has identified for this nick\r\n")
+// 378 - WHOIS
+# define RPL_WHOISHOST(nickName, userSearched, host) ( ":" + SERVERNAME + " 378 " + nickName \
+		+ " " + userSearched + " :is connecting from " + host + "\r\n")
 
-// 379 - WHOIS - TO_FINISH
-# define RPL_WHOISMODES(nickName, userSearched) ( ":" + SERVERNAME + " 379 " + nickName \
-		+ " " + userSearched + " :has identified for this nick\r\n")
+// 379 - WHOIS
+# define RPL_WHOISMODES(nickName, userSearched, modes) ( ":" + SERVERNAME + " 379 " + nickName \
+		+ " " + userSearched + " :is using modes +" + modes + "\r\n")
 
 // 315 - WHO
 # define RPL_ENDOFWHO(nickName, mask) ( ":" + SERVERNAME + " 315 " + nickName + " " \

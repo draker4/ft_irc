@@ -47,7 +47,12 @@ void whois(Client *client, const Message &message, Server *server)
 		server->sendClient(ERR_NOSUCHNICK(client->getNickName(), message.getParameters()[0]),
 			client->getClientSocket());
 	else {
-		Client *target = server->getClient(message.getParameters()[0]);
+		Client *target = server->getClient(toUpper(message.getParameters()[0]));
+		if (!target) {
+			if (DEBUG_COMMAND)
+				std::cout << RED << "ERROR: target is NULL" << RESET << std::endl;
+			return ;
+		}
 		// is the user is registered
 		if (target->getModeStatus('r'))
 			server->sendClient(RPL_WHOISREGNICK(client->getNickName(), target->getNickName()),
@@ -64,28 +69,34 @@ void whois(Client *client, const Message &message, Server *server)
 			server->sendClient(RPL_WHOISOPERATOR(client->getNickName(), target->getNickName()),
 				client->getClientSocket());
 		// User channels list
-			//funtiond to build the list and pass it to the message
-		// if (!target->getChannels().empty()) {
-		// 	std::string channels;
-		// 	for (Client::itVecChannel it = target->getChannels().begin();
-		// 		it != target->getChannels().end(); it++) {
-				
-		// 		channels += (*it)->getName();
-		// 		if (it + 1 != target->getChannels().end())
-		// 			channels += " ";
-		// 	}
-		// 	server->sendClient(RPL_WHOISCHANNELS(client->getNickName(), target->getNickName(),
-		// 		channels), client->getClientSocket());
-		// }
-		// 	server->sendClient(RPL_WHOISCHANNELS(client->getNickName(), target->getNickName(),
-		// 		target->getChannels()), client->getClientSocket());
-		if (client->getModeStatus('o')) {
-			// server->sendClient(RPL_WHOISHOST(client->getNickName(), target->getNickName(),
-			// 	target->getInet()),
-			// 	client->getClientSocket());
-			// server->sendClient(RPL_WHOISMODES(client->getNickName(), target->getNickName(),
-			// 	target->getMode()),
-			// 	client->getClientSocket());
+		std::string channels = "";
+		Client::vecChannel targetChannels =  target->getChannels();
+		for (Client::itVecChannel it = targetChannels.begin();
+			it != targetChannels.end(); it++) {
+			if ((client->getModeStatus('o') || client->getNickName() == target->getNickName())
+				|| ((!(*it)->getModeStatus('s') || ((*it)->getModeStatus('s')
+						&& (*it)->isClientInChannel(client->getNickName())))
+					&& (!target->getModeStatus('i') || (target->getModeStatus('i')
+						&& (*it)->isClientInChannel(client->getNickName()))))) {
+			channels += (*it)->getUserPrefix(target->getNickName());
+			channels += (*it)->getName();
+			if (it + 1 != target->getChannels().end())
+				channels += " ";
+			}
+		}
+		if (channels.empty())
+			channels = "*";
+		server->sendClient(RPL_WHOISCHANNELS(client->getNickName(), target->getNickName(),
+			channels), client->getClientSocket());
+		if (client->getModeStatus('o') || client->getNickName() == target->getNickName()) {
+			// User host
+			server->sendClient(RPL_WHOISHOST(client->getNickName(), target->getNickName(),
+				target->getInet()),
+				client->getClientSocket());
+			// User modes
+			server->sendClient(RPL_WHOISMODES(client->getNickName(), target->getNickName(),
+				target->getMode()),
+				client->getClientSocket());
 		}
 		server->sendClient(RPL_ENDOFWHOIS(client->getNickName(), target->getNickName()),
 			client->getClientSocket());

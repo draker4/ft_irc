@@ -167,6 +167,14 @@ Channel::mapBan	Channel::getBanList(void) const
 	return _banned;
 }
 
+std::string	Channel::getUserPrefix(std::string nickname)
+{
+	itMapClients	it = _clients.find(toUpper(nickname));
+	if (it == _clients.end())
+		return "";
+	return it->second.prefix;
+}
+
 /* --------------------------------  Setter  -------------------------------- */
 
 void	Channel::setTopic(std::string nickname, std::string topic)
