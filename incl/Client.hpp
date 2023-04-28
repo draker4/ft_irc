@@ -102,7 +102,7 @@ class Client
 		Client(const Client &src);
 
 		// Private functions
-		void *_get_addr(sockaddr *saddr);
+		void	*_get_addr(sockaddr *saddr);
 };
 
 #endif

@@ -41,6 +41,7 @@
 # define DEBUG_SERVER true
 # define SERVERNAME std::string("localhost")
 # define VERSION std::string("1.0")
+# define SERVERINFO std::string("This an IRC server built by bperriol and bboisson")
 
 // RPL_ISUPPORT
 # define CHANLIMIT	10

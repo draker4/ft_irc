@@ -31,6 +31,40 @@
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")
 
+// 307 - WHOIS
+# define RPL_WHOISREGNICK(nickName, userSearched) ( ":" + SERVERNAME + " 307 " + nickName \
+		+ " " + userSearched + " :has identified for this nick\r\n")
+
+// 311 - WHOIS
+# define RPL_WHOISUSER(nickName, userSearched, userNameSearched, hostSearched, realNameSearched) \
+		( ":" + SERVERNAME + " 311 " + nickName + " " + userSearched + " " + userNameSearched \
+		+ " " + hostSearched + " :" + realNameSearched + "\r\n")
+
+// 312 - WHOIS
+# define RPL_WHOISSERVER(nickName, userSearched, server, serverInfo) \
+		( ":" + SERVERNAME + " 312 " + nickName + " " + userSearched + " " + server \
+		+ " :" + serverInfo + "\r\n")
+
+// 313 - WHOIS
+# define RPL_WHOISOPERATOR(nickName, userSearched) ( ":" + SERVERNAME + " 313 " + nickName \
+		+ " " + userSearched + " :is an IRC operator\r\n")
+
+// 318 - WHOIS
+# define RPL_ENDOFWHOIS(nickName, userSearched) ( ":" + SERVERNAME + " 318 " + nickName \
+		+ " " + userSearched + " :End of /WHOIS list\r\n")
+
+// 319 - WHOIS - TO_FINISH
+# define RPL_WHOISCHANNELS(nickName, userSearched) ( ":" + SERVERNAME + " 319 " + nickName \
+		+ " " + userSearched + " :has identified for this nick\r\n")
+
+// 378 - WHOIS - TO_FINISH
+# define RPL_WHOISHOST(nickName, userSearched) ( ":" + SERVERNAME + " 378 " + nickName \
+		+ " " + userSearched + " :has identified for this nick\r\n")
+
+// 379 - WHOIS - TO_FINISH
+# define RPL_WHOISMODES(nickName, userSearched) ( ":" + SERVERNAME + " 379 " + nickName \
+		+ " " + userSearched + " :has identified for this nick\r\n")
+
 // 315 - WHO
 # define RPL_ENDOFWHO(nickName, mask) ( ":" + SERVERNAME + " 315 " + nickName + " " \
 		+ mask + " :End of WHO list\r\n")

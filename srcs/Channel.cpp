@@ -85,7 +85,7 @@ bool	Channel::getModeStatus(char c) const
 
 bool	Channel::getUserModeStatus(std::string nickName, char c)
 {
-	itMapClients	it = _clients.find(nickName);
+	itMapClients	it = _clients.find(toUpper(nickName));
 	if (it == _clients.end())
 		return false;
 	for (itConstString itUserMode = it->second.userMode.begin();
@@ -189,6 +189,25 @@ void	Channel::setClientLimit(std::string limit)
 }
 
 /* --------------------------  Private functions  --------------------------- */
+
+void	Channel::_defineUserPrefix(std::string nickname)
+{
+	itMapClients	it = _clients.find(toUpper(nickname));
+	if (it == _clients.end())
+		return ;
+	it->second.prefix = "";
+	for (itString itUserMode = it->second.userMode.begin();
+		itUserMode != it->second.userMode.end(); itUserMode++) {
+		std::cout << "check user mode : " << *itUserMode << std::endl;
+		if (*itUserMode == 'o') // o = operator
+			it->second.prefix = "@";
+		else if (*itUserMode == 'h' && it->second.prefix != "@") // h = half operator
+			it->second.prefix = "%";
+		else if (*itUserMode == 'v'&& it->second.prefix != "@" && it->second.prefix != "%") // v = voice 
+			it->second.prefix = "+";
+	}
+	std::cout << "prefix : " << it->second.prefix << std::endl;
+}
 
 /* -----------------------  Public member functions  ------------------------ */
 
@@ -369,11 +388,12 @@ void	Channel::updateClient(std::string oldNickname, std::string nickname)
 
 void	Channel::addUserMode(std::string nickname, char c)
 {
-	itMapClients	it = _clients.find(nickname);
+	itMapClients	it = _clients.find(toUpper(nickname));
 	if (it == _clients.end())
 		return ;
 	if (it->second.userMode.find(c) == std::string::npos)
 		it->second.userMode.push_back(c);
+	_defineUserPrefix(nickname);
 }
 
 void	Channel::removeUserMode(std::string nickname, char c)
@@ -386,6 +406,7 @@ void	Channel::removeUserMode(std::string nickname, char c)
 		itUserMode != it->second.userMode.end(); itUserMode++) {
 		if (*itUserMode == c) {
 			it->second.userMode.erase(it->second.userMode.begin() + i);
+			_defineUserPrefix(nickname);
 			return;
 		}
 		i++;

@@ -135,6 +135,7 @@ class	Channel
 		Channel	&operator=(const Channel &rhs);
 
 		// Private functions
+		void		_defineUserPrefix(std::string nickname);
 };
 
 #endif

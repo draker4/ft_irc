@@ -488,6 +488,7 @@ void	Server::sendWelcome(Client *client)
 
 	motd(client, Message(), this);
 	mode(client, Message("MODE " + client->getNickName() + " +w"), this);
+	mode(client, Message("MODE " + client->getNickName() + " +r"), this);
 }
 
 void	Server::deleteClient(int clientSocket)

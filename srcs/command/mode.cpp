@@ -65,9 +65,9 @@ void userAddMode(Client *client, const Message &message, Server *server, size_t 
 	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		case 'r': // r : user is a registered user
 		case 'w': // w : user receives wallops
 		case 'i': // i : marks a users as invisible
+		case 'r': // r : user is a registered user
 			addModeClient(client, server, message.getParameters()[1][j]);
 			break;
 		default:
@@ -86,10 +86,17 @@ void userRemoveMode(Client *client, const Message &message, Server *server, size
 	while(j < message.getParameters()[1].size() && message.getParameters()[1][j] != '-'
 		&& message.getParameters()[1][j] != '+') {
 		switch (message.getParameters()[1][j]) {
-		case 'r': // r : user is a registered user
 		case 'w': // w : user receives wallops
-		case 'i': // i : marks a users as invisible
+		case 'i': // i : remove users as invisible
 			removeModeClient(client, server, message.getParameters()[1][j]);
+			break;
+		case 'r': // r : remove user as a registered user
+		case 'o': // o : remove users as an IRC operator
+			if (client->getModeStatus('o'))
+				removeModeClient(client, server, message.getParameters()[1][j]);
+			else
+				server->sendClient(ERR_NOPRIVILEGES(client->getNickName()),
+					client->getClientSocket());
 			break;
 		default:
 			server->sendClient(ERR_UMODEUNKNOWNFLAG(client->getNickName()),

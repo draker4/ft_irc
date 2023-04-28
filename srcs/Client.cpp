@@ -205,7 +205,7 @@ void	Client::setReasonLeaving(std::string reason)
 
 /* --------------------------  Private functions  --------------------------- */
 
-void *Client::_get_addr(sockaddr *saddr)
+void	*Client::_get_addr(sockaddr *saddr)
 {
 	if (saddr->sa_family == AF_INET)
 		return &(((sockaddr_in *)saddr)->sin_addr);
