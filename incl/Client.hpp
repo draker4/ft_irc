@@ -29,6 +29,8 @@
 # define DEBUG_CLIENT false
 
 class Channel;
+class Server;
+
 class Client
 {
 	public:
@@ -40,6 +42,7 @@ class Client
 
 		// Constructors
 		Client(int serverSocket);
+		Client(std::string botName, int serverSocket);
 
 		// Destructors
 		~Client(void);
@@ -83,6 +86,7 @@ class Client
 		void		removeChannel(Channel *channel);
 		bool		shareChannel(vecChannel channels) const;
 		int			nb_prefix_channel(char c) const;
+		void		sendHelp(Client *client, Server *server, std::string msg);
 	
 	private:
 		int 					_serverSocket;

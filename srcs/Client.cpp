@@ -30,6 +30,16 @@ _passwordSet(false), _deconnect(false)
 		std::cout << GREEN << "Client Constructor called " << RESET << std::endl;
 }
 
+Client::Client(std::string botName, int serverSocket) : _serverSocket(serverSocket), 
+_clientSocket(-1), _inet("0.0.0.0"), _nickName(botName), _oldNickName(""), _realName(botName),
+_userName(botName), _buffer(""), _mode(""), _reason_leaving(""),
+_client_addr_size(sizeof(_client_addr)), _registered(true),
+_passwordSet(true), _deconnect(false)
+{
+	if (DEBUG_CLIENT)
+		std::cout << GREEN << "String Client Constructor called " << RESET << std::endl;
+}
+
 Client::Client(const Client &src)
 {
 	if (DEBUG_CLIENT)

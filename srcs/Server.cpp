@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 12:13:38 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 16:38:09 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,6 +421,10 @@ void Server::launch(void)
 	server_fd.fd = _serverSocket;
 	server_fd.events = POLLIN;
 	_fds.push_back(server_fd);
+	
+	// start help bot
+	Client	*bot = new Client(HELP_BOT_NAME, _serverSocket);
+	_clients[-1] = bot;
 
 	while (serverOpen)
 	{
@@ -530,6 +534,15 @@ bool	Server::isClientInServer(std::string nickName) const
 			return true;
 	}
 	return false;
+}
+
+Client	*Server::getHelpBot(void) const
+{
+	constItMapClient it = _clients.find(-1);
+	
+	if (it != _clients.end())
+		return it->second;
+	return NULL;
 }
 
 /* -----------------------  NON member functions  ------------------------ */

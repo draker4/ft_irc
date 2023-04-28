@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:21 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 13:55:39 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 16:39:51 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@
 # define TOKEN2 std::string(MAXTARGETS_TOKEN + " " + MODES_TOKEN + " " + TARGMAX_TOKEN \
 		+ " " + TOPICLEN_TOKEN + " " + PREFIX_TOKEN + " " + USERLEN_TOKEN )
 
+#define HELP_BOT_NAME "help"
+
 enum ErrorNum {
 	SUCCESS,
 	FAILURE,
@@ -157,6 +159,7 @@ class Server
 		void		removeChannel(Channel *channel);
 		bool		channelExist(std::string name) const;
 		bool		isClientInServer(std::string nickname) const;
+		Client		*getHelpBot(void) const;
 	
 		// Exceptions
 		class ServerException : public std::exception
