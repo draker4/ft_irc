@@ -21,6 +21,7 @@
 # include "replies.hpp"
 
 # define DEBUG_CHANNEL false
+# define KEYLEN 10
 
 class Client;
 

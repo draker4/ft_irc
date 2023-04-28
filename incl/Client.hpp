@@ -23,6 +23,7 @@
 # include <vector>
 
 // RPL_ISUPPORT
+# define MAXNICKLEN 10
 # define USERLEN 10
 
 # define DEBUG_CLIENT false

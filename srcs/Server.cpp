@@ -485,6 +485,7 @@ void	Server::sendWelcome(Client *client)
 	sendClient(RPL_CREATED(client->getNickName(), _t_create_str), client->getClientSocket());
 	sendClient(RPL_MYINFO(client->getNickName()), client->getClientSocket());
 	sendClient(RPL_ISUPPORT(client->getNickName(), TOKEN1), client->getClientSocket());
+	sendClient(RPL_ISUPPORT(client->getNickName(), TOKEN2), client->getClientSocket());
 	motd(client, Message(), this);
 	mode(client, Message("MODE " + client->getNickName() + " +wr"), this);
 }
