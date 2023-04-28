@@ -53,6 +53,7 @@ class Client
 		bool 		getRegistered(void) const;
 		bool		getDeconnect(void) const;
 		bool		getPasswordStatus(void) const;
+		bool		getModeStatus(char c) const;
 		std::string	getBuffer(void) const;
 		std::string	getNickName(void) const;
 		std::string	getOldNickName(void) const;
@@ -60,7 +61,6 @@ class Client
 		std::string	getRealName(void) const;
 		std::string	getMode(void) const;
 		std::string	getReasonLeaving() const;
-		bool		getModeStatus(char c) const;
 		vecChannel	getChannels(void) const;
 
 		// Setter
@@ -82,6 +82,7 @@ class Client
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);
 		bool		shareChannel(vecChannel channels) const;
+		int			nb_prefix_channel(char c) const;
 	
 	private:
 		int 					_serverSocket;

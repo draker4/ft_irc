@@ -281,3 +281,15 @@ bool	Client::shareChannel(Client::vecChannel channels) const
 	}
 	return false;
 }
+
+int	Client::nb_prefix_channel(char c) const
+{
+	vecChannel	channels = getChannels();
+	int			nb_channels = 0;
+
+	for (constItVecChannel it = channels.begin(); it != channels.end(); it++) {
+		if ((*it)->getName()[0] == c)
+			nb_channels++;
+	}
+	return nb_channels;
+}

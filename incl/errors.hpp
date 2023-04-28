@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 11:29:33 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 15:21:33 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 // 403 - JOIN - MODE - TOPIC - PART - INVITE - KICK
 # define ERR_NOSUCHCHANNEL(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
 		+ channel + " :No such channel\r\n")
+
+// 403 - JOIN - Variante pour channl name trop long
+# define ERR_CHANTOOLONG(client, channel) ( ":" + SERVERNAME + " 403 " + client + " " \
+		+ channel + " :Channel name is too long\r\n")
 
 // 404 - PRIVMSG
 # define ERR_CANNOTSENDTOCHAN(nickname, channel) ( ":" + SERVERNAME + " 404 " + nickname + " " \
@@ -100,6 +104,10 @@
 // 475 - JOIN
 # define ERR_BADCHANNELKEY(client, channel) ( ":" + SERVERNAME + " 475 " + client \
 		+ " " + channel + " :Cannot join channel (+k)\r\n")
+
+// 476 - JOIN
+# define ERR_BADCHANMASK(channel) ( ":" + SERVERNAME + " 476 " + channel \
+		+ " :Bad Channel Mask\r\n")
 
 // 481 - KILL
 # define ERR_NOPRIVILEGES(client) ( ":" + SERVERNAME + " 481 " + client \

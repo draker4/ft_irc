@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 13:49:18 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 15:40:13 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,42 @@
  * 	[CLIENT]  JOIN #foo,#bar fubar,foobar
  * 	[SERVER]; join channel #foo using key "fubar" and channel #bar using key "foobar".
  */
+
+static bool	has_ban_char(std::string str)
+{
+	if (str.find_first_of(" ,\a") != std::string::npos) {
+		return true;
+	}
+	return false;
+}
+
+static void	leave_all_channels(Client *client, Server *server)
+{
+	// get all channels the client is currently in
+	Client::vecChannel	channels = client->getChannels();
+
+	for (Client::itVecChannel it = channels.begin(); it != channels.end(); it++) {
+		
+		// send PART message to all users of the channel
+		Channel::mapClients	clients = (*it)->getClients();
+		std::string	reason = " Leaving";
+		
+		for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(), client->getInet(),
+				std::string("PART"), (*it)->getName() + reason), it_client->second.client->getClientSocket());
+		}
+
+		// remove client from the channel clients' list
+		(*it)->removeClient(client);
+
+		// remove channel from the client channels' list
+		client->removeChannel(*it);
+
+		// if the channel is empty, delete it
+		if ((*it)->getClients().empty())
+			server->removeChannel(*it);
+	}
+}
 
 static void	addClient(Server *server, Client *client, Channel *channel)
 {
@@ -118,7 +154,7 @@ void join(Client *client, const Message &message, Server *server)
 			client->getClientSocket());
 	}
 	else if (message.getParameters()[0] == "0") {
-		//PART all channels
+		leave_all_channels(client, server);
 	}
 	else {
 		Message::vecString	channels = split(message.getParameters()[0], ",");
@@ -130,7 +166,18 @@ void join(Client *client, const Message &message, Server *server)
 		
 		for (Message::itVecString it = channels.begin(); it != channels.end(); it++) {
 			
-			// BANCHANMASK
+			// check if the channel name is too long
+			if ((*it).length() > CHANNELLEN) {
+				server->sendClient(ERR_CHANTOOLONG(client->getNickName(), *it), 
+					client->getClientSocket());
+				continue ;
+			}
+			
+			// banned characters
+			if (has_ban_char(*it)) {
+				server->sendClient(ERR_BADCHANMASK(*it), client->getClientSocket());
+				continue ;
+			}
 
 			// check first char of the channel name
 			if ((*it)[0] != '#' && (*it)[0] != '&') {
@@ -140,7 +187,7 @@ void join(Client *client, const Message &message, Server *server)
 			}
 			
 			// check how many channels the client already follows
-			if (client->getChannels().size() >= CHANLIMIT) {
+			if (client->nb_prefix_channel((*it)[0]) >= CHANLIMIT) {
 				server->sendClient(ERR_TOOMANYCHANNELS(client->getNickName(), *it), 
 					client->getClientSocket());
 				continue ;
@@ -152,10 +199,6 @@ void join(Client *client, const Message &message, Server *server)
 				
 				// create channel
 				channel = new Channel(*it, client);
-				// Channel::mapClients cli = channel->getClients();
-				// std::cout << "HERE begin=" << cli.size() << std::endl;
-				// std::cout << "here begin=" << cli.begin()->first << std::endl;
-				// std::cout << "here begin=" << (++cli.begin())->first << std::endl;
 				
 				// add channel to server and to client's channel list
 				server->addChannel(channel);
