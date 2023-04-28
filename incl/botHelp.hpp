@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:14:17 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 18:02:12 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 18:52:55 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include <iostream>
 
 std::string	str_invite = " The INVITE command is used to invite a user to a channel. The parameter <nickname> is the nickname of the person to be invited to the target channel <channel>. Syntax : INVITE <nickname> <channel>";
-std::string	str_join = " The JOIN command indicates that the client wants to join the given channel(s), each channel using the given key for it. Syntax: JOIN <channel>";
+std::string	str_join = " The JOIN command indicates that the client wants to join the given channel(s), Syntax: JOIN <channel>. If the channel needs a key, you can add it in parameter";
 std::string	str_kick = " The KICK command can be used to request the forced removal of a user from a channel. It causes the <user> to be removed from the <channel> by force. Parameters: <channel> <user> *( \",\" <user> ) [<comment>]";
 std::string	str_kill = " The KILL command is used to close the connection between a given client and the server they are connected to. KILL is a privileged command and is available only to IRC Operators. Syntax :KILL <nickname> <comment>";
 std::string	str_list = " If the exact name of a channel is given, the only information about this channel is requested; otherwise, a list of all channels will be displayed. Syntax : LIST [<channel>]";
