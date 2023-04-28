@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 18:19:57 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 11:29:41 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,13 @@ void join(Client *client, const Message &message, Server *server)
 {
 	if (DEBUG_COMMAND)
 		std::cout << BLUE << "JOIN command called" << RESET << std::endl;
+	
+	// if client is not registered
+	if (!client->getModeStatus('r')) {
+		server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), 
+			client->getClientSocket());
+		return ;
+	}
 	
 	if (message.getParameters().empty()) {
 		server->sendClient(ERR_NEEDMOREPARAMS(client->getNickName(), std::string("JOIN")), 

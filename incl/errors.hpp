@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 15:25:35 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/25 10:42:02 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 11:29:33 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 // 422 - MOTD
 # define ERR_NOMOTD(client) ( ":" + SERVERNAME + " 422 " + client + " :MOTD File is missing\r\n")
 
-// 431 - NICK
+// 431 - NICK - JOIN
 # define ERR_NONICKNAMEGIVEN(client) ":" + SERVERNAME + " 431 " + client + " :No nickname given\r\n"
 
 // 432 - NICK
