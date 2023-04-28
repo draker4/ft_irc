@@ -173,6 +173,8 @@ void	Client::setPasswordStatus(bool boolean)
 
 void Client::setNickName(std::string nickName)
 {
+	if (nickName.length() >= MAXNICKLEN)
+		nickname = nickname.substr(0, MAXNICKLEN);
 	_nickName = nickName;
 }
 
