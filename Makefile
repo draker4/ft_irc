@@ -14,10 +14,13 @@ DEBUG			=	${NAME}_debug
 
 DIR_HEAD		=	./incl/
 DIR_SRCS		=	./srcs/
+DIR_SRCS_BH		=	./srcs/bot/
 DIR_SRCS_C		=	./srcs/command/
 DIR_OBJS		=	.objs/
+DIR_OBJS_BH		=	.objs/bot/
 DIR_OBJS_C		=	.objs/command/
 DIR_OBJS_D		=	.objs_debug/
+DIR_OBJS_D_BH	=	.objs_debug/bot/
 DIR_OBJS_D_C	=	.objs_debug/command/
 
 # -------------  Files  -------------- #
@@ -59,13 +62,19 @@ SRCS_C			=	invite.cpp	\
 					who.cpp		\
 					whois.cpp
 
+SRCS_BH			=	botHelp.cpp
+
 OBJS			=	${SRCS:%.cpp=${DIR_OBJS}%.o}
+OBJS_BH			=	${SRCS_BH:%.cpp=${DIR_OBJS_BH}%.o}
 OBJS_C			=	${SRCS_C:%.cpp=${DIR_OBJS_C}%.o}
 OBJS_D			=	${SRCS:%.cpp=${DIR_OBJS_D}%.o}
+OBJS_D_BH		=	${SRCS_BH:%.cpp=${DIR_OBJS_D_BH}%.o}
 OBJS_D_C		=	${SRCS_C:%.cpp=${DIR_OBJS_D_C}%.o}
 DEPS			=	${OBJS:.o=.d}
+DEPS_BH			=	${OBJS_BH:.o=.d}
 DEPS_C			=	${OBJS_C:.o=.d}
 DEPS_D			=	${OBJS_D:.o=.d}
+DEPS_D_BH		=	${OBJS_D_BH:.o=.d}
 DEPS_D_C		=	${OBJS_D_C:.o=.d}
 
 # ----------  Compilation  ----------- #
@@ -102,12 +111,15 @@ all					:
 
 # ---------  Compiled Rules  --------- #
 
-${NAME}				:	${OBJS} ${OBJS_C}
+${NAME}				:	${OBJS} ${OBJS_BH} ${OBJS_C}
 						@echo "\033[0;33m"Building... "\033[0;0m"
-						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS} ${OBJS_C} -o ${NAME}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS} ${OBJS_BH} ${OBJS_C} -o ${NAME}
 						@echo "\033[0;32m"Build Done!"\033[0;0m"
 
 ${DIR_OBJS}%.o		:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_BH}%.o	:	${DIR_SRCS_BH}%.cpp Makefile | ${DIR_OBJS}
 						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
 
 ${DIR_OBJS_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS}
@@ -115,19 +127,24 @@ ${DIR_OBJS_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS}
 
 ${DIR_OBJS}			:
 						${HIDE} ${MKDIR} ${DIR_OBJS}
+						${HIDE} ${MKDIR} ${DIR_OBJS_BH}
 						${HIDE} ${MKDIR} ${DIR_OBJS_C}
 
 -include ${DEPS}
+-include ${DEPS_BH}
 -include ${DEPS_C}
 
 # ------  Compiled Rules Debug  ------ #
 
-${DEBUG}			:	${OBJS_D} ${OBJS_D_C}
+${DEBUG}			:	${OBJS_D} ${OBJS_D_BH} ${OBJS_D_C}
 						@echo "\033[0;33m"Building Debug... "\033[0;0m"
-						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS_D} ${OBJS_D_C} ${g3} ${FSANITIZE} -o ${DEBUG}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS_D} ${OBJS_D_BH} ${OBJS_D_C} ${g3} ${FSANITIZE} -o ${DEBUG}
 						@echo "\033[0;32m"Debug build Done!"\033[0;0m"
 
 ${DIR_OBJS_D}%.o	:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS_D}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_D_BH}%.o	:	${DIR_SRCS_BH}%.cpp Makefile | ${DIR_OBJS_D}
 						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
 
 ${DIR_OBJS_D_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS_D}
@@ -135,10 +152,52 @@ ${DIR_OBJS_D_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS_D}
 
 ${DIR_OBJS_D}		:
 						${HIDE} ${MKDIR} ${DIR_OBJS_D}
+						${HIDE} ${MKDIR} ${DIR_OBJS_D_BH}
 						${HIDE} ${MKDIR} ${DIR_OBJS_D_C}
 
 -include ${DEPS_D}
+-include ${DEPS_D_BH}
 -include ${DEPS_D_C}
+
+# -----  Compiled Rules botCalc  ----- #
+
+${NAME}				:	${OBJS} ${OBJS_BH} ${OBJS_C}
+						@echo "\033[0;33m"Building... "\033[0;0m"
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS} ${OBJS_BH} ${OBJS_C} -o ${NAME}
+						@echo "\033[0;32m"Build Done!"\033[0;0m"
+
+${DIR_OBJS}%.o		:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_BH}%.o	:	${DIR_SRCS_BH}%.cpp Makefile | ${DIR_OBJS}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_C}%.o	:	${DIR_SRCS_C}%.cpp Makefile | ${DIR_OBJS}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS}			:
+						${HIDE} ${MKDIR} ${DIR_OBJS}
+						${HIDE} ${MKDIR} ${DIR_OBJS_BH}
+						${HIDE} ${MKDIR} ${DIR_OBJS_C}
+
+-include ${DEPS}
+-include ${DEPS_BH}
+-include ${DEPS_C}
+
+# --  Compiled Rules Debug botCalc  -- #
+
+${DEBUG}			:	${OBJS_D_BC} 
+						@echo "\033[0;33m"Building Debug... "\033[0;0m"
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${OBJS_D} ${OBJS_D_BH} ${OBJS_D_C} ${g3} ${FSANITIZE} -o ${DEBUG}
+						@echo "\033[0;32m"Debug build Done!"\033[0;0m"
+
+${DIR_OBJS_D}%.o	:	${DIR_SRCS}%.cpp Makefile | ${DIR_OBJS_D}
+						${HIDE} ${CC} ${CFLAGS} ${c98} ${MMD} ${g3} ${FSANITIZE} -I ${DIR_HEAD} -c $< -o $@
+
+${DIR_OBJS_D}		:
+						${HIDE} ${MKDIR} ${DIR_OBJS_D}
+
+-include ${DEPS_D_BC}
 
 # ---------  Usual Commands  --------  #
 
