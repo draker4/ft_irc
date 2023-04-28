@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 18:41:53 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:11:48 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,10 @@ void nick(Client *client, const Message &message, Server *server)
 		
 		// no nickname given
 		if (message.getParameters().empty() || message.getParameters()[0].empty()) {
-			server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), client->getClientSocket());
+			if (!client->getNickName().empty())
+				server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), client->getClientSocket());
+			else
+				server->sendClient(ERR_NONICKNAMEGIVEN("*"), client->getClientSocket());
 		
 		// nickname with invalid characters
 		} else if (invalidChar(message.getParameters()[0])) {
