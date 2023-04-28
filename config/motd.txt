@@ -1,1 +1,1 @@
-We're happy to see you, have fun and enjoy ! If you need help, you can send a PRIVMSG to the help bot about the command of your choice, like this : "/PRIVMSG help <command>". Ask for the JOIN command, it will be helpful :)
+We're happy to see you, have fun and enjoy ! If you need help, you can send a PRIVMSG to the helping bot, just like this : "/PRIVMSG help".

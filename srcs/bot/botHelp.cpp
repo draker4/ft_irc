@@ -6,30 +6,44 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 15:42:02 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 18:15:10 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 19:27:27 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "botHelp.hpp"
 #include "Server.hpp"
 
-void	Client::sendHelp(Client *client, Server *server, std::string msg)
+void	Client::sendHelp(Client *client, Server *server, const Message &message)
 {
-	if (msg.empty() || !server || !client)
+	if (!server || !client)
 		return ;
 	
 	std::string	commands[] = {"INVITE", "JOIN", "KICK", "KILL", "LIST", "MODE",
 		"MOTD", "NAMES", "NICK", "NOTICE", "OPER", "PART", "PASS", "PING",
 		"PRIVMSG", "QUIT", "TOPIC", "USER", "WALLOPS", "WHO", "WHOIS"};
-	
-	std::string	reply;
-	size_t	i = 0;
 	size_t	array = sizeof(commands)/sizeof(commands[0]);
+	
+	size_t	i = 0;
+	
+	if (message.getParameters().size() <= 1) {
+		std::string	list_commands = " Here is the list of all commands you can use in this server:";
+
+		for (i = 0; i < array; i++) {
+			list_commands.append(commands[i]);
+			if (i != array - 1)
+				list_commands.append(", ");
+		}
+		list_commands.append(". If you need the definition of a command, you can send the name of the command as parameter to your message to the helping bot, just like this : /PRIVMSG help <command>. Try with the JOIN command, it will be very helpful :)");
+		
+		server->sendClient(RPL_CMD(this->getNickName(), this->getUserName(),
+			this->getInet(), "NOTICE", client->getNickName() + list_commands), client->getClientSocket());
+		return ;
+	}
+
+	std::string	reply;
 
 	for (i = 0; i < array; i++) {
-		std::cout << "LAAA i=" << i << " et command=" << commands[i] << std::endl;
-		if (toUpper(msg) == commands[i]) {
-			std::cout << "HERE=" << msg << std::endl;
+		if (toUpper(message.getParameters()[1]) == commands[i]) {
 			break ;
 		}
 	}

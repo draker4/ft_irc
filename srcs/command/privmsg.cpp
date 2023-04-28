@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 16:47:39 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 19:11:57 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -323,6 +323,13 @@ void privmsg(Client *client, const Message &message, Server *server)
 			client->getClientSocket());
 		return ;
 	}
+
+	// if target is the help bot
+	Client	*bot = server->getHelpBot();
+	if (bot && toUpper(message.getParameters()[0]) == toUpper(bot->getNickName())) {
+		bot->sendHelp(client, server, message);
+		return ;
+	}
 	
 	// if no text to send
 	if (message.getParameters().size() == 1) {
@@ -336,13 +343,6 @@ void privmsg(Client *client, const Message &message, Server *server)
 	
 	// send message to all recipients
 	for (Message::itVecString it = targets.begin(); it != targets.end(); it++) {
-
-		// if target is the help bot
-		Client	*bot = server->getHelpBot();
-		if (bot && toUpper(*it) == toUpper(bot->getNickName())) {
-			bot->sendHelp(client, server, message.getParameters()[1]);
-			continue ;
-		}
 
 		std::string	host = is_target_host(server, (*it));
 

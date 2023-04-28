@@ -30,6 +30,7 @@
 
 class Channel;
 class Server;
+class Message;
 
 class Client
 {
@@ -86,7 +87,7 @@ class Client
 		void		removeChannel(Channel *channel);
 		bool		shareChannel(vecChannel channels) const;
 		int			nb_prefix_channel(char c) const;
-		void		sendHelp(Client *client, Server *server, std::string msg);
+		void		sendHelp(Client *client, Server *server, const Message &message);
 	
 	private:
 		int 					_serverSocket;
