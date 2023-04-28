@@ -10,19 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "command.hpp"
-
-Message::vecString	split(std::string str, std::string c)
+#include "Calculator.hpp"
+int main(void)
 {
-	Message::vecString	vec;
-	size_t		prev = 0;
-	size_t		pos;
-
-	while ((pos = str.find_first_of(c, prev)) != std::string::npos) {
-		vec.push_back(str.substr(prev, pos - prev));
-		prev = pos + 1;
-	}
-	if (str[prev])
-		vec.push_back(str.substr(prev, str.length() - prev));
-	return vec;
+	std::cout << "Hello World !" << std::endl;
 }
