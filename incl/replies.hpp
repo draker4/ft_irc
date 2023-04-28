@@ -27,6 +27,14 @@
 # define RPL_CREATED(nickName, datetime) ( ":" + SERVERNAME + " 003 " + nickName \
 		+ " :This server was created " + datetime + "\r\n")
 
+// 004 - Server::sendWelcome
+# define RPL_MYINFO(nickName) ( ":" + SERVERNAME + " 004 " + nickName \
+		+ SERVERNAME + " " + VERSION + " " + USERMODE + " " + CHANNELMODE + "\r\n")
+
+// 005 - Server::sendWelcome
+# define RPL_ISUPPORT(nickName, tokens) ( ":" + SERVERNAME + " 005 " + nickName \
+		+ " " + tokens + " :are supported by this server\r\n")
+
 // 221 - MODE
 # define RPL_UMODEIS(nickName, userModes) ( ":" + SERVERNAME + " 221 " + nickName \
 		+ " :+" + userModes + "\r\n")

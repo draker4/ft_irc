@@ -246,7 +246,6 @@ void channelAddMode(Client *client, const Message &message, Server *server, Chan
 		switch (message.getParameters()[1][j]) {
 		case 'i': // i : set the channel to invite only
 		case 's': // s : set the channel to secret
-		case 'p': // p : set the channel to private
 			if (channel->getOperGrade(client->getNickName()) == 3) // operator only
 				addModeChannel(client, server, channel, message.getParameters()[1][j]);
 			else
@@ -341,7 +340,6 @@ void channelRemoveMode(Client *client, const Message &message, Server *server, C
 		switch (message.getParameters()[1][j]) {
 		case 'i': // i : remove the channel mode invite only 
 		case 's': // s : remove the channel mode secret
-		case 'p': // p : remove the channel mode private
 		case 'l': // l : remove the channel mode limit of users in the channel
 			if (channel->getOperGrade(client->getNickName()) == 3) // operator only
 				removeModeChannel(client, server, channel, message.getParameters()[1][j]);

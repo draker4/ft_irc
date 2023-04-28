@@ -483,12 +483,10 @@ void	Server::sendWelcome(Client *client)
 	sendClient(RPL_WELCOME(client->getNickName(), client->getUserName(), client->getInet()), client->getClientSocket());
 	sendClient(RPL_YOURHOST(client->getNickName()), client->getClientSocket());
 	sendClient(RPL_CREATED(client->getNickName(), _t_create_str), client->getClientSocket());
-
-	// add message 004 and 005
-
+	sendClient(RPL_MYINFO(client->getNickName()), client->getClientSocket());
+	sendClient(RPL_ISUPPORT(client->getNickName(), TOKEN1), client->getClientSocket());
 	motd(client, Message(), this);
-	mode(client, Message("MODE " + client->getNickName() + " +w"), this);
-	mode(client, Message("MODE " + client->getNickName() + " +r"), this);
+	mode(client, Message("MODE " + client->getNickName() + " +wr"), this);
 }
 
 void	Server::deleteClient(int clientSocket)
