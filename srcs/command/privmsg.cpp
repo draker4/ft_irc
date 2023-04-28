@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/27 17:47:00 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 16:47:39 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,6 +336,13 @@ void privmsg(Client *client, const Message &message, Server *server)
 	
 	// send message to all recipients
 	for (Message::itVecString it = targets.begin(); it != targets.end(); it++) {
+
+		// if target is the help bot
+		Client	*bot = server->getHelpBot();
+		if (bot && toUpper(*it) == toUpper(bot->getNickName())) {
+			bot->sendHelp(client, server, message.getParameters()[1]);
+			continue ;
+		}
 
 		std::string	host = is_target_host(server, (*it));
 
