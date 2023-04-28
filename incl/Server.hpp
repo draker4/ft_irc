@@ -53,22 +53,43 @@
 # define USERMODE std::string("iorw")
 # define MAX_CLIENTS 1000
 
-// RPL_ISUPPORT
-# define BOT_TOKEN std::string("BOT=" + BOT) // Indicates the character to be used as a user mode to let clients mark themselves as bots by setting it
-# define CHANLIMIT_TOKEN std::string("CHANLIMIT=" + CHANTYPES + ":10") // Indicates the maximum number of channels a client may join
-# define CHANMODES_TOKEN std::string("CHANMODES=" + CHANMODE) // Indicates the channel modes available on this server
-# define CHANNELLEN_TOKEN std::string("CHANNELLEN=50") // Indicates the maximum length of a channel name
-# define CHANTYPES_TOKEN std::string("CHANTYPES=" + CHANTYPES) // Indicates the types of channels supported on this server
-# define KEYLEN_TOKEN std::string("KEYLEN=10") // Indicates the maximum length of a channel key.
-# define KICKLEN_TOKEN std::string("KICKLEN=") // Indicates the maximum length of a kick message.
-# define MAXLIST_TOKEN std::string("MAXLIST=") // Indicates the maximum number of entries in a channel mode list.
-# define MAXNICKLEN_TOKEN std::string("MAXNICKLEN=9") // Indicates the maximum length of a nickname.
-# define MAXTARGETS_TOKEN std::string("MAXTARGETS=") // Indicates the maximum number of targets allowed in a command requiring multiple targets.
-# define MODES_TOKEN std::string("MODES=") // Indicates the maximum number of modes with parameter allowed to be set on a channel in a single MODE command.
-# define TARGMAX_TOKEN std::string("TARGMAX=WHO:,WHOIS:1,NAMES:,PRIVMSG:,NOTICE:,JOIN:,PART:") // Indicates the maximum number of targets allowed in a command requiring multiple targets.
-# define TOPICLEN_TOKEN std::string("TOPICLEN=") // Indicates the maximum length of a topic.
-# define PREFIX_TOKEN std::string("PREFIX=" + PREFIX) // Indicates the channel membership prefixes available on this server and their order in terms of channel privileges they represent, from highest to lowest.
-# define USERLEN_TOKEN std::string("USERLEN=""10") // Indicates the maximum length of an username in octets. If "number" is not specified, there is no limit.
+/* --- RPL_ISUPPORT --- */
+// Indicates the character to be used as a user mode to let clients mark
+// themselves as bots by setting it
+# define BOT_TOKEN std::string("BOT=" + BOT)
+// Indicates the maximum number of channels a client may join
+# define CHANLIMIT_TOKEN std::string("CHANLIMIT=" + CHANTYPES + ":10")
+// Indicates the channel modes available on this server
+# define CHANMODES_TOKEN std::string("CHANMODES=" + CHANMODE)
+// Indicates the maximum length of a channel name
+# define CHANNELLEN_TOKEN std::string("CHANNELLEN=50")
+// Indicates the types of channels supported on this server
+# define CHANTYPES_TOKEN std::string("CHANTYPES=" + CHANTYPES)
+// Indicates the maximum length of a channel key.
+# define KEYLEN_TOKEN std::string("KEYLEN=10")
+// Indicates the maximum length of a kick message.
+# define KICKLEN_TOKEN std::string("KICKLEN=")
+// Indicates the maximum number of entries in a channel mode list.
+# define MAXLIST_TOKEN std::string("MAXLIST=")
+// Indicates the maximum length of a nickname.
+# define MAXNICKLEN_TOKEN std::string("MAXNICKLEN=9")
+// Indicates the maximum number of targets allowed in a command requiring
+// multiple targets.
+# define MAXTARGETS_TOKEN std::string("MAXTARGETS=")
+// Indicates the maximum number of modes with parameter allowed to be set
+// on a channel in a single MODE command.
+# define MODES_TOKEN std::string("MODES=")
+// Indicates the maximum number of targets allowed in a command requiring
+// multiple targets.
+# define TARGMAX_TOKEN std::string("TARGMAX=WHO:,WHOIS:1,NAMES:,PRIVMSG:,NOTICE:,JOIN:,PART:")
+ // Indicates the maximum length of a topic.
+# define TOPICLEN_TOKEN std::string("TOPICLEN=")
+// Indicates the channel membership prefixes available on this server and
+// their order in terms of channel privileges they represent, from highest to lowest.
+# define PREFIX_TOKEN std::string("PREFIX=" + PREFIX)
+// Indicates the maximum length of an username in octets. If "number"
+// is not specified, there is no limit.
+# define USERLEN_TOKEN std::string("USERLEN=""10")
 
 # define TOKEN1 std::string(BOT_TOKEN + " " + CHANLIMIT_TOKEN + " " + CHANMODES_TOKEN \
 		+ " " + CHANNELLEN_TOKEN + " " + CHANTYPES_TOKEN + " " + KEYLEN_TOKEN + " " \
