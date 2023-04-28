@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 11:01:04 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 11:12:04 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,39 +30,42 @@
  * 	
  */
 
+static void	send_list_names(Client *client, Server *server, Channel *channel) {
+	
+	// list only users in channel not secrets
+	if (!(channel->getModeStatus('s') && !channel->isClientInChannel(client->getNickName()))) {
+	
+		// get all clients in the channel
+		Channel::mapClients	clients = channel->getClients();
+		
+		// list of names
+		std::string	list_names = "";
+		
+		for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
+
+			// Invisible users (mode +i) are only shown if the client who did the request
+			// is also in the same channel
+			if (!(it_client->second.client->getModeStatus('i')
+				&& !channel->isClientInChannel(client->getNickName()))) {
+				if (!list_names.empty())
+					list_names.append(" ");
+				list_names.append(it_client->second.prefix + it_client->second.client->getNickName());
+			}
+		}
+		
+		server->sendClient(RPL_NAMREPLY(client->getNickName(),
+			channel->getSymbol(), channel->getName(), list_names),
+			client->getClientSocket());
+	}
+	server->sendClient(RPL_ENDOFNAMES(client->getNickName(), channel->getName()),
+		client->getClientSocket());
+}
+
 static void	list_all(Client *client, Server *server) {
 	Server::vecChannel	channels = server->getChannels();
 	
 	for (Server::itVecChannel it = channels.begin(); it != channels.end(); it++) {
-		
-		// list only users in channel not secrets
-		if (!(*it)->getModeStatus('s')) {
-
-			// get all clients in the channel
-			Channel::mapClients	clients = (*it)->getClients();
-			
-			// list of names
-			std::string	list_names = "";
-			
-			for (Channel::itMapClients it_client = clients.begin(); it_client != clients.end(); it_client++) {
-
-				// Invisible users (mode +i) are only shown if the client who did the request
-				// is also in the same channel
-				if (!(it_client->second.client->getModeStatus('i')
-					&& !(*it)->isClientInChannel(client->getNickName()))) {
-					if (!list_names.empty())
-						list_names.append(" ");
-					list_names.append(it_client->second.prefix + it_client->second.client->getNickName());
-				}
-			}
-			
-			server->sendClient(RPL_NAMREPLY(client->getNickName(),
-				(*it)->getSymbol(), (*it)->getName(), list_names),
-				client->getClientSocket());
-		}
-		
-		server->sendClient(RPL_ENDOFNAMES(client->getNickName(), (*it)->getName()),
-			client->getClientSocket());
+		send_list_names(client, server, *it);
 	}
 	
 	// add all users that are not in any channel (and visible)
@@ -109,9 +112,7 @@ void names(Client *client, const Message &message, Server *server)
 			continue ;
 		}
 		
-		// list all channel users
-		
+		// send list clients' names in channel
+		send_list_names(client, server, channel);
 	}
-	
-	
 }
