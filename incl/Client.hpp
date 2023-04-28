@@ -31,9 +31,10 @@ class Client
 {
 	public:
 		// Types
-		typedef std::vector<Channel *>				vecChannel;
-		typedef std::vector<Channel *>::iterator	itVecChannel;
-		typedef std::string::const_iterator			itString;
+		typedef std::vector<Channel *>					vecChannel;
+		typedef std::vector<Channel *>::iterator		itVecChannel;
+		typedef std::vector<Channel *>::const_iterator	constItVecChannel;
+		typedef std::string::const_iterator				itString;
 
 		// Constructors
 		Client(int serverSocket);
@@ -78,6 +79,7 @@ class Client
 		void		removeMode(char c);
 		void		addChannel(Channel *channel);
 		void		removeChannel(Channel *channel);
+		bool		shareChannel(vecChannel channels) const;
 	
 	private:
 		int 					_serverSocket;

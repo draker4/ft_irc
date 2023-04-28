@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/27 18:50:19 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 12:13:38 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -513,18 +513,18 @@ void	Server::addChannel(Channel *channel)
 		_channels.push_back(channel);
 }
 
-bool	Server::channelExist(std::string name)
+bool	Server::channelExist(std::string name) const
 {
-	for (itVecChannel it = _channels.begin(); it != _channels.end(); it++) {
+	for (constItVecChannel it = _channels.begin(); it != _channels.end(); it++) {
 		if (toUpper((*it)->getName()) == toUpper(name))
 			return true;
 	}
 	return false;
 }
 
-bool	Server::isClientInServer(std::string nickName)
+bool	Server::isClientInServer(std::string nickName) const
 {
-	for (itMapClient it = _clients.begin(); it != _clients.end(); it++) {
+	for (constItMapClient it = _clients.begin(); it != _clients.end(); it++) {
 		if (toUpper(it->second->getNickName()) == toUpper(nickName))
 			return true;
 	}

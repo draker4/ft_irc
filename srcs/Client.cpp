@@ -259,3 +259,23 @@ void	Client::removeChannel(Channel *channel)
 		}
 	}
 }
+
+bool	Client::shareChannel(Client::vecChannel channels) const
+{
+	if (channels.empty() || _channels.empty())
+		return false;
+	
+	// loop on all channels from client in argument
+	for (constItVecChannel it_first = channels.begin(); it_first != channels.end(); it_first++) {
+
+		// loop on all channels from this->client
+		for (constItVecChannel it_second = _channels.begin(); it_second != _channels.end(); it_second++) {
+
+			// check if same channel
+			if (*it_first == *it_second) {
+				return true;
+			}
+		}
+	}
+	return false;
+}

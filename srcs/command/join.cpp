@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 11:29:41 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/04/28 13:10:28 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,12 @@ void join(Client *client, const Message &message, Server *server)
 	
 	// if client is not registered
 	if (!client->getModeStatus('r')) {
-		server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), 
-			client->getClientSocket());
+		if (!client->getNickName().empty())
+			server->sendClient(ERR_NONICKNAMEGIVEN(client->getNickName()), 
+				client->getClientSocket());
+		else
+			server->sendClient(ERR_NONICKNAMEGIVEN("*"), 
+				client->getClientSocket());
 		return ;
 	}
 	
