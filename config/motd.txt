@@ -1,1 +1,1 @@
-We're happy to see you, have fun and enjoy ! If you need help, you can send a PRIVMSG to the helping bot, just like this : "/PRIVMSG help".
+We're happy to see you, have fun and enjoy ! If you need help, you can send a PRIVMSG to the helping bot, just like this : "/PRIVMSG help". If you want to use the Calculator Bot (and he's currently connected), just send a PRIVMSG to 'Calculator' ot JOIN the #calc channel!

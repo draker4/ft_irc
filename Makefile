@@ -30,10 +30,11 @@ DIR_OBJS_D_BH	=	.objs_debug/botHelp/
 DIR_OBJS_D_C	=	.objs_debug/command/
 
 # -------------  Files  -------------- #
+					#Calculator.hpp
 
 HEAD			=	ABot.hpp		\
 					botHelp.hpp		\
-					Calculator.hpp	\
+					Calc.hpp		\
 					Channel.hpp 	\
 					Client.hpp		\
 					colors.hpp		\
@@ -74,7 +75,9 @@ SRCS_C			=	invite.cpp		\
 
 SRCS_BC			=	ABot.cpp		\
 					botCalc.cpp		\
-					Calculator.cpp
+					Calc.cpp		\
+					../Message.cpp
+					# Calculator.cpp
 
 SRCS_BH			=	botHelp.cpp
 
@@ -258,7 +261,7 @@ runv				:	all
 						${VALGRIND} ./${NAME} 4245 6262
 
 runb				:	bonus
-						./${BOTCALC} 4245 6262
+						./${BOTCALC} localhost 4245 6262
 
 runbs				:	debug_bonus
 						./${BOTCALC_DEBUG} 4245 6262

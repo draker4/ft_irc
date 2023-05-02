@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/04/28 16:38:09 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/05/01 15:36:25 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,14 @@ Server::Server(std::string port, std::string password) :
 		break;
 	}
 
-	freeaddrinfo(serverInfo);
 	if (!indexInfo) {
+		freeaddrinfo(serverInfo);
 		close(_serverSocket);
 		throw Server::ServerException("ERROR: Server failed to bind to IP/Port!");
 	}
 
+	freeaddrinfo(serverInfo);
+	
 	// Listen for incoming connections
 	if (listen(_serverSocket, SOMAXCONN) == -1) {
 		close(_serverSocket);
@@ -317,8 +319,9 @@ void Server::_receiveData(itVecPollfd &it)
 		}
 		_clients[it->fd]->addBuffer(std::string(buf, 0, sizeof(buf)));
 		
-		if (_clients[it->fd]->getBuffer().find_first_of("\r\n") != std::string::npos
-			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r')
+		if (strstr(_clients[it->fd]->getBuffer().c_str(), "\r\n")
+			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 2] == '\r'
+			&& _clients[it->fd]->getBuffer()[_clients[it->fd]->getBuffer().length() - 1] == '\n')
 		{
 			_handleCommand(_clients[it->fd]->getBuffer(), it->fd);
 			
@@ -415,7 +418,6 @@ void Server::_initOperatorConfig(void)
 
 void Server::launch(void)
 {
-
 	pollfd server_fd;
 
 	server_fd.fd = _serverSocket;
