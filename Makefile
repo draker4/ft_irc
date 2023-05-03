@@ -264,10 +264,10 @@ runb				:	bonus
 						./${BOTCALC} localhost 4245 6262
 
 runbs				:	debug_bonus
-						./${BOTCALC_DEBUG} 4245 6262
+						./${BOTCALC_DEBUG} localhost 4245 6262
 
 runbd				:	debug
-						${LLDB} ./${DEBUG} 4245 6262
+						${LLDB} ./${DEBUG} localhost 4245 6262
 
 runbv				:	bonus
-						${VALGRIND} ./${BOTCALC} 4245 6262
+						${VALGRIND} ./${BOTCALC} localhost 4245 6262

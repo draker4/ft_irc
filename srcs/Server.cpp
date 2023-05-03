@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/05/01 15:36:25 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/05/03 13:33:50 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -439,8 +439,8 @@ void Server::launch(void)
 		}
 		
 		// Check for incoming data on the client sockets
-		itVecPollfd it = _fds.begin();
-		for (it = _fds.begin(); it != _fds.end(); it++) {
+		itVecPollfd it_end = _fds.end();
+		for (itVecPollfd it = _fds.begin(); it != it_end; it++) {
 			
 			// if no event on this socket
 			if (!it->revents)
