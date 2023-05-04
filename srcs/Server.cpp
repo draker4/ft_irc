@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 11:34:13 by bperriol          #+#    #+#             */
-/*   Updated: 2023/05/03 13:33:50 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/05/04 12:12:35 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,7 +302,7 @@ void Server::_receiveData(itVecPollfd &it)
 	memset(buf, 0, sizeof(buf));
 	int bytesReceived = recv(it->fd, buf, sizeof(buf), 0);
 	if (bytesReceived == -1) {
-		std::cerr << "ERROR: Can't receive data from client!" << std::endl;
+		return ;
 	}
 	else if (bytesReceived == 0) {
 		if (DEBUG_SERVER)

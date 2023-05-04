@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/01 13:35:07 by bperriol          #+#    #+#             */
-/*   Updated: 2023/05/02 14:40:09 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/05/04 12:10:56 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,8 @@ void	Calc::bot_purpose(void) const
 	Message		msg(_recvBuffer);
 	std::string	send_to = "";
 	
-	if (msg.getCommand() != "PRIVMSG" || msg.getParameters().size() < 2)
+	if ((msg.getCommand() != "PRIVMSG" && msg.getCommand() != "NOTICE")
+		|| msg.getParameters().size() < 2)
 		return ;
 	
 	// get nickname or channel where the bot has to send his reply
@@ -144,7 +145,7 @@ void	Calc::bot_purpose(void) const
 	
 	std::string	reply = _calc(to_parse);
 	
-	sendServer(":" + BOTNAME + "!" + BOTNAME + "@" + _inet + " PRIVMSG " + send_to + " :" + reply + "\r\n");
+	sendServer(":" + BOTNAME + "!" + BOTNAME + "@" + _inet + " NOTICE " + send_to + " :" + reply + "\r\n");
 }
 
 void	Calc::joinCalcChannel(void) const

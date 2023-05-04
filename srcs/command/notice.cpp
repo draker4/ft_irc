@@ -6,7 +6,7 @@
 /*   By: bperriol <bperriol@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/07 15:13:13 by baptiste          #+#    #+#             */
-/*   Updated: 2023/04/28 19:12:13 by bperriol         ###   ########lyon.fr   */
+/*   Updated: 2023/05/04 12:08:36 by bperriol         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static void	clients_from_host(Client *client, Server *server, std::string target
 			return ;
 		
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-		client->getInet(), std::string("PRIVMSG"), to_send->getNickName() + " :" + message), 
+		client->getInet(), std::string("NOTICE"), to_send->getNickName() + " :" + message), 
 			to_send->getClientSocket());
 		return ;
 	}
@@ -83,7 +83,7 @@ static void	clients_from_host(Client *client, Server *server, std::string target
 	for (Server::itMapClient it = clients.begin(); it != clients.end(); it++) {
 		if (it->second->getInet() == host) {
 			server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-			client->getInet(), std::string("PRIVMSG"),
+			client->getInet(), std::string("NOTICE"),
 			it->second->getNickName() + " :" + message), 
 			it->second->getClientSocket());
 		}
@@ -155,7 +155,7 @@ static void	clients_from_channel(Client *client, Server *server, std::string tar
 	
 	for (Server::itVecClient it_client = to_send.begin(); it_client != to_send.end(); it_client++) {
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-			client->getInet(), std::string("PRIVMSG"),
+			client->getInet(), std::string("NOTICE"),
 			channel->getName() + " :" + message), 
 			(*it_client)->getClientSocket());
 	}
@@ -187,7 +187,7 @@ static void	client_from_nick(Client *client, Server *server, std::string target,
 			return ;
 		
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("PRIVMSG"),
+				client->getInet(), std::string("NOTICE"),
 				destination->getNickName() + " :" + message), 
 				destination->getClientSocket());
 		return ;
@@ -210,7 +210,7 @@ static void	client_from_nick(Client *client, Server *server, std::string target,
 			return ;
 		
 		server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("PRIVMSG"),
+				client->getInet(), std::string("NOTICE"),
 				clients[0]->getNickName() + " :" + message), 
 				clients[0]->getClientSocket());
 		return ;
@@ -223,7 +223,7 @@ static void	client_from_nick(Client *client, Server *server, std::string target,
 		return ;
 	
 	server->sendClient(RPL_CMD(client->getNickName(), client->getUserName(),
-				client->getInet(), std::string("PRIVMSG"),
+				client->getInet(), std::string("NOTICE"),
 				to_send->getNickName() + " :" + message), 
 				to_send->getClientSocket());
 }
