@@ -21,16 +21,17 @@ DIR_SRCS_BC		=	./srcs/bot/
 DIR_SRCS_BH		=	./srcs/bot/
 DIR_SRCS_C		=	./srcs/command/
 DIR_OBJS		=	.objs/
-DIR_OBJS_BC		=	.objs/botCalc/
-DIR_OBJS_BH		=	.objs/botHelp/
+DIR_OBJS_BOT	=	.objsBot/
+DIR_OBJS_BC		=	.objsBot/botCalc/
+DIR_OBJS_BH		=	.objsBot/botHelp/
 DIR_OBJS_C		=	.objs/command/
 DIR_OBJS_D		=	.objs_debug/
-DIR_OBJS_D_BC	=	.objs_debug/botCalc/
-DIR_OBJS_D_BH	=	.objs_debug/botHelp/
+DIR_OBJS_BOT_D		=	.objsBot_debug/
+DIR_OBJS_D_BC	=	.objsBot_debug/botCalc/
+DIR_OBJS_D_BH	=	.objsBot_debug/botHelp/
 DIR_OBJS_D_C	=	.objs_debug/command/
 
 # -------------  Files  -------------- #
-					#Calculator.hpp
 
 HEAD			=	ABot.hpp		\
 					botHelp.hpp		\
@@ -77,7 +78,6 @@ SRCS_BC			=	ABot.cpp		\
 					botCalc.cpp		\
 					Calc.cpp		\
 					../Message.cpp
-					# Calculator.cpp
 
 SRCS_BH			=	botHelp.cpp
 
@@ -217,7 +217,9 @@ ${DIR_OBJS_D_BC}		:
 
 clean				:	
 						${HIDE} ${RM} ${DIR_OBJS}
+						${HIDE} ${RM} ${DIR_OBJS_BOT}
 						${HIDE} ${RM} ${DIR_OBJS_D}
+						${HIDE} ${RM} ${DIR_OBJS_BOT_D}
 						${HIDE} ${RM} ${DIR_DEBUG}
 						@echo "\033[0;34m"Cleaning done!"\033[0;0m"
 
